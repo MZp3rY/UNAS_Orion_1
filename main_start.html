@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+
+{% block layout_class %} layout--start{% endblock %}
+
+{% block content %}
+    <main class="content js-content">
+        [[ element|width:1920;name:banner_start_big;layout:slider-pro;class:slideshow;auto_resize:all; ]]
+
+        <div class="product-offer">
+            <div class="container px-0">
+                [[ element|name:start_product_offer_box_title;layout:html_title;class:custom-title  ]]
+                [[ box|name:shop_art;product_list_layout:5; ]]
+            </div>
+        </div>
+
+        [[ element|name:start_item_1;width:1920;layout:bg_paralax ]]
+
+        <div class="main__title container">[[ title ]]</div>
+        <div class="main__content">
+            <div id="page_content_outer">[[ content ]]</div>
+        </div>
+
+        [[ element|name:start_item_3;width:1920;layout:bg_paralax ]]
+
+        <div class="blog">
+            <div class="container">
+                [[ box|name:common_page;limit:4;filter:blog;layout:blog ]]
+            </div>
+        </div>
+    </main>
+
+    [[ box|name:common_newsletter;disp:start ]]
+    [[ element|name:start_brand_slider;layout:slides_slick;can_hide:yes ]]
+{% endblock %}

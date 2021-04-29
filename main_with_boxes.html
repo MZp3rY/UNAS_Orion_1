@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+
+{% block layout_class %} layout--with-boxes{% endblock %}
+
+{% block content %}
+	<div class="content container py-3 js-content">
+		<div class="row no-gutters">
+			<main class="col-12 px-0">
+				<div class='main__title'>[[ title ]]</div>
+				<div class='main__content'>
+					<div id="page_content_outer">[[ content ]]</div>
+				</div>
+			</main>
+			<div class="col-12 side-box js-side-box">
+				[[ box1_start ]]
+				<div class="box">
+					<div class="box__title"><div class="box__title-inner text-uppercase font-xl pb-2 my-3">[[ box1_title ]]</div></div>
+					<div class="box__content mb-5">[[ box1_content ]]</div>
+				</div>
+				[[ box1_end ]]
+			</div>
+		</div>
+	</div>
+{% endblock %}

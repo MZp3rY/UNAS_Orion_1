@@ -1,0 +1,26 @@
+@import "mixins";
+@import "functions";
+@import "variables";
+
+.container{
+  max-width: $container-max-width;
+}
+.container-max-sm {
+  max-width:  map-get($grid-breakpoints, sm);
+}
+.container-max-md {
+  max-width: map-get($grid-breakpoints, md);
+}
+.container-max-lg {
+  max-width: map-get($grid-breakpoints, lg);
+}
+[class*="container-max-"] {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@include media-breakpoint-up(sm) {
+  [class*="container-max-"] {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}

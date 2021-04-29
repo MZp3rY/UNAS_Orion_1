@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    [[ start ]]
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<link rel="preload" href="[unas_design_url_base]own/fonts/1800/customicons/custom-icons.woff2" as="font" type="font/woff2" crossorigin>
+	<link rel="preload" href="[unas_design_url_base]own/fonts/1800/customicons/custom-icons.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="[unas_design_url_base]own/fonts/avenirnext/AvenirNextCyr-Bold.woff2" as="font" type="font/woff2" crossorigin>
+	<link rel="preload" href="[unas_design_url_base]own/fonts/avenirnext/AvenirNextCyr-Regular.woff2" as="font" type="font/woff2" crossorigin>
+	<link rel="preload" href="[unas_design_url_base]own/fonts/avenirnext/AvenirNextLTPro-BoldCn.woff2" as="font" type="font/woff2" crossorigin>
+	<link rel="preload" href="[unas_design_url_base]own/fonts/avenirnext/AvenirNextLTPro-Cn.woff2" as="font" type="font/woff2" crossorigin>
+
+    <script src="[unas_shop_url]/!common_packages/jquery/plugins/slick/slick.min.js" type="text/javascript"></script>
+    <script src="[unas_shop_url]/!common_design/base/001800/main.js" type="text/javascript"></script>
+
+    [[ element|name:header_banner;layout:html;display:none; ]]
+    [[ element|name:header_logo;width:200;height:50;layout:img;display:none; ]]
+    [[ element|name:banner_start_big;width:1920;layout:slider-pro;style:1;only_first_slide:1;def_width:1910; ]]
+    [[ element|name:start_product_offer_box_title;layout:html_title;display:none; ]]
+    [[ element|name:start_item_1;width:1920;layout:bg_paralax;display:none ]]
+    [[ element|name:start_custom_title;layout:html_title;display:none ]]
+    [[ element|name:banner_start_small;layout:start_banners;width:300;display:none; ]]
+    [[ element|name:start_item_2;width:1920;layout:bg_paralax;display:none ]]
+    [[ element|name:start_artref_title;layout:html_title;display:none ]]
+    [[ element|name:start_item_3;width:1920;layout:bg_paralax;display:none ]]
+    [[ element|name:start_blog_title;layout:html_title;display:none ]]
+    [[ element|name:start_item_4;width:1920;layout:bg;display:none ]]
+    [[ element|name:start_newsletter_title;layout:html;display:none ]]
+    [[ element|name:start_newsletter_text;layout:html;display:none ]]
+    [[ element|name:start_brand_slider;layout:slides_slick;display:none; ]]
+    [[ element|name:cart_summary;layout:html;display:none ]]
+</head>
+
+<body id="unas_design">
+[[ body_start ]]
+
+<div id="container" class="[[ page_id ]] w-100 overflow-hidden{% block layout_class %} layout--default{% endblock %}">
+
+    <header class="header bg-white js-header">
+        <div class="container">
+            <div class="header__inner d-flex d-lg-block align-items-center flex-wrap">
+                <div class="header-top-mobile d-lg-none w-100 position-relative">
+                    [[ element|name:header_banner;layout:html;class:py-2 text-center font-s ]]
+                </div>
+                <div class="header-top order-2 order-lg-0 ml-auto ml-lg-0 py-2 py-lg-0">
+                    <div class="header-top__inner d-flex align-items-center position-relative">
+                        <div class="header-top__left-side order-1 d-none d-lg-block">
+                            [[ element|name:header_banner;layout:html ]]
+                        </div>
+                        <div class="header-top__right-side d-flex order-2 position-relative ml-auto">
+                            <div class="cat-box--mobile js-dropdown-container">
+                                <button class="cat-box__btn cat-box__btn--mobile js-dropdown--btn dropdown--btn d-lg-none" aria-label="products button">
+                                    <span class="cat-box__btn-icon icon--hamburger"></span>
+                                </button>
+                                <div class="dropdown--content dropdown--content-r js-dropdown--content p-0">
+                                    <div class="cat-box--mobile d-block h-100">
+                                        [[ box|name:shop_cat;already:no;responsive:yes ]]
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lang-and-cur-col js-lang-and-cur js-dropdown-container">
+                                <button class="lang-and-cur__btn js-dropdown--btn dropdown--btn" aria-label="language/currency button">
+                                    <span class="lang-and-cur__btn-icon icon--globe"></span>
+                                </button>
+                                <div class="lang-and-cur__dropdown dropdown--content dropdown--content-r js-dropdown--content">
+                                    <div class="lang-and-cur__btn-close d-lg-none dropdown--btn-close js-dropdown--btn-close"></div>
+                                    <div class="lang">
+                                        <div class="lang__content">[[ box|name:common_lang ]]</div>
+                                    </div>
+                                    <div class="line-separator mt-2 d-none"></div>
+                                    <div class="currency">
+                                        <div class="currency__content">[[ box|name:shop_money ]]</div>
+                                    </div>
+                                </div>
+                            </div>
+                            [[ box|name:shop_login ]]
+                            [[ box|name:shop_search ]]
+                            [[ box|name:shop_cart;price_format:cart;img:1;img_width:80;img_height:80; ]]
+                        </div>
+                    </div>
+                </div>
+                <div class="header-bottom py-2 position-relative">
+                    <div class="d-flex no-gutters align-items-center position-relative">
+                        <div class="col-auto header-bottom__left-side">
+                            [[ element|width:200;height:50;name:header_logo;layout:img;class:logo ]]
+                        </div>
+                        <div class="col header-bottom__right-side">
+                            <div class="header-menus--desktop d-flex align-items-center no-gutters">
+                                <div class="col position-static">
+                                    <ul class='header-menus d-flex justify-content-end'>
+                                        [[ box|name:shop_cat;layout_cache:1;expand_cache:1;layout:0;layout_level0:0;layout_level1:1;layout_level2:2; ]]
+										[[ menu|max_level:3;layout:1; ]]
+                                    </ul>
+                                </div>
+                                <div class="col-auto header-menus-more h-100 align-self-center js-dropdown-container">
+                                    <button class="header-menus-more__btn js-dropdown--btn dropdown--btn" aria-label="more menu elements">
+                                        <span class="cat-box__btn-icon icon--hamburger"></span>
+                                    </button>
+                                    <div class="header-menus-more__dropdown w-auto js-dropdown--content dropdown--content dropdown--content-r p-0 pt-5 pt-lg-0">
+                                        <div class="header-menus-more__btn-close d-lg-none dropdown--btn-close js-dropdown--btn-close"></div>
+                                        <ul class="header-menus-more__container py-3"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}
+        <main class="content container py-4 js-content">
+            {% block breadcrumb %}<div class="main__breadcrumb">[[ breadcrumb ]]</div>{% endblock %}
+            <div class="main__title">[[ title ]]</div>
+            <div class="main__content">
+                <div class="page_content_outer">[[ content ]]</div>
+            </div>
+            [[ box|name:shop_top;product_list_layout:6; ]]
+        </main>
+    {% endblock %}
+
+    <footer>
+        <div class="footer">
+            <div class="container py-5">
+                [[ element|name:footer_banner_small;layout:footer_banners ]]
+                <div class="line-separator"></div>
+                <div class="footer__navigation">
+                    <div class="row gutters-10">
+                        <nav class="footer__nav footer__nav-1 col-6 col-lg-3 mb-5 mb-lg-3">[[ element|name:footer_v2_menu_1;layout:html_listing; ]]</nav>
+                        <nav class="footer__nav footer__nav-2 col-6 col-lg-3 mb-5 mb-lg-3">[[ element|name:footer_v2_menu_2;layout:html_listing; ]]</nav>
+                        <nav class="footer__nav footer__nav-3 col-6 col-lg-3 mb-5 mb-lg-3">[[ element|name:footer_v2_menu_3;layout:html_listing; ]]</nav>
+                        <nav class="footer__nav footer__nav-4 col-6 col-lg-3 mb-5 mb-lg-3">[[ element|name:footer_v2_menu_4;layout:html_listing; ]]</nav>
+                    </div>
+                </div>
+                <div class="line-separator"></div>
+                <div class="footer__social-and-provider">
+                    <div class="row gutters-10 align-items-center">
+                        <div class="footer__social col-auto">
+                            <div class="footer_social">[[ element|name:footer_v2_social;layout:html_listing_h; ]]</div>
+                        </div>
+                        <div class="provider col text-right">
+                            <div class="provider__container d-inline-block usn">
+                                [[ provider|logo:png ]]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="partners">
+            <div class="partners__container container d-flex flex-wrap align-items-center justify-content-center">
+                [[ box|name:shop_partner ]]
+                [[ box|name:shop_checkout ]]
+                [[ box|name:shop_cert ]]
+            </div>
+        </div>
+
+    </footer>
+</div>
+<button class="back_to_top btn btn-outline-primary btn-square--lg icon--chevron-up" type="button" aria-label="jump to top button"></button>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        eval(responsive_menu);
+    });
+</script>
+[[ body_end ]]
+</body>
+
+[[ end ]]
+</html>
