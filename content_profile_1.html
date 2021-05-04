@@ -1,0 +1,210 @@
+<div id='page_order_track_content' class='page_content'>
+    {% if tabs_disp %}
+        <div id="page_tabbed_box" class="page_tabbed_area">
+            <!-- TABS -->
+            <div id="page_tabs_outer" class="page_tabs position-relative text-center d-none d-lg-flex justify-content-around clearfix usn">
+                {% if tab_orders_disp %}
+                    <div id="tab_orders" rel="orders" class="page_tab">{{ text.orders }}</div>
+                {% endif %}
+                {% if tab_discount_disp %}
+                    <div id="tab_discount" rel="discount" class="page_tab">{{ text.discounts }}</div>
+                {% endif %}
+                {% if tab_favourites_disp %}
+                    <div id="tab_favourites" rel="favourites" class="page_tab">{{ text.favourites }}</div>
+                {% endif %}
+                {% if tab_saved_filters_disp %}
+                    <div id="tab_saved_filters" rel="saved_filters" class="page_tab">{{ text.saved_filters }}</div>
+                {% endif %}
+                {% if tab_modify_disp %}
+                    <div id="tab_reg" rel="reg" class="page_tab page_tab_onclick" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+                {% endif %}
+                <div class="page_tab" id="tab_logout" rel="logout" onclick="location.href='{{ tab_logout_url }}'">{{ text.logout }}</div>
+            </div>
+            <div id="page_tabs2_outer" class="page_tabs2 clearfix usn">
+            <!-- TAB: order -->
+                {% if tab_orders_disp %}
+                    <div id="tab2_orders" rel="orders" class="page_tab2">{{ text.orders }}</div>
+                    <div id="tab_orders_content" class="page_tab_content p-3 {% if orders_disp %}p-0{% endif %}">
+                        {% if paging_disp %}
+                            <nav class="order-track-paging d-flex align-items-center justify-content-center my-2" aria-label="pagination">
+                                {{ paging_content }}
+                            </nav>
+                        {% endif %}
+                        {% if orders_disp %}
+                            <div class="orders-table mt-3 font-xs font-md-m">
+                                <div class="orders-header row no-gutters p-3 align-items-center font-weight-bold font-xs font-md-s bg-8">
+                                    <div class='col-4 col-sm-3'>{{ text.order_key }}</div>
+                                    <div class='col-4 col-sm-3 text-center'>{{ text.date }}</div>
+                                    <div class='col-4 col-sm-3 text-right text-sm-center'>{{ text.amount_to_be_paid }}</div>
+                                    <div class='col-3 text-right d-none d-sm-block'>
+                                        <div class="order-track__order_status_title">{{ text.order_status }}</div>
+                                    </div>
+                                </div>
+                                {% for order in orders %}
+                                    <div class='order-track__order-row row no-gutters p-3'>
+                                        <div class='col-4 col-sm-3 order-track__key' onclick='location.href="{{ order.url }}"'>{{ order.id }}</div>
+                                        <div class='col-4 col-sm-3 text-center order-track__date' onclick='location.href="{{ order.url }}"'>{{ order.date }}</div>
+                                        <div class='col-4 col-sm-3 text-right text-sm-center' onclick='location.href="{{ order.url }}"'>
+                                            <span class="order-track__amount text-cn">{{ order.total_price }}</span>
+                                            {% if order.payment_status_disp %}
+                                                <span class="order-track__account-use {% if order.payment_status == 'completed' %}order_payed icon--check text-success pl-2{% else %}order_notpayed icon--exclamation-2 text-warning pl-2{% endif %}" title="{{ order.payment_status_title }}"></span>
+                                            {% endif %}
+                                        </div>
+                                        <div class='col-sm-3 text-left text-sm-right'><div class="d-inline-block d-sm-none">{{ text.order_status }}:</div>
+                                            <div class="order-track__order-status d-inline-block d-sm-block">
+                                                <a class="d-inline-block" href="{{ order.url }}">{{ order.status }}</a>
+                                                {% set status_histories = order.status_histories %}
+                                                {% set status_histories_disp = order.status_histories_disp %}
+                                                {% include "base/001800/embed_status_history.html" %}
+                                            </div>
+
+                                            {% if order.online_content_disp %}
+                                                <div class="order-track__order-online-content mt-1 icon--b-download-content font-xs">
+                                                    {{ text.downloadable_content }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="order-track__ordernum mb-3 mt-5">
+                                <div class="d-inline-flex align-items-baseline" id="page_order_track_ordernum">
+                                    <div class="ordernum_title pr-3 font-weight-bold">{{ text.orders_total_count }}</div>
+                                    <div class="ordernum_num">{{ order_count }} {{ text.pcs }}</div>
+                                </div>
+                            </div>
+                            <div class="order-track__orderfull mb-3">
+                                <div class="d-inline-flex align-items-baseline" id="page_order_track_orderfull">
+                                    <div class="orderfull_title pr-3 font-weight-bold">{{ text.orders_total_price }}</div>
+                                    <div class="orderfull_full">{{ total_price }}</div>
+                                </div>
+                            </div>
+                            {% if return_on %}
+                                {% if return_disp %}
+                                    <div class="order-track__returnnum mb-3 mt-5">
+                                        <div class="d-inline-flex align-items-baseline" id="page_order_track_returnnum">
+                                            <div class="order_returnnum_title pr-3 font-weight-bold">{{ text.return_total_count }}:</div>
+                                            <div class="order_returnnum_num">{{ return_count }} {{ text.pcs }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="order-track__returnfull mb-3">
+                                        <div class="d-inline-flex align-items-baseline" id="page_order_track_returnfull">
+                                            <div class="order_returnfull_title pr-3 font-weight-bold">{{ text.return_total_price }}:</div>
+                                            <div class="order_returnfull_full">{{ total_return_price }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <div class="order-track__no-orders">{{ text.no_orders }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <!-- TAB: discount -->
+                {% if tab_discount_disp %}
+                    <div id="tab2_discount" rel="discount" class="page_tab2">{{ text.discounts }}</div>
+                    <div id="tab_discount_content" class="page_tab_content p-3 font-s font-md-m">
+                        {% if discount_direct_disp %}
+                            <div class="order-track-discount--direct mb-3" id="page_order_track_ordercust">
+                                {{ text.product_direct_discount_text|replace({'[discount]' : '<strong>' ~ discount_direct_value ~ '%</strong>'}) }}
+                            </div>
+                        {% endif %}
+                        {% if discount_total_disp %}
+                            <div class="order-track-discount--total mb-3" id="page_order_track_ordercust2">
+                                {{ text.order_discount_text|replace({'[discount]' : '<strong>' ~ discount_total_value ~ '%</strong>'}) }}
+                            </div>
+                        {% endif %}
+                        {% if point_disp %}
+                            <div class="order-track-discount--virtual-point mb-3" id="page_order_track_ordervirt">
+                                {{ text.point_account_balance }} <strong>{{ point }}</strong>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <!-- TAB: favourites -->
+                {% if tab_favourites_disp %}
+                    <div id="tab2_favourites" rel="favourites" class="page_tab2">{{ text.favourites }}</div>
+                    <div id="tab_favourites_content" class="page_tab_content p-3{% if favourites_list_disp %} px-0{% endif %}">
+                        {% if favourites_list_disp %}
+                            {{ favourites_product_list }}
+                            <div class="no_favourites d-none">{{ text.no_favourite_product }}</div>
+                        {% else %}
+                            <div class="no_favourites">{{ text.no_favourite_product }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <!-- TAB: saved_filters -->
+                {% if tab_saved_filters_disp %}
+                    <div id="tab2_saved_filters" rel="saved_filters" class="page_tab2">{{ text.saved_filters }}</div>
+                    <div id="tab_saved_filters_content" class="page_tab_content p-3 {% if saved_filters_disp %}p-0{% endif %}">
+                        {% if saved_filters_disp %}
+                            <div class="orders-table mt-3 font-xs font-md-m" id="saved_filters_table">
+                                <div class="row no-gutters p-3 align-items-center font-weight-bold font-xs font-md-s bg-8 d-none d-sm-flex">
+                                    <div class='col-4'>{{ text.name }}</div>
+                                    <div class='col-8'>{{ text.page }}</div>
+                                </div>
+                                {% for filter in saved_filters %}
+                                    <div class='saved_filter_row row no-gutters p-3 align-items-center' id="saved_filter_row_{{ filter.row_id }}">
+                                        <div class='col-12 col-sm-4 mb-2 mb-sm-0 order-track__filter-name'>
+                                            <a href="{{ filter.url }}">{{ filter.name }}</a>
+                                        </div>
+                                        <div class='col order-track__filter-breadcrumb'>{{ filter.breadcrumb }}</div>
+                                        <div class='col-auto'>
+                                            <button type="button" onclick="{{ filter.button_delete_onclick }}" class="page_cart_icon_delete saved_filter_delete icon--trash btn btn-link btn--square-sm" title="{{ text.delete }}"></button>
+                                            <button type="button" onclick="location.href='{{ filter.url }}'" class="product-filter__btn-icon icon--filter btn btn-link btn--square-sm" title="{{ text.button_filter }}"></button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="no_saved_filters d-none p-3">{{ text.no_saved_filters }}</div>
+                        {% else %}
+                            <div class="no-saved-filters">{{ text.no_saved_filters }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <!-- TAB: reg -->
+                {% if tab_modify_disp %}
+                    <div id="tab2_reg" rel="reg" class="page_tab2 page_tab2_onclick" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+                    <div id="tab_reg_content" class="page_tab_content p-3"></div>
+                {% endif %}
+                <div id="tab2_logout" rel="logout" class="page_tab2" onclick="location.href='{{ tab_logout_url }}'">{{ text.logout }}</div>
+            </div>
+        </div>
+    {% endif %}
+    {% if custom_content_bottom_disp %}
+        <div class='line-separator'></div>
+        <div class='page_txt p-3'>{{ custom_content_bottom }}</div>
+    {% endif %}
+</div>
+    
+<script type="text/javascript">
+	$('.page_tab').first().addClass('page_tab_active');
+	$('.page_tab2').first().addClass('page_tab2_active');
+	$('#tab_'+$('.page_tab_active').attr('rel')+"_content").show();
+	
+	$('.page_tab').not(".page_tab_onclick").click(function() {
+		$('.page_tab').removeClass('page_tab_active');
+		$('.page_tab2').removeClass('page_tab2_active');
+
+		$(this).addClass('page_tab_active');
+		$('#tab2_'+$(this).attr('rel')).addClass('page_tab2_active');
+
+		$('.page_tab_content').hide();
+		$('#tab_'+$(this).attr('rel')+"_content").show();
+	});
+	$('.page_tab2').not(".page_tab2_onclick").click(function() {
+		$('.page_tab').removeClass('page_tab_active');
+		$('.page_tab2').not('#tab2_'+$(this).attr('rel')).removeClass('page_tab2_active');
+
+		$(this).toggleClass('page_tab2_active');
+		$('#tab_'+$(this).attr('rel')).toggleClass('page_tab_active');
+
+		$('.page_tab_content').not('#tab_'+$(this).attr('rel')+"_content").slideUp();
+		$('#tab_'+$(this).attr('rel')+"_content").stop().slideToggle(400);
+		$("html, body").animate({ scrollTop: $(this).parent().offset().top - getHeaderHeight() - 70 }, 400);
+	});
+
+    {% if tab_default_disp %}
+	    $("#tab_{{ tab_default }}").trigger("click");
+    {% endif %}
+</script>

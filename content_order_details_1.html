@@ -1,0 +1,677 @@
+{{ backvar(img_maxwidth,70) }}
+{{ backvar(img_maxheight,70) }}
+
+<div id='page_order_track_det_content' class='page_content'>
+
+    <!-- TABS -->
+    {% if tabs_disp %}
+        <div id="page_tabs_outer" class="page_tabs position-relative text-center d-none d-lg-flex justify-content-around clearfix usn">
+            {% if tab_orders_disp %}
+                <div id="tab_orders" rel="orders" class="page_tab page_tab_active" onclick="location.href='{{ tab_orders_url }}'">{{ text.orders }}</div>
+            {% endif %}
+            {% if tab_discount_disp %}
+                <div id="tab_discount" rel="discount" class="page_tab" onclick="location.href='{{ tab_discount_url }}'">{{ text.discounts }}</div>
+            {% endif %}
+            {% if tab_favourites_disp %}
+                <div id="tab_favourites" rel="favourites" class="page_tab" onclick="location.href='{{ tab_favourites_url }}'">{{ text.favourites }}</div>
+            {% endif %}
+            {% if tab_saved_filters_disp %}
+                <div id="tab_saved_filters" rel="saved_filters" class="page_tab" onclick="location.href='{{ tab_saved_filters_url }}'">{{ text.saved_filters }}</div>
+            {% endif %}
+            {% if tab_modify_disp %}
+                <div id="tab_reg" rel="reg" class="page_tab" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+            {% endif %}
+            <div class="page_tab" id="tab_logout" rel="logout" onclick="location.href='{{ tab_logout_url }}'">{{ text.logout }}</div>
+        </div>
+        {% if tab_orders_disp %}
+            <div id="tab2_orders" rel="orders" class="page_tab2 page_tab2_active" onclick="location.href='{{ tab_orders_url }}'">{{ text.orders }}</div>
+        {% endif %}
+    {% endif %}
+
+    {{ form_print }}
+
+    <div class="order-details-content pt-4" id="page_order_control_main">
+        <div class="row">
+            <div class="col-lg-8 col-xl-9 mb-3">
+                <div class="order-details__main font-s">
+                    {% if order_status_text_disp %}
+                        <div class="order-details__order-status-text-wrap bg-8 p-3 mb-4 row no-gutters">
+                            <div class="col-auto order-details__order-status-text-icon icon--b-info"></div>
+                            <div class="col order-details__order-status-text">{{ order_status_text }}</div>
+                        </div>
+                    {% endif %}
+
+                    <section class="order-details__order-details py-2">
+                        <h4 class="contact-title text-cn text-uppercase font-weight-bold font-l py-3">{{ text.order_data }}</h4>
+                        <div class="row gutters-10">
+                            <div class="col-sm-6 col-md-3 order-details__order-key">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 order-key__title">{{ text.order_key }}</div>
+                                    <div class="col-12 order-key__data font-weight-bold">{{ order_key }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3 pr-md-4 order-details__order-status">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12order-status__title">{{ text.order_status }}</div>
+                                    <div class="col-12 order-status__data font-weight-bold">
+                                        {{ order_status }}
+                                        {% set page = "order_details" %}
+                                        {% include "base/001800/embed_status_history.html" %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 px-md-4 order-details__order-date">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 order-date__title">{{ text.order_date }}</div>
+                                    <div class="col-12 order-date__data font-weight-bold">{{ order_date }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3 order-details__package-number">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 package-number__title">{{ text.package_number }}</div>
+                                    <div class="col-12 package-number__data font-weight-bold">
+                                        {% if package_number_disp %}
+                                            {% if package_number_url_disp %}<a href="{{ package_number_url }}" target="_blank">{% endif %}
+                                            {{ package_number }}
+                                            {% if package_number_url_disp %}</a>{% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3 order-details__invoice-number">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 invoice-number__title">{{ text.invoice_num }}</div>
+                                    <div class="col-12 invoice-number__data font-weight-bold">
+                                        {% if invoice_number_disp %}
+                                        {% if invoice_pdf_url_disp %}<a href="{{ invoice_pdf_url }}" class="invoice-number__link" target="_blank">{% endif %}
+                                        {{ invoice_number }}
+                                        {% if invoice_pdf_url_disp %}</a>{% endif %}
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if tracking_info_url_disp %}
+                            <div class="col-sm-6 col-md-3 order-details__tracking-info">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 tracking-info__title">{{ text.tracking_info }}</div>
+                                    <div class="col-12 tracking-info__data font-weight-bold" id="tracking_info_content">
+                                        <div class="row now-gutters">
+                                            <div class="loading-spinner__wrap col-12 pt-2">
+                                                <div class="loading-spinner--small"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $(document).ready(function () {
+                                            $("#tracking_info_content").load("{{ tracking_info_url }}");
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </section>
+
+                    <div class="line-separator"></div>
+
+                    <section class="order-details__contact py-2">
+                        <h4 class="contact-title text-cn text-uppercase font-weight-bold font-l py-3">{{ text.contact_data }}</h4>
+                        <div class="row gutters-10">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 contact-name__title">{{ text.name }}</div>
+                                    <div class="col-12 contact-name__data font-weight-bold">{{ contact_name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3 pr-md-4">
+                                <div class="row gutters-10 py-3 align-items-center">
+                                    <div class="col-12 contact-username__title">{{ username_title }}</div>
+                                    <div class="col-12 contact-username__data font-weight-bold">{{ contact_username }}</div>
+                                </div>
+                            </div>
+                            {% if contact_phone_disp %}
+                                <div class="col-sm-6 col-md-3 px-md-4">
+                                    <div class="row gutters-10 py-3 align-items-center">
+                                        <div class="col-12 contact-phone__title">{{ text.phone_number }}</div>
+                                        <div class="col-12 contact-phone__data font-weight-bold">{{ contact_phone }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if contact_mobile_disp %}
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="row gutters-10 py-3 align-items-center">
+                                        <div class="col-12 contact-mobile__title">{{ text.mobile_phone_number }}</div>
+                                        <div class="col-12 contact-mobile__data font-weight-bold">{{ contact_mobile }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </section>
+
+                    <div class="line-separator"></div>
+
+                    <div class="order-details__invoice-shipping">
+                        <div class="row">
+                            <div class="col-12 col-md">
+                                <section class="order-details__invoice py-2 h-100" id="page_order_control_szam">
+                                    <h4 class="invoice-title text-cn text-uppercase font-weight-bold font-l py-3">{{ text.billing_data }}</h4>
+                                    <div class="row no-gutters py-3 align-items-center">
+                                        <div class="col-sm-6 pr-sm-3 invoice-name__title">{{ text.name }}</div>
+                                        <div class="col-sm-6 pl-sm-3 invoice-name__data font-weight-bold">{{ billing_name }}</div>
+                                    </div>
+
+                                    {% if billing_country_disp %}
+                                        <div class="row no-gutters py-3 align-items-center">
+                                            <div class="col-sm-6 pr-sm-3 invoice-country__title">{{ text.country }}</div>
+                                            <div class="col-sm-6 pl-sm-3 invoice-country__data font-weight-bold">{{ billing_country }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if billing_zip_disp %}
+                                        <div class="row no-gutters py-3 align-items-center">
+                                            <div class="col-sm-6 pr-sm-3 invoice-zip__title">{{ text.zip_code }}</div>
+                                            <div class="col-sm-6 pl-sm-3 invoice-zip__data font-weight-bold">{{ billing_zip }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if billing_county_disp %}
+                                        <div class="row no-gutters py-3 align-items-center">
+                                            <div class="col-sm-6 pr-sm-3 invoice-county__title">{{ billing_county_title }}</div>
+                                            <div class="col-sm-6 pl-sm-3 invoice-county__data font-weight-bold">{{ billing_county }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row no-gutters py-3 align-items-center">
+                                        <div class="col-sm-6 pr-sm-3 invoice-city__title">{{ text.city }}</div>
+                                        <div class="col-sm-6 pl-sm-3 invoice-city__data font-weight-bold">{{ billing_city }}</div>
+                                    </div>
+                                    <div class="row no-gutters py-3 align-items-center">
+                                        <div class="col-sm-6 pr-sm-3 invoice-street__title">{{ text.street_address }}</div>
+                                        <div class="col-sm-6 pl-sm-3 invoice-street__data font-weight-bold">{{ billing_street }}</div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-12 col-md">
+                                <section class="order-details__shipping py-2 h-100" id="page_order_control_szall">
+                                    <div class="invoice-title__outer">
+                                        <h4 class="invoice-title text-cn text-uppercase font-weight-bold font-l py-3">{{ text.shipping_data }}</h4>
+                                    </div>
+                                    <div class="row no-gutters py-3 align-items-center">
+                                        <div class="col-sm-6 pr-sm-3 shipping-name__title">{{ text.name }}</div>
+                                        <div class="col-sm-6 pl-sm-3 shipping-name__data font-weight-bold">{{ shipping_name }}</div>
+                                    </div>
+
+                                    {% if shipping_country_disp %}
+                                        <div class="row no-gutters py-3 align-items-center">
+                                            <div class="col-sm-6 pr-sm-3 shipping-country__title">{{ text.country }}</div>
+                                            <div class="col-sm-6 pl-sm-3 shipping-country__data font-weight-bold">{{ shipping_country }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if shipping_zip_disp %}
+                                        <div class="row no-gutters py-3 align-items-center">
+                                            <div class="col-sm-6 pr-sm-3 shipping-zip__title">{{ text.zip_code }}</div>
+                                            <div class="col-sm-6 pl-sm-3 shipping-zip__data font-weight-bold">{{ shipping_zip }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if shipping_county_disp %}
+                                        <div class="row no-gutters py-3 align-items-center">
+                                            <div class="col-sm-6 pr-sm-3 shipping-county__title">{{ shipping_county_title }}</div>
+                                            <div class="col-sm-6 pl-sm-3 shipping-county__data font-weight-bold">{{ shipping_county }}</div>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="row no-gutters py-3 align-items-center">
+                                        <div class="col-sm-6 pr-sm-3 shipping-city__title">{{ text.city }}</div>
+                                        <div class="col-sm-6 pl-sm-3 shipping-city__data font-weight-bold">{{ shipping_city }}</div>
+                                    </div>
+                                    <div class="row no-gutters py-3 align-items-center">
+                                        <div class="col-sm-6 pr-sm-3 shipping-street__title">{{ text.street_address }}</div>
+                                        <div class="col-sm-6 pl-sm-3 shipping-street__data font-weight-bold">{{ shipping_street }}</div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-separator"></div>
+
+                    <div class="row">
+                        {% if customer_params_disp %}
+                            <section class="order-details__cust-datas col-12 col-md-6 py-2" id="page_order_control_custdata">
+                                <h4 class="contact-title text-uppercase text-cn text-uppercase font-weight-bold font-l py-3">{{ text.other_customer_data }}</h4>
+                                {% if recipient_name_disp %}
+                                    <div class="row gutters-10 py-2">
+                                        <div class="col-sm-6 shipping_name_orig__title">{{ text.recipient_name }}</div>
+                                        <div class="col-sm-6 shipping_name_orig__data font-weight-bold">{{ recipient_name }}</div>
+                                    </div>
+                                {% endif %}
+                                {% if vat_disp %}
+                                    <div class="row gutters-10 py-2">
+                                        <div class="col-sm-6 vat__title">{{ text.company_vat_number }}</div>
+                                        <div class="col-sm-6 vat__data font-weight-bold">{{ vat_number }}</div>
+                                    </div>
+                                {% endif %}
+                                {% if eu_vat_disp %}
+                                    <div class="row gutters-10 py-2">
+                                        <div class="col-sm-6 eu-vat__title">{{ text.eu_vat_number }}</div>
+                                        <div class="col-sm-6 eu-vat__data font-weight-bold">{{ eu_vat_number }}</div>
+                                    </div>
+                                {% endif %}
+                                {% for param in customer_params %}
+                                    <div class="row gutters-10 py-2">
+                                        <div class="col-sm-6 cust-param__title">{{ param.title }}</div>
+                                        <div class="col-sm-6 cust-param__data font-weight-bold">{{ param.value }}</div>
+                                    </div>
+                                {% endfor %}
+                            </section>
+                        {% endif %}
+
+                        {% if order_params_disp %}
+                            <section class="order-details__order-params-section col-12 col-md-6 py-2">
+                                <h4 class="contact-title text-uppercase text-cn text-uppercase font-weight-bold font-l py-3">{{ text.other_order_data }}</h4>
+                                <div class="order-details__order-params">
+                                    {% for param in order_params %}
+                                        <div class="order-details__param">
+                                            <div class="row py-2">
+                                                <div class="col-md-6">
+                                                    {{ param.title }}
+                                                </div>
+                                                <div class="col-md-6 font-weight-bold">
+                                                    {% if param.file_link_disp %}
+                                                        <a href='{{ param.file_link_url }}' target='_blank'>{{ param.value }}</a>
+                                                    {% else %}
+                                                        {{ param.value }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="order-details__cart pt-4 mb-4">
+                    <h4 class="contact-title text-uppercase text-cn text-uppercase font-weight-bold font-l py-3">{{ text.ordered_products }}</h4>
+                    <div class="order-details__cart-header d-none d-md-block font-s text-center border-top border-bottom py-1">
+                        <div class="row no-gutters">
+                            <div class="col">
+                                <div class="order-details__cart-header-name">{{ text.product_name }}</div>
+                            </div>
+                            <div class="col-2 text-center">
+                                <div class="order-details__cart-header-price">{{ text.price }}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="order-details__cart-header-qty">{{ text.quantity }}</div>
+                            </div>
+                            <div class="col-2 pl-5">
+                                <div class="order-details__cart-header-sum">{{ text.total_amount }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-details-products">
+                        {% for product in products %}
+                            {% if product.plus_item %}
+                                <div class="order-details-product order-details-plus-item row no-gutters align-items-center bg-8 py-3 mb-2">
+                                    <div class="col col-md-7 order-details-plus-item__details-col">
+                                        {% if product.type == "service_plus" %}
+                                            <div class="order-details-plus-item__plus-service d-flex">
+                                                <div class="col-plus-item-icon d-flex justify-content-center align-items-center">
+                                                    <div class="order-details-plus-item__plus-service-icon icon--plus font-xl font-md-xxl"></div>
+                                                </div>
+                                                <div class="col pl-2 px-md-3">
+                                                    <div class="order-details-plus-item__plus-service-text font-s font-md-m">{{ text.plus_service }}</div>
+                                                    <div class="order-details-plus-item__plus-service-name-and-qty-wrap mt-1 font-s">
+                                                        <span class="order-details-plus-item__plus-service-name">{{ product.name }}</span>
+                                                        <span class="order-details-plus-item__qty-and-unit d-none">
+                                                            <span class="order-details-plus-item__qty">{{ product.qty }}</span>
+                                                            <span class="order-details-plus-item__unit">{{ product.unit }}</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="order-details-plus-item__plus-discount d-flex">
+                                                <div class="col-plus-item-icon d-flex justify-content-center align-items-center">
+                                                    <div class="order-details-plus-item__discount-icon font-xl font-md-xxl {% if product.type == 'gift' %}icon--gift{% else %}icon--percent{% endif %}"></div>
+                                                </div>
+                                                <div class="col pl-2 px-md-3">
+                                                    {% if product.variant_1_disp %}
+                                                        <div class="order-details-plus-item__name font-s font-md-m">{{ product.name }}</div>
+                                                        <div class='order-details-plus-item__discount align-items-center font-xs font-md-s'>
+                                                            {% if product.type == "gift" %}
+                                                            <span class="order-details-plus-item__discount-type pr-1">{{ product.variant_1_title }}:</span>
+                                                            <span class="order-details-plus-item__discount-for-sku">{{ product.variant_1_value }}</span>
+                                                            {% else %}
+                                                                <span class="order-details-plus-item__discount-value">
+                                                                    <span class="plus-item-coupon-text pr-1">{{ text.coupon_code }}:</span>
+                                                                    <span class="plus-item-coupon-value">{{ product.variant_1_value }}</span>
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="order-details-plus-item__qty-and-unit d-none">
+                                                            <span class="order-details-plus-item__qty">{{ product.qty }}</span>
+                                                            <span class="order-details-plus-item__unit">{{ product.unit }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-auto col-md-4 order-details-plus-item__prices-col text-right ml-auto">
+                                        <div class="order-details-plus-item__prices-wrap d-flex justify-content-end align-items-center">
+                                            <div class="order-details-item-plus-prices{% if product.type == 'service_plus' %} order-details-item-plus__service{% else %} order-details-item-plus__discount{% endif %} pr-3">
+                                                {% if price_net_disp %}
+                                                    <div class="order-details-item-plus__price-net-wrap text-right text-cn">
+                                                        <span class="order-details-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                        <span class="order-details-item-plus__service-price-net pl-2 font-md-l">{{ product.total_price_net }} </span>
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="order-details-item-plus__service-price-gross-wrap text-right text-cn font-weight-bold">
+                                                    <span class="order-details-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                    <span class="order-details-item-plus__service-price-gross pl-2 font-md-l">{{ product.total_price_gross }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="order-details-product border-top pb-3 pb-md-4 pt-3 pt-md-5 mt-1 mt-md-4 row no-gutters align-items-center position-relative">
+                                    <div class="col order-details-product__name-variant-param pl-5 px-md-3 mb-3 mb-md-0 order-2">
+                                        <div class="order-details-product__name line-clamp--3-12 font-s font-md-m">
+                                            <a href="{{ product.url }}">{{ product.name }}</a>
+                                        </div>
+                                        {% if product.variant_1_disp or product.variant_2_disp or product.variant_3_disp %}<!--it has variant(s)-->
+                                            <div class='order-details-product__variants font-xs font-md-s mt-2'>
+                                                {% if product.variant_1_disp %}
+                                                    <div class='order-details-product__variant row no-gutters align-items-center order-details-product__variant-1'>
+                                                        <div class="order-details-product__variant-title col-auto pr-2">{{ product.variant_1_title }}:</div>
+                                                        <div class="order-details__variant-value col">{{ product.variant_1_value }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.variant_2_disp %}
+                                                    <div class='order-details-product__variant row no-gutters align-items-center order-details-product__variant-2'>
+                                                        <div class="order-details-product__variant-title col-auto pr-2">{{ product.variant_2_title }}:</div>
+                                                        <div class="order-details__variant-value col">{{ product.variant_2_value }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.variant_3_disp %}
+                                                    <div class='order-details-product__variant row no-gutters align-items-center order-details-product__variant-3'>
+                                                        <div class="order-details-product__variant-title col-auto pr-2">{{ product.variant_3_title }}:</div>
+                                                        <div class="order-details__variant-value col">{{ product.variant_3_value }}</div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if product.params_disp %} <!--it has product param -->
+                                            <div class="order-details-product__params font-xs font-md-s mt-2">
+                                                {% for param in product.params %}
+                                                    <div class='order-details-product__param row no-gutters align-items-center order-details-product__param-{{ param.id }}'>
+                                                        <span class="order-details-product__param-name col-auto pr-2">{{ param.title }}:</span>
+                                                        <span class="order-details-product__param-value col">{{ param.value }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        {% if product.info_disp %}
+                                            <div class="product-infos font-xs font-md-s mt-2">
+                                                {% for item_status in product.item_statuses %}
+                                                    <div class="product-item-status row no-gutters align-items-center">
+                                                        <div class="col-auto pr-2">{{ item_status.title }}:</div>
+                                                        <div class="col">{{ item_status.value }}</div>
+                                                    </div>
+                                                {% endfor %}
+
+                                                {% if product.online_content_disp %}
+                                                    <div class="product-online-content row no-gutters align-items-center font-xs font-md-s mt-2">
+                                                        <div class="product-online-content__title col-12 mb-2">{{ text.downloadable_content }}:</div>
+                                                        <button onclick="location.href='{{ product.online_content_url }}'" name="button_download"  type="button" value="{{ text.button_download }}" class="btn btn-primary font-xs py-2 px-3">{{ text.button_download }}</button>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="break-row d-md-none"></div> <!-- break -->
+
+                                    <div class="col-3 col-md-1 order-details-product__pic-col order-1">
+                                        <div class="order-details-product__pic-outer product-img-wrapper">
+                                            <img class="order-details-product__pic product-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" />
+                                            <div class="loading-spinner"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-2 order-details-product__qty-col my-2 my-md-0 order-5 order-md-4">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto font-s d-md-none">{{ text.quantity }}</div>
+                                            <div class="col order-details-product__qty-wrap font-s font-md-m text-right text-md-center mb-2 mb-md-0 pr-3 pr-md-0">
+                                                <div class="order-details-product__qty">{{ product.qty }}<span class="order-details-product__unit">&nbsp;{{ product.unit }}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-2 order-details-product__prices-col order-4 order-md-3 order-md-3 pr-md-3 my-2 my-md-0 text-right">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto font-s d-md-none">{{ text.price }}</div>
+                                            <div class="col order-details-product__prices row no-gutters pr-3 ml-auto">
+                                                {% if price_net_disp %}
+                                                    <div class="col-12 order-details-product__price-net text-cn">
+                                                        <span class="order-details-price-label text-lowercase font-s">{{ text.net }}</span>
+                                                        <span class="net-price--current d-inline-block pl-1 font-l">{{ product.price_net }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="col-12 order-details-product__price-gross font-weight-bold text-cn">
+                                                    <span class="order-details-price-label text-lowercase font-s">{{ text.gross }}</span>
+                                                    <div class="gross-price--current d-inline-block pl-1 font-l">{{ product.price_gross }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-2 order-details-product__sum-prices-col order-6 order-md-5 my-2 my-md-0 text-right">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto font-s d-md-none">{{ text.total_amount }}</div>
+                                            <div class="col control-product__sum-prices-inner row no-gutters w-100 pr-3">
+                                                {% if price_net_disp %}
+                                                    <div class="col-12 order-details-product__sum-price-net text-cn">
+                                                        <span class="order-details-price-label text-lowercase font-s">{{ text.net }}</span>
+                                                        <span class="d-inline-block price-sum-net pl-1 font-l">{{ product.total_price_net }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="col-12 order-details-product__sum-price-gross font-weight-bold text-cn">
+                                                    <span class="order-details-price-label text-lowercase font-s">{{ text.gross }}</span>
+                                                    <span class="d-inline-block price-sum-gross pl-1 font-l">{{ product.total_price_gross }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-xl-3">
+                <div class="order-details-summary">
+                    <h3 class="order-details-summary__title text-center text-cn text-uppercase font-weight-bold font-l py-3">{{ text.order_summary }}</h3>
+                    {% if price_net_disp %}
+                        <div class="order-details-summary-row order-details-summary-netto mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-details-summary-title font-s">{{ text.total_net }}:</div>
+                                <div class="order-details-summary-value ml-auto text-cn font-weight-bold">{{ total_price_net }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="order-details-summary-row order-details-summary-gross mb-2">
+                        <div class="row no-gutters align-items-center">
+                            <div class="order-details-summary-title font-s">{{ text.total_gross }}:</div>
+                            <div class="order-details-summary-value ml-auto text-cn font-weight-bold">{{ total_price_gross }}</div>
+                        </div>
+                    </div>
+
+                    {% if total_discount_percent_disp %}
+                        <div class="order-details-summary-row order-details-summary-discount-percent mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-details-summary-title font-s">{{ text.discount }} ({{ total_discount_percent_value }}%):</div>
+                                <div class="order-details-summary-value ml-auto text-cn font-weight-bold">{{ total_discount_percent_price }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if shipping_cost_disp %}
+                        <div class="order-details-summary-row order-details-summary-shipping-cost mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-details-summary-title font-s">{{ text.shipping_cost }}:</div>
+                                <div class="order-details-summary-value ml-auto text-cn font-weight-bold">{{ shipping_cost }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if total_discount_amount_disp %}
+                        <div class="order-details-summary-row order-details-summary-discount-amount mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-details-summary-title font-s">{{ text.discount_amount }}:</div>
+                                <div class="order-details-summary-value ml-auto text-cn font-weight-bold">{{ total_discount_amount }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if handling_price_disp %}
+                        <div class="order-details-summary-row order-details-summary-handel-cost mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-details-summary-title font-s">{{ text.handling_price }}</div>
+                                <div class="order-details-summary-value ml-auto text-cn font-weight-bold">{{ handling_price }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="line-separator my-2"></div>
+
+                    <div class="order-details-summary-row order-details-summary-price-full-sum font-weight-bold row no-gutters align-items-center">
+                        <div class="order-details-summary-title font-s">{{ text.total_price }}:</div>
+                        <div class="order-details-summary-value font-l ml-auto text-cn">{{ total_price }}</div>
+                    </div>
+
+                    <div class="line-separator"></div>
+
+                    <div class="order-details__shipping-section">
+                        <div class="order-details__shipping-title font-s">
+                            {{ text.shipping_method }}:
+                        </div>
+                        <div class="order-details__shipping-data d-flex align-items-center">
+                            <div class="order-details__shipping-name font-weight-bold">
+                                {{ shipping_method_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-separator"></div>
+
+                    <div class="order-details__payment-section" id="page_order_details_modfiz">
+                        <div class="order-details__payment-title font-s">
+                            {{ text.payment_method }}:
+                        </div>
+                        <div class="order-details__payment-data d-flex align-items-center">
+                            <div class="order-details__payment-name font-weight-bold">
+                                {{ payment_method_name }}
+                            </div>
+                        </div>
+                        {% if payment_method_logo_disp %}
+                            <div class="order-details__payment-logo">
+                                {% if payment_method_logo_link_disp %}<a href="{{ payment_method_logo_link_url }}" title="{{ payment_method_logo_alt }}" target="{{ payment_method_logo_link_target }}">{% endif %}
+                                <img src="{{ payment_method_logo_img_url }}" alt="{{ payment_method_logo_alt }}" title="{{ payment_method_logo_alt }}" />
+                                {% if payment_method_logo_link_disp %}</a>{% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if payment_status_disp %}
+                            <div class="order-details__payment-status mt-4">
+                                <div class="order-details__payment-status-title font-s mt-3">
+                                    {{ text.payment_status }}:
+                                </div>
+                                <div class="order-details__payment-status-value font-weight-bold">
+                                    {{ payment_status_title }}{% if payment_status in ['not_enough','payback'] %}: {{ payment_status_amount }}{% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if payment_method_pay_disp %}
+                            <div class="order-details__payment-pay">
+                                <div class="order-details__payment-btn-wrap">
+                                    <button class="order-details__payment-btn btn btn-primary btn-block my-3" onclick="{{ button_pay_onclick }}">{{ button_pay_text }}</button>
+                                </div>
+                                {% if payment_method_change_disp %}
+                                    <div class="order-details__payment-change-btn-wrap">
+                                        <button class="order-details__payment-change-btn btn btn-outline-primary btn-block mb-3" onclick="{{ button_change_onclick }}">{{ text.other_payment_method }}</button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if comment_disp or shipping_comment_disp %}
+                        <div class="line-separator"></div>
+
+                        {% if comment_disp %}
+                            <div class="order-details__comment mb-2">
+                                <div class="order-details__comment-title font-s">{{ text.note }}:</div>
+                                <div class="order-details__comment-content font-weight-bold">{{ comment }}</div>
+                            </div>
+                            {% if shipping_comment_disp %}
+                                <div class="line-separator"></div>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if shipping_comment_disp %}
+                            <div class="order-details__comment mb-2">
+                                <div class="order-details__comment-title font-s">{{ text.note_for_shipping }}:</div>
+                                <div class="order-details__comment-content font-weight-bold">{{ shipping_comment }}</div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if other_content_disp %}
+                        <div class='page_order_track_det_data_text mt-3'>{{ other_content }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-details__buttons my-4">
+        <button class="btn btn-primary mb-2" type="button" onclick="{{ button_restore_onclick }}">{{ text.button_cart_restore_from_order }}</button>
+        <button class="btn btn-outline-primary mb-2" type="button" onclick="{{ button_print_onclick }}">{{ text.printable_version }}</button>
+        {% if button_return_disp %}
+            <button id="button_return" class="btn btn-outline-primary mb-2" type="button" onclick="{{ button_return_onclick }}">{{ text.button_order_return }}</button>
+        {% endif %}
+
+        {% if button_delete_disp %}
+            <button id="button_order_delete" class="btn btn-outline-primary mb-2" type="button" onclick="{{ button_delete_onclick }}">{{ text.order_delete }}</button>
+        {% endif %}
+    </div>
+
+    {% if tabs_disp %}
+        {% if tab_discount_disp %}
+            <div id="tab2_discount" rel="discount" class="page_tab2" onclick="location.href='{{ tab_discount_url }}'">{{ text.discounts }}</div>
+        {% endif %}
+        {% if tab_favourites_disp %}
+            <div id="tab2_favourites" rel="favourites" class="page_tab2" onclick="location.href='{{ tab_favourites_url }}'">{{ text.favourites }}</div>
+        {% endif %}
+        {% if tab_modify_disp %}
+            <div id="tab2_reg" rel="reg" class="page_tab2" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+        {% endif %}
+        <div id="tab2_logout" rel="logout" class="page_tab2" onclick="location.href='{{ tab_logout_url }}'">{{ text.logout }}</div>
+    {% endif %}
+</div>

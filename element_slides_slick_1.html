@@ -1,0 +1,74 @@
+{{ backvar(slide_max_count,100) }}
+{{ backvar(enable,maintitle,img,img_link,html,delay,hidden) }}
+
+{% if element_disp %}
+    <div class="{{ name }} container my-3 py-3 my-md-5 py-md-5 slick-indent slick-arrow--middle slick-arrow--small slick-gap slick-fade">
+        <div class="{{ name }}__container">
+            {% if main_title_disp %}
+                <div class="{{ name }}__main-title text-center">
+                    <h2 class="js-animate-title-dots">{{ main_title }}</h2>
+                </div>
+            {% endif %}
+
+            <div class="{{ name }}__elements fs-0">
+                {% for slide in slides %}
+                    <div class="{{ name }}__element element-{{ slide.num }} px-4 mx-4">
+                        {% if slide.img_default_disp %}
+                            {% if slide.img_link_disp %}
+                                <a class="element__link" href="{{ slide.img_link_url }}"{% if slide.target_blank %} target="_blank"{% endif %}>
+                            {% endif %}
+                            <picture>
+                                {% if slide.img_small_disp %}
+                                    <source media="(max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_small_url }} 1x{% if slide.img_small_retina_disp %}, {{ slide.img_small_retina_url }} 2x{% endif %}" />
+                                {% endif %}
+                                {% if slide.img_medium_disp %}
+                                    <source media="(max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_medium_url }} 1x{% if slide.img_medium_retina_disp %}, {{ slide.img_medium_retina_url }} 2x{% endif %}" />
+                                {% endif %}
+                                {% if slide.img_large_disp %}
+                                    <source media="(max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_large_url }} 1x{% if slide.img_large_retina_disp %}, {{ slide.img_large_retina_url }} 2x{% endif %}" />
+                                {% endif %}
+                                <source srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" />
+                                <img class="element__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ slide.img_default_url }}" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" alt="{% if slide.alt_disp %}{{ slide.alt }}{% else %}{{ service_name }}{% endif %}"/>
+                             </picture>
+                            {% if slide.img_link_disp %}</a>{% endif %}
+                        {% else %}
+                            {{ slide.html }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".{{ name }}__elements").not('.slick-initialized').slick({
+                infinite: true,
+                arrows: false,
+                slidesToShow: 6, /*hacky to repair cloned elements after and before*/
+                {% if autoplay_enabled %}
+                autoplay: true,
+                autoplaySpeed: {{ delay }},
+                {% endif %}
+                speed: 500,
+                cssEase: 'ease',
+                pauseOnHover: true,
+                accessibility: false,
+                mobileFirst: true,
+                slickPlay: true,
+                swipe: true,
+                variableWidth: true,
+                centerMode: true,
+                centerPadding: 0,
+                lazyLoad: false,
+                responsive: [
+                    {
+                        breakpoint: 767,
+                        settings: {
+                            arrows: true
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+{% endif %}

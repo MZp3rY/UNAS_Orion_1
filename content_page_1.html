@@ -1,0 +1,458 @@
+{% if gallery_2_exists %}
+    <link rel="stylesheet" type="text/css" href="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/css/default-skin.min.css">
+    <link rel="stylesheet" type="text/css" href="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/css/photoswipe.min.css">
+    <script src="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/photoswipe.min.js" type="text/javascript" defer></script>
+    <script src="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/photoswipe-ui-default.min.js" type="text/javascript" defer></script>
+{% endif %}
+
+{% if not async_load %}
+    <div id="page_page_content">
+        {% if scroll_script_disp %}
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    var target_offset = $("#{{ scroll_script_selector }}").offset();
+                    var target_top = target_offset.top-50;
+                    $('html, body').animate({scrollTop:target_top}, 500);
+                });
+            </script>
+        {% endif %}
+
+        {% if subpages_disp and not blog_details_disp %}
+            <div class="page-subpages text-center">
+                {% for subpage in subpages %}
+                    <a class="page-subpage" href="{{ subpage.url }}" target="{{ subpage.target }}">{{ subpage.title }}</a>
+                {% endfor %}
+            </div>
+            {% if content_exists %}<div class="line-separator"></div>{% endif %}
+        {% endif %}
+
+        {% if tags_disp %}
+            {% set tag_include_type = "content" %}
+            {% include "base/001800/embed_tag_filter.html" %}
+            <div class="line-separator mt-4"></div>
+        {% endif %}
+    {% endif %}
+
+    {% if not async_load %}<div class='page_content row gutters-20 js-filterable-elements-wrapper'>{% endif %}
+
+        {% for page_content in page_contents %}
+            {% if page_content.disp %}
+                <div id='page_content_{{ page_content.id }}' class='page_content page_content_item mb-4{% if page_content.type == "blog" %} page_content--blog{% endif %} col-{{ page_content.default }} col-sm-{{ page_content.sm }} col-md-{{ page_content.md }} col-lg-{{ page_content.lg }}'>
+
+                    {% if page_content.type == "normal" %}
+                        <div class='page_txt type_normal'>{{ page_content.normal_content }}</div>
+                    {% endif %}
+
+                    {% if page_content.type == "blog" %}
+                        {% if page_content.blog_details_disp %}
+                            <div class='page_page_blog'>
+                                <div class="row no-gutters w-100 align-items-center">
+                                    <div class="blog-title col-sm-8 col-lg-9 col-xl-10 pr-md-4 my-3 my-sm-4">
+                                        <div class='page_page_blog_title font-xl font-md-xxl font-weight-bold text-center text-sm-left'>
+                                            <h1 class="font-weight-bold">{{ page_content.blog_title }}</h1>
+                                        </div>
+                                    </div>
+                                    <div class="blog-author col-sm-4 mb-3 my-sm-4 col-lg-3 col-xl-2 text-center text-sm-right">
+                                        <div class="d-inline-flex align-items-center">
+                                            {% if page_content.blog_author_img_disp %}
+                                                <div class='blog_author_pic col-auto px-0 mr-4'>
+                                                    <div class='blog_author_pic_wrap'>
+                                                        <img src='{{ page_content.blog_author_img_url }}' height="{{ page_content.blog_author_img_height }}" width="{{ page_content.blog_author_img_width }}" alt='{{ page_content.blog_author_name }}' />
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            <div class="blog_informations">
+                                                {% if page_content.blog_author_disp %}
+                                                    <div class='blog_author_name font-weight-bold text-center text-sm-left font-m font-md-l mb-0 mb-md-2'>{{ page_content.blog_author_name }}</div>
+                                                {% endif %}
+                                                <div class='page_page_blog_date-and-time text-left font-s font-md-m'>
+                                                    <span class="blog-date">{{ page_content.blog_date }}</span>
+                                                    <span class="blog-time">{{ page_content.blog_time }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='page_page_blog_details clearfix'>
+                                {% if page_content.blog_intro_img_disp %}
+                                    <div class='blog_intro_pic mr-md-4 mb-4 float-md-left text-center'>
+                                        <img src='{{ page_content.blog_intro_img_url }}' height="{{ page_content.blog_intro_img_width }}" width="{{ page_content.blog_intro_img_height }}" alt='{{ page_content.blog_title }}' />
+                                    </div>
+                                {% endif %}
+                                <div class='blog_intro_txt font-s font-md-m'>{{ page_content.blog_intro }}</div>
+                                <div class='page_page_blog_message font-s font-md-m'>{{ page_content.blog_details }}</div>
+
+                                {% if page_content.blog_included_content_disp %}
+                                <div class="blog-item__blog_included_content row">
+                                    {{ page_content.blog_included_content }}
+                                </div>
+                                {% endif%}
+                            </div>
+                            <div class='page_page_blog_back mt-3'><a class="page_page_blog_back_btn btn btn-outline-primary" href="{{ page_content.back_url }}">{{ text.button_back }}</a></div>
+                        {% else %}
+                            <div class='blog-item mb-5 blog-item--{{ page_content.id }}'>
+                                <div class="row gutters-10 blog-item__inner">
+                                    <div class="col-sm-auto col-lg-6 mb-3 mb-sm-0 blog-item__img-container">
+                                        <div class='blog-item__img-wrap'>
+                                            {% if page_content.blog_intro_img_disp %}
+                                                <img class="blog-item__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src='{{ page_content.blog_intro_img_url }}' alt='{{ page_content.blog_title }}' />
+                                            {% else %}
+                                                <img class="blog-item__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ shop_url }}image/blog_nopic.png"  alt='{{ page_content.blog_title }}' />
+                                            {% endif %}
+                                            <div class="loading-spinner"></div>
+                                            <div class="blog-item__date-layer position-absolute bg-primary text-white d-flex flex-column align-items-center justify-content-center">
+                                                <div class="blog-item__date-layer--day font-xxxl pb-2 text-cn border-bottom font-weight-bold">{{ page_content.blog_day }}</div>
+                                                <div class="blog-item__date-layer--month pt-2 text-uppercase">{{ attribute(text,'month_'~page_content.blog_month) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm col-lg-6 blog-item__details">
+                                        <div class="blog-item__title font-weight-bold mb-3 text-uppercase font-m font-md-l">
+                                            <a href='{{ page_content.blog_details_url }}'>{{ page_content.blog_title }}</a>
+                                        </div>
+                                        <div class='blog-item__intro mb-5'>
+                                            <div class='blog-item__intro-text font-xs font-sm-s text-justify'>
+                                                {{ page_content.blog_intro }}
+                                            </div>
+                                        </div>
+                                        <div class='blog-item__details-btn-wrap'>
+                                            <a class="blog-item__details-btn btn btn-outline-primary" href="{{ page_content.blog_details_url }}">{{ text.button_details }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if page_content.type == "gallery" %}
+                        {% if page_content.gallery_type == "1" %}
+                            <div class='page_page_gallery page_page_gallery_1 page_page_pic_main'>
+                                <div class="slider-for mb-5">
+                                    {% for gallery_image in page_content.gallery_images %}
+                                        <div>
+                                            <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt }}"/>
+                                            {% if gallery_image.text_disp %}
+                                                <div class='page_page_pic_text'>{{ gallery_image.text }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="slider-nav slick-arrow--middle slick-arrow--small slick-indent">
+                                    {% for gallery_image in page_content.gallery_images %}
+                                        <div>
+                                            <img src="[unas_shop_url]/main_pic/space.gif" data-lazy="{{ gallery_image.url }}" alt="{{ gallery_image.alt }}" {{ gallery_image.size }} />
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <script type="text/javascript">
+                                    $('#page_content_{{ page_content.id }} .slider-for').slick({
+                                        slidesToShow: 1,
+                                        slidesToScroll: 1,
+                                        arrows: false,
+                                        fade: true,
+                                        asNavFor: '#page_content_{{ page_content.id }} .slider-nav',
+                                        lazyLoad: 'ondemand'
+                                    });
+                                    $('#page_content_{{ page_content.id }} .slider-nav').slick({
+                                        slidesToShow: 9,
+                                        slidesToScroll: 9, // works only when centerMode:false
+                                        asNavFor: '#page_content_{{ page_content.id }} .slider-for',
+                                        centerPadding: '0px',
+                                        arrows: true,
+                                        dots: false,
+                                        centerMode: true,
+                                        focusOnSelect: true,
+                                        lazyLoad: 'ondemand',
+                                        responsive: [
+                                            {
+                                              breakpoint: 1024,
+                                              settings: {
+                                                slidesToShow: 7,
+                                                slidesToScroll: 7
+                                              }
+                                            },
+                                            {
+                                                breakpoint: 640,
+                                                settings: {
+                                                    slidesToShow: 5,
+                                                    slidesToScroll: 5
+                                                }
+                                            },
+                                            {
+                                                breakpoint: 480,
+                                                settings: {
+                                                    slidesToShow: 3,
+                                                    slidesToScroll: 3
+                                                }
+                                            }
+                                          ]
+                                    });
+                                </script>
+                            </div>
+                        {% endif %}
+                        {% if page_content.gallery_type == "2" %}
+                            <div class='page_page_gallery page_page_gallery_2'>
+                                <div class="row gutters-5 photoSwipeDatas-{{ page_content.id }}">
+                                    {% for gallery_image in page_content.gallery_images %}
+                                        <div class='col-4 col-sm-2 col-lg-1 page_page_pic_element mb-3'>
+                                            <div class="gallery-element__inner p-2 h-100">
+                                                <div class='page_page_pic_img d-flex align-items-center justify-content-center'>
+                                                    <a href="{{ gallery_image.url }}" data-size="{{ gallery_image.width }}x{{ gallery_image.height }}" class="gallery-element__link" id="page_page_pic_{{ page_content.id }}" title="{{ gallery_image.alt }}" target="_blank">
+                                                        <img src="{{ gallery_image.url }}" alt="{{ gallery_image.alt }}"/>
+                                                    </a>
+                                                </div>
+                                                {% if gallery_image.text_disp %}
+                                                    <div class='page_page_pic_text d-flex align-items-center justify-content-center'>
+                                                        <div class="gallery-text__inner line-clamp--3-12">
+                                                            {{ gallery_image.text }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <script>
+                                $(document).ready(function() {
+                                    var initPhotoSwipeFromDOM = function() {
+                                        var $pswp = $('.pswp')[0];
+                                        var $psDatas = $('.photoSwipeDatas-{{ page_content.id }}');
+                                        var image = [];
+
+                                        $psDatas.each( function() {
+                                            var $pics     = $(this),
+                                                getItems = function() {
+                                                    var items = [];
+                                                    $pics.find('a').each(function() {
+                                                        var $href   = $(this).attr('href'),
+                                                            $size   = $(this).data('size').split('x'),
+                                                            $width  = $size[0],
+                                                            $height = $size[1];
+
+                                                        var item = {
+                                                            src : $href,
+                                                            w   : $width,
+                                                            h   : $height
+                                                        };
+
+                                                        items.push(item);
+                                                    });
+                                                    return items;
+                                                };
+
+                                            var items = getItems();
+
+                                            $('.photoSwipeDatas-{{ page_content.id }} .page_page_pic_element').on('click', $('.gallery-element__link'), function(event) {
+                                                event.preventDefault();
+
+                                                var $index = $(this).index();
+                                                var options = {
+                                                    index: $index,
+                                                    history: false,
+                                                    bgOpacity: 0.5,
+                                                    shareEl: false,
+                                                    showHideOpacity: false,
+                                                    getThumbBoundsFn: function(index) {
+                                                        var thumbnail = document.querySelectorAll('.photoSwipeDatas-{{ page_content.id }} img')[index];
+                                                        var activeBigPicRatio = items[index].w / items[index].h;
+                                                        var pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                                        var rect = thumbnail.getBoundingClientRect();
+                                                        var offsetY = (rect.height - (rect.height / activeBigPicRatio)) / 2;
+                                                        return {x:rect.left, y:rect.top + pageYScroll + offsetY, w:rect.width};
+                                                    },
+                                                    getDoubleTapZoom: function(isMouseClick, item) {
+                                                        if(isMouseClick) {
+                                                            return 1;
+                                                        } else {
+                                                            return item.initialZoomLevel < 0.7 ? 1 : 1.5;
+                                                        }
+                                                    }
+                                                };
+
+                                                var photoSwipe = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
+                                                photoSwipe.init();
+                                            });
+
+                                        });
+
+                                    };
+                                    initPhotoSwipeFromDOM();
+                                });
+                            </script>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if page_content.type == "form" %}
+                        {% if page_content.form_disp %}
+                            <div class="page_txt page_content_with_form_type container-max-md mx-auto">
+                                {{ page_content.form_start }}
+                                {% for form_element in page_content.form_elements %}
+                                    {% if form_element.type == "text" %}
+                                        <div class="page-form-item mb-3 {% if form_element.error_disp %}has-fault{% endif %}">
+                                            <div class="page-form-item-value form-label-group">
+                                                <input name="{{ form_element.name }}" id="{{ form_element.name }}" placeholder="{{ form_element.label }}" class="form-control" type="text" value="{{ form_element.value }}" />
+                                                <label for="{{ form_element.name }}">{{ form_element.label }}</label>
+                                            </div>
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% elseif form_element.type == "email" %}
+                                        <div class="page-form-item mb-3 {% if form_element.error_disp %}has-fault{% endif %}">
+                                            <div class="page-form-item-value form-label-group">
+                                                <input name="{{ form_element.name }}" id="{{ form_element.name }}" placeholder="{{ form_element.label }}" class="form-control" type="text" value="{{ form_element.value }}" maxlength="100" />
+                                                <label for="{{ form_element.name }}">{{ form_element.label }}</label>
+                                            </div>
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% elseif form_element.type == "textarea" %}
+                                        <div class="page-form-item mb-3 {% if form_element.error_disp %}has-fault{% endif %}">
+                                            <div class="page-form-item-value textarea form-label-group">
+                                                <textarea name="{{ form_element.name }}" id="{{ form_element.name }}" placeholder="{{ form_element.label }}" class="form-control" rows="7">{{ form_element.value }}</textarea>
+                                                <label for="{{ form_element.name }}">{{ form_element.label }}</label>
+                                            </div>
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% elseif form_element.type == "radio" %}
+                                        <div class="page-form-item mb-3 {% if form_element.error_disp %}has-fault{% endif %}">
+                                            <div class="mb-2">{{ form_element.label }}</div>
+                                            <div class="page-form-item-value form-group radio">
+                                                {% for option in form_element.radio_options %}
+                                                    <div class="form-check mb-2 p-0">
+                                                        <input class="form-check-input" type="radio" id="{{ option.name }}_{{ loop.index }}" name="{{ option.name }}" value="{{ option.value }}" {% if option.checked %}checked{% endif %}/>
+                                                        <label class="form-check-label" for="{{ option.name }}_{{ loop.index }}">{{ option.text }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% elseif form_element.type == "checkbox" %}
+                                        <div class="page-form-item mb-3 {% if form_element.error_disp %}has-fault{% endif %}">
+                                            <div class="mb-2">{{ form_element.label }}</div>
+                                            <div class="page-form-item-value form-group checkbox">
+                                                {% for option in form_element.checkbox_options %}
+                                                    <div class="form-check mb-2 p-0">
+                                                       <input class="form-check-input" name="{{ option.name }}" id="{{ option.name }}" type="checkbox" value="{{ option.value }}" style="width:20px;" {% if option.checked %}checked{% endif %} />
+                                                       <label class="form-check-label" for="{{ option.name }}">{{ option.text }}</label>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% elseif form_element.type == "select" %}
+                                        <div class="page-form-item mb-3 {% if form_element.error_disp %}has-fault{% endif %}">
+                                            <div class="page-form-item-value form-select-group form-label-group">
+                                                <select name="{{ form_element.name }}" id="{{ form_element.name }}" class="form-control">
+                                                    {% for option in form_element.select_options %}
+                                                        <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>{{ option.text }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <label for="{{ form_element.name }}">{{ form_element.label }}</label>
+                                            </div>
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% elseif form_element.type == "file" %}
+                                        <div class="page-form-item mb-3{% if form_element.error_disp %} has-fault{% endif %}">
+                                            <div class="input-group">
+                                                <div class="col px-0 form-label-group mb-0">
+                                                    <input readonly type='text' name="cust_input_file-filename" placeholder="{{ form_element.label }}" class='cust_input_file-filename form-control bg-white' id='{{ form_element.name }}-filename'>
+                                                    <label for="{{ form_element.name }}-filename" onclick="return false;">{{ form_element.label }}</label>
+                                                </div>
+                                                <div class="input-group-append">
+                                                    <label for="{{ form_element.name }}" class="{{ form_element.name }}-label m-0 btn btn-primary font-xs px-3" data-label="{{ text.select_file }}">{{ text.select_file }}</label>
+                                                </div>
+                                            </div>
+                                            <input type="file" name="{{ form_element.name }}" id="{{ form_element.name }}" class="form-control d-none" size="40" value="{{ form_element.value }}" onchange="file_input_filname_change(this);" />
+                                            <div class="page-form-fault-text text-danger font-xs">
+                                                {% if form_element.error_disp %}{{ form_element.error_text }}{% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="page-form-item__btn-wrap text-center">
+                                    {% if page_content.recaptcha_disp %}
+                                        {{ page_content.recaptcha_script }}
+                                        <button class="g-recaptcha btn btn-primary mt-4" {{ page_content.recaptcha_attributes }}>{{ text.button_send }}</button>
+                                    {% else %}
+                                        <button name="form_page_content_submit" class="btn btn-primary mt-4">{{ text.button_send }}</button>
+                                    {% endif %}
+                                </div>
+                                {{ page_content.form_end }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if page_content.type == "product" %}
+                        <div class='page_txt type_product'>{{ page_content.product_list }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if page_content.facebook_comments_disp %}
+                <div id='page_content_{{ page_content.id }}_comment' class='col-12 page_content_comment mt-5'>
+                    {{ page_content.facebook_comments }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    {% if paging_disp %}
+        <nav class="news-paging col-12 d-flex align-items-center justify-content-center my-4 py-3 border-top" aria-label="pagination">
+            {{ paging_content }}
+        </nav>
+    {% endif %}
+
+    {% if gallery_2_exists %}
+        <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="pswp__bg"></div>
+        <div class="pswp__scroll-wrap">
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <div class="pswp__counter"></div>
+                    <button class="pswp__button pswp__button--close"></button>
+                    <button class="pswp__button pswp__button--fs"></button>
+                    <button class="pswp__button pswp__button--zoom"></button>
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+                <button class="pswp__button pswp__button--arrow--left"></button>
+                <button class="pswp__button pswp__button--arrow--right"></button>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% if not async_load %}
+    </div>
+    <div class="loading-spinner__wrap col-12">
+        <div class="loading-spinner"></div>
+    </div>
+</div>
+{% endif %}

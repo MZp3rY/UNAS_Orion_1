@@ -1,0 +1,102 @@
+{% if login_allow %}
+    <div class="profile-col js-dropdown-container">
+        <button class="profile__btn js-profile-btn js-dropdown--btn dropdown--btn" id="profile__btn" data-orders="[unas_shop_url]/shop_order_track.php" aria-label="profile button">
+            <span class="profile__btn-icon icon--head"></span>
+        </button>
+        {% if logged_in %}
+            <div class="profile__dropdown dropdown--content dropdown--content-r js-dropdown--content d-xl-block">
+                <div class="profile__btn-close d-lg-none dropdown--btn-close js-dropdown--btn-close"></div>
+                <div class='login-box__loggedin-container'>
+                    <div class="login-box__loggedin-header">
+                        <div class='login-box__loggedin-text d-none'>{{ text.logged_in }}</div>
+                        <div class='login-box__loggedin-user text-left'>
+                            <div class="login-box__loggedin-user-title font-xs">{{ text.logged_in_as }}:</div>
+                            <div class="login-box__loggedin-user-email text-primary font-m"><a href="mailto:[[ cust ]]">[[ cust ]]</a></div>
+                        </div>
+                    </div>
+                    <div class="line-separator"></div>
+                    <div class="login-box__loggedin-btns">
+                        {% if menu_orders_disp %}
+                            <button class="login-box-btn login-box__btn-orders btn btn-link position-relative text-left py-1 w-100" onclick="location.href='{{ orders_url }}'">
+                                {{ text.orders }}
+                            </button>
+                        {% endif %}
+
+                        {% if menu_discount_disp %}
+                            <button class="login-box-btn login-box__btn-discount btn btn-link position-relative text-left py-1 w-100" onclick="location.href='{{ discounts_url }}'">
+                                {{ text.discounts }}
+                            </button>
+                        {% endif %}
+
+                        {% if menu_favourites_disp %}
+                            <button class="login-box-btn login-box__btn-favourites btn btn-link position-relative text-left py-1 w-100" onclick="location.href='{{ favourites_url }}'">
+                                {{ text.favourites }}
+                            </button>
+                        {% endif %}
+
+                        {% if menu_saved_filters_disp %}
+                            <button class="login-box-btn login-box__btn-saved-filters btn btn-link position-relative text-left py-1 w-100" onclick="location.href='{{ saved_filters_url }}'">
+                                {{ text.saved_filters }}
+                            </button>
+                        {% endif %}
+
+                        {% if menu_modify_disp %}
+                            <button class="login-box-btn login-box__btn-reg btn btn-link position-relative text-left py-1 w-100" onclick="location.href='{{ modify_url }}'">
+                                {{ text.data_modify }}
+                            </button>
+                        {% endif %}
+
+                        <button class="login-box-btn login-box__btn-logout btn btn-primary btn-block mt-3" onclick="location.href='{{ logout_url }}'">
+                            {{ text.logout }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <script type='text/javascript'>
+                $("#container").addClass("logged-in");
+            </script>
+        {% else %}
+            <div class="profile__dropdown dropdown--content dropdown--content-r js-dropdown--content d-xl-block">
+                <div class="profile__btn-close icon--close btn btn--square btn-link d-lg-none dropdown--btn-close js-dropdown--btn-close"></div>
+                <div class='login-box__loggedout-container'>
+                    {{ form_start }}
+                        <div class="login-box__form-inner">
+                            <div class="login-box__input-field form-label-group">
+                                <input name="shop_user_login" id="shop_user_login" aria-label="{{ username_title }}" placeholder='{{ username_title }}' type="text" maxlength="100" class="form-control mb-1" autocapitalize="off">
+                                <label for="shop_user_login">{{ username_title }}</label>
+                            </div>
+                            <div class="login-box__input-field form-label-group">
+                                <input name="shop_pass_login" id="shop_pass_login" aria-label="{{ text.password }}" placeholder="{{ text.password }}" type="password" maxlength="100" class="form-control mb-1" autocapitalize="off">
+                                <label for="shop_pass_login">{{ text.password }}</label>
+                            </div>
+                            <button class="btn btn-primary btn-block">{{ text.button_login }}</button>
+                        </div>
+                        <div class="btn-wrap">
+                            <button type="button" class="login-box__remind-btn btn btn-link px-0 py-1 text-primary" onclick="overlay_login_remind()">{{ text.forgot_my_password }}</button>
+                        </div>
+                    {{ form_end }}
+
+                    <div class="line-separator"></div>
+
+                    <div class="login-box__other-buttons">
+                        <div class="btn-wrap">
+                            <a class="login-box__reg-btn btn btn-link py-2 pl-4" href="[unas_shop_url]/shop_reg.php?no_reg=0">{{ text.registration }}</a>
+                        </div>
+                        {% if facebook_disp %}
+                            <div class="facebook-login-wrap position-relative">
+                                <div class="facebook-login-btn btn btn-link text-left py-2 pl-4 position-absolute w-100">Facebook</div>
+                                <iframe class="facebook_login btn btn-link btn-block mr-2 position-absolute" src="{{ facebook_url }}" title="Facebook"></iframe>
+                            </div>
+                        {% endif %}
+                        {% if google_disp %}
+                            <div class="google-login-wrap position-relative">
+                                <div class="google-login-btn btn btn-link text-left py-2 pl-4 position-absolute w-100">Google</div>
+                                <iframe class="google_login btn btn-link btn-block mr-2 position-absolute" src="{{ google_url }}" title="Google"></iframe>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

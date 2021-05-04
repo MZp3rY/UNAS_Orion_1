@@ -1,0 +1,13 @@
+<div id='box_forum_content' class='box_content'>
+    {% if forum_disp %}
+        <div class='box_forum_list'>
+            {% for topic in topics %}
+                <div class='box_forum_item'><a href="{{ topic.link }}">{{ topic.title }}</a></div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class='box_common_nocontent_outer'><div class='box_common_nocontent'><strong>{{ text.no_topics }}</strong></div></div>
+    {% endif %}
+    {% if forum_link_disp %}<div class='box_forum_link'><a href="{{ forum_url }}"><strong>{{ text.more_topics }}</strong></a></div>{% endif %}
+    {% if new_topic_link_disp %}<div class='box_forum_link'><a href="{{ forum_url }}"><strong>{{ text.create_topic }}</strong></a></div>{% endif %}
+</div>

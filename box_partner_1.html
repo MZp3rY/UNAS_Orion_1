@@ -1,0 +1,16 @@
+<div class='partner__box d-inline-flex flex-wrap align-items-center justify-content-center my-3'>
+    {% for partner in partners %}
+        <div class='partner__item m-2'>
+            {% if partner.custom %}
+                {{ partner.content }}
+            {% else %}
+                <a href="{{ partner.url }}" target="_blank" title="{{ partner.alt }}" {{ partner.nofollow }}>
+                    <img class="partner__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ partner.img_url }}" alt="{{ partner.alt }}" />
+                </a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+
+

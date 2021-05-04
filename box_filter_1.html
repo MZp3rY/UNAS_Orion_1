@@ -1,0 +1,117 @@
+{% if filter_disp %}
+    {% if save_ajax %}
+        <div class='saved_filters_title product_filter_title text-uppercase'>{{ text.saved_filters }}</div>
+        <div class='saved_filters_content product_filter_content d-block mt-3'>
+            {% for saved_filter in saved_filters %}
+                <div class='saved_filter_wrapper'>
+                    <a href='{{ saved_filter.url }}' class='saved_filter_url'>{{ saved_filter.title }}</a>
+                </div>
+            {% endfor %}
+        </div>
+        <script>$('.saved_filters_wrapper').show();</script>
+    {% else %}
+        {% if page_type == "cat" %}<div id="subcat_filter_wrapper" class="row no-gutters position-relative border px-2">{% endif %}
+        <div id='{{ prefix }}box_filter_content' class='js-filter-box js-product-list__filter-content product-list__filter-content-outer {% if page_type != "cat" %}ml-2{% endif %}' data-prefix="{{ prefix }}">
+            <div class="product-list__filter-content" style="display:none;">
+                <div class='product-list__filter-content-inner-wrap overflow-hidden'>
+                    <div class='product-list__filter-content-inner overflow-hidden d-flex flex-wrap'>
+                        {% if save_on %}
+                            <div class='product_filter_group saved_filters_wrapper p-5 col-sm-6 col-lg-4 col-xl-3 border-right border-bottom saved_filters_outer'{% if not save_disp %} style='display:none;'{% endif %}>
+                                {% if save_disp %}
+                                    <div class='saved_filters_title product_filter_title text-uppercase'>{{ text.saved_filters }}</div>
+                                    <div class='saved_filters_content product_filter_content d-block mt-3'>
+                                        {% for saved_filter in saved_filters %}
+                                            <div class='saved_filter_wrapper'>
+                                                <a href='{{ saved_filter.url }}' class='saved_filter_url'>{{ saved_filter.title }}</a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        {% for filter in filters %}
+                            {% if filter.param_group_start %}<div class='product_filter_param_group param_group_{{ filter.param_group_id }}'>{% endif %}
+                            <div data-id="{{ filter.param_id }}" class='{{ filter.group_class }} p-5 col-sm-6 col-lg-4 col-xl-3 border-right border-bottom{% if filter.type_slider %} filter-type--slider{% else %} filter-type--checkbox{% endif %}' id='{{ prefix }}param_{{ filter.param_id }}_group'>
+                                <div class='product_filter_title text-uppercase' id='{{ prefix }}param_{{ filter.param_id }}_title'>
+                                    {{ filter.title }}
+                                    {% if filter.description_disp %}<span class="icon--info has-tooltip ml-2"><span class="tooltip-text tooltip-down">{{ filter.description }}</span></span>{% endif %}
+                                </div>
+                                <div class='product_filter_content{% if filter.type_slider %} mt-5{% else %} mt-3{% endif %} position-relative product_filter_type_{{ filter.type }} product_filter_{{ filter.param_id }}_content text_normal {{ filter.class }} {% if not filter.type_slider %} row gutters-5{% endif %}' id='{{ prefix }}param_{{ filter.param_id }}_content'>
+                                    {% if filter.type_slider %}
+                                        <div class='product_filter_num' id='{{ prefix }}product_filter_num_{{ filter.param_id }}'></div>
+                                        <div class='product_filter_num_text text-center font-s'>{{ filter.value }}</div>
+                                        {{ filter.hidden_inputs }}
+                                    {% else %}
+                                        {% for param_value in filter.param_values %}
+                                            {% if filter.type in ['text','textmore','enum','enummore'] %}
+                                                <div class='{{ param_value.class }} col-6 font-xs'>
+                                                    <div class='product_filter_checkbox py-2'>
+                                                        <span class='text_input form-check px-0'>
+                                                            <input class="form-check-input" type='checkbox' onclick='{{ param_value.onclick }}' value='{{ param_value.value }}' id='{{ param_value.id }}'{% if param_value.checked %} checked="checked"{% endif %} />
+                                                            <label for='{{ param_value.id }}' class='product_filter_link form-check-label m-0 pr-0'>
+                                                                {{ param_value.title }}{% if param_value.count_disp %}<span class='product_filter_text_count pl-2'>(<span class="product_filter_text_count_value">{{ param_value.count }}</span>)</span>{% endif %}
+                                                            </label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if filter.type in ['color','color_text'] %}
+                                            <div class='{{ param_value.class }} {%if filter.type =='color' %}col-auto{% else %}col-12{% endif %} font-xs'>
+                                                <div class='product_filter_checkbox py-1'>
+                                                    <span class='text_input'>
+                                                        <input type='checkbox' onclick='{{ param_value.onclick }}' value='{{ param_value.value }}' id='{{ param_value.id }}'{% if param_value.checked %} checked="checked"{% endif %} />
+                                                        <label for='{{ param_value.id }}' class='product_filter_link m-0 p-0'>
+                                                            <span class="product_filter_color_outer">
+                                                                <span class='product_filter_color_inner d-inline-flex align-items-center justify-content-center' style='background-color:#{{ param_value.value }};'></span>
+                                                            </span>
+                                                            {% if param_value.color_text_disp %} <span class='product_filter_text_value pl-2'><span class="product_filter_color_text">{{ param_value.color_text }}</span></span> {% endif %}
+                                                            {% if param_value.count_disp %}<span class='product_filter_text_count pl-2'>(<span class="product_filter_text_count_value">{{ param_value.count }}</span>)</span>{% endif %}
+                                                        </label>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% if filter.type in ['icon','iconmore'] %}
+                                                <div id='{{ prefix }}param_icon_{{ filter.param_id }}_{{ param_value.value }}' style='float:left' class='{{ param_value.class }} col-auto'{% if not param_value.label_disp %} onclick='{{ param_value.onclick }}'{% endif %}>
+                                                    <input type='checkbox' style="display:none;" value='{{ param_value.value }}' id='{{ param_value.id }}'{% if param_value.checked %} checked="checked"{% endif %}{% if param_value.label_disp %} onclick='{{ param_value.onclick }}'{% endif %} />
+                                                    <label for='{{ param_value.id }}' class='product_filter_link text_normal m-0 p-0'>
+                                                        <span class="product_icon_outer rounded">
+                                                            {% if img_lazy_load %}
+                                                                <img id='{{ prefix }}param_icon_{{ filter.param_id }}_{{ param_value.value }}_img' src='{{ lazy_load_img_url }}' data-src='{{ param_value.img_url }}' alt='{{ param_value.img_alt }}' title='{{ param_value.img_alt }}' class='lazyload' />
+                                                            {% else %}
+                                                                <img id='{{ prefix }}param_icon_{{ filter.param_id }}_{{ param_value.value }}_img' src='{{ param_value.img_url }}' alt='{{ param_value.img_alt }}' title='{{ param_value.img_alt }}' />
+                                                            {% endif %}
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if filter.param_group_end %}</div>{% endif %}
+                        {% endfor %}
+                        {{ script }}
+                    </div>
+                </div>
+            </div>
+            <div class="product-filter__buttons row gutters-1 align-items-start flex-wrap flex-xl-nowrap">
+                <div class='product_filter_btn col-auto py-2'>
+                    <button class="filter--top-btn btn btn-primary js-filter-btn" type="button" onclick="productListOpenFilter($(this))">{{ text.button_filter }}</button>
+                </div>
+                {% if button_save_disp %}
+                    <div class='product_filter_save_all_outer col-auto py-2' style='display:none;'>
+                        <button type='button' class='product_filter_save_all btn btn-outline-primary' id='product_filter_save_all' onclick='{{ button_save_onclick }}'>{{ text.save_filter }}</button>
+                    </div>
+                {% endif %}
+                {% if button_delete_disp %}
+                    <div class='product_filter_delete_all_outer col-auto py-2' style='display:none;'>
+                        <button type='button' class='product_filter_delete_all btn btn-outline-danger' onclick='{{ button_delete_onclick }}'>{{ text.delete_filter }}</button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="filter--top js-selected-filters order-2 order-md-4 order-xl-2 d-flex col-12 col-xl row {% if page_type == "cat" %}no-gutters{% else %}gutters-10{% endif %} flex-wrap align-items-center font-xs"></div>
+        {% if page_type == "cat" %}</div>{% endif %}
+    {% endif %}
+{% endif %}

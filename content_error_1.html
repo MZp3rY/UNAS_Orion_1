@@ -1,0 +1,11 @@
+<div id='page_fault_content' class='page_content'>
+    {% if error_cookie %}
+        <div class='page_headtext'><span class="text_bigger"><span class="text_color_fault">{{ text.error_cookie_title }}</span></span></div>
+        <div class='page_headtext'><span class="text_bigger"><strong>{{ text.error_cookie_subtitle }}</strong></span></div>
+    {% endif %}
+
+    {% if error_master %}
+        <div class='page_headtext'><span class="text_bigger"><span class="text_color_fault">{{ text.error_master_title }}</span></span></div>
+        <div class='page_headtext'><span class="text_bigger"><strong>{{ text.error_master_subtitle }}</strong></span></div>
+    {% endif %}
+</div>

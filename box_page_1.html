@@ -1,0 +1,24 @@
+{% if box_disp %}
+    [[ element|name:start_blog_title;layout:html_title;class:container custom-title ]]
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                type: "GET",
+                async: true,
+                url: unas_shop_url+"/"+service_type+"_page.php",
+                data: {
+                    page:"{{ page }}",
+                    limit:"{{ limit }}",
+                    filter:"{{ filter }}",
+                    layout:"{{ layout }}",
+                    box_page:1,
+                    ajax_nodesign:1
+                },
+                success: function(result){
+                    $("#box_page_content{{ suffix }}").html(result);
+                }
+            });
+        });
+    </script>
+    <div id='box_page_content{{ suffix }}'></div>
+{% endif %}

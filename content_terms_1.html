@@ -1,0 +1,63 @@
+<div id='page_help_content' class='page_content'>
+    {% if tab_count > 1 %}
+        <div id="page_help_tabs" class="page_tabs position-relative text-center d-none d-lg-flex justify-content-around mb-4">
+            {% for tab in tabs %}
+            	<div id="page_help_tab_{{ tab.id }}" rel="{{ tab.id }}" class="page_tab">{{ tab.title }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% for tab in tabs %}
+        <div id="tab2_{{ tab.id }}" rel="{{ tab.id }}" class="page_tab2">{{ tab.title }}</div>
+        <div id='page_help_tab_{{ tab.id }}_content' class='page_help_tab_content text-justify'>
+            {% if tab.embedded %}
+                {{ tab.content }}
+            {% else %}
+                {% if tab.pdf_disp %}
+                    <div class="text-right mt-2">
+                        <a class='page-help-icon icon--print btn btn-outline-primary btn--square' href='{{ tab.pdf_url }}' rel='nofollow' target='_blank' title="{{ text.printing }}"></a>
+                    </div>
+                {% endif %}
+                {% for part in tab.parts %}
+                    {% if part.title_disp %}
+                        <a id="{{ tab.id }}_item_{{ part.num }}"></a>{% if tab.id == "terms" %}<a id="item_{{ part.num }}"></a>{% endif %}
+                        <div class='page_artdet_name_outer'><div class='page_artdet_name page_help_title text-uppercase py-2 font-xxl font-weight-bold text-cn mb-3'>
+                            {{ part.title }}
+                        </div></div>
+                    {% endif %}
+                    <div class='page_help_content text-justify'>{{ part.content }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endfor %}
+    <script type="text/javascript">
+		$('.page_tab').first().addClass('page_tab_active');
+		$('.page_tab2').first().addClass('page_tab2_active');
+		$('#page_help_tab_'+$('.page_tab_active').attr('rel')+"_content").show();
+		
+		$('.page_tab').click(function() {
+			$('.page_tab').removeClass('page_tab_active');
+			$('.page_tab2').removeClass('page_tab2_active');
+
+			$(this).addClass('page_tab_active');
+			$('#tab2_'+$(this).attr('rel')).addClass('page_tab2_active');
+
+			$('.page_help_tab_content').hide();
+			$('#page_help_tab_'+$(this).attr('rel')+"_content").show();
+		});
+		$('.page_tab2').click(function() {
+			$('.page_tab').removeClass('page_tab_active');
+			$('.page_tab2').not('#tab2_'+$(this).attr('rel')).removeClass('page_tab2_active');
+
+			$(this).toggleClass('page_tab2_active');
+			$('#page_help_tab_'+$(this).attr('rel')).toggleClass('page_tab_active');
+
+			$('.page_help_tab_content').not('#page_help_tab_'+$(this).attr('rel')+"_content").slideUp();
+			$('#page_help_tab_'+$(this).attr('rel')+"_content").stop().slideToggle(400);
+            $("html, body").animate({ scrollTop: $(this).parent().offset().top - getHeaderHeight() - 70 }, 400);
+		});
+
+        {% if tab_default_disp %}
+		    $("#page_help_tab_{{ tab_default }}").trigger("click");
+        {% endif %}
+	</script>
+</div>

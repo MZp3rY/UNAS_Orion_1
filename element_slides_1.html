@@ -1,0 +1,33 @@
+{{ backvar(slide_max_count,10) }}
+{{ backvar(enable,img,img_link,html,hidden) }}
+
+{% if element_disp %}
+    <div class="{{ name }}__slides slide-container">
+        {% for slide in slides %}
+            <div class="{{ name }}__slide slide-{{ slide.num }} mb-3 text-center">
+
+                {% if slide.img_default_disp %}
+                    {% if slide.img_link_disp %}
+                        <a href="{{ slide.img_link_url }}"{% if slide.target_blank %} target="_blank"{% endif %}>
+                    {% endif %}
+                    <picture>
+                        {% if slide.img_small_disp %}
+                            <source media="(max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_small_url }} 1x{% if slide.img_small_retina_disp %}, {{ slide.img_small_retina_url }} 2x{% endif %}" />
+                        {% endif %}
+                        {% if slide.img_medium_disp %}
+                            <source media="(max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_medium_url }} 1x{% if slide.img_medium_retina_disp %}, {{ slide.img_medium_retina_url }} 2x{% endif %}" />
+                        {% endif %}
+                        {% if slide.img_large_disp %}
+                            <source media="(max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_large_url }} 1x{% if slide.img_large_retina_disp %}, {{ slide.img_large_retina_url }} 2x{% endif %}" />
+                        {% endif %}
+                        <source srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" />
+                        <img class="element__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ slide.img_default_url }}" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" alt="{% if slide.alt_disp %}{{ slide.alt }}{% else %}{{ service_name }}{% endif %}"/>
+                    </picture>
+                    {% if slide.img_link_disp %}</a>{% endif %}
+                {% else %}
+                    {{ slide.html }}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

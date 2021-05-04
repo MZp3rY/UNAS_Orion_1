@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="Robots" content="NO" />
+        <title>Help</title>
+        <style type="text/css">
+            {{ css }}
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <div class="pdf_title">{{ title }}</div>
+            {% if embedded %}
+                <div id='document_{{ id }}' class='text-justify'>
+                    <div class='page_txt'>
+                        {{ content }}
+                    </div>
+                </div>
+            {% else %}
+                {% for part in parts %}
+                    {% if part.title_disp %}<h1>{{ part.title }}</h1>{% endif %}
+                    {{ part.content }}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </body>
+</html>

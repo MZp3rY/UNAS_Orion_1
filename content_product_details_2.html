@@ -1,0 +1,1404 @@
+{{ backvar(force_img_original,1) }}
+{{ backvar(main_img_maxwidth,510) }}
+{{ backvar(main_img_maxheight,510) }}
+{{ backvar(main_img_thumbnail_maxwidth,220) }}
+{{ backvar(main_img_thumbnail_maxheight,220) }}
+{{ backvar(ajax_additional_products,1) }}
+{{ backvar(ajax_bundle_product,1) }}
+{{ backvar(ajax_similar_products,1) }}
+{{ backvar(alt_img_maxwidth,510) }}
+{{ backvar(alt_img_maxheight,510) }}
+{{ backvar(alt_img_thumbnail_maxwidth,220) }}
+{{ backvar(alt_img_thumbnail_maxheight,220) }}
+
+{% if img_exists %}
+    <link rel="stylesheet" type="text/css" href="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/css/default-skin.min.css">
+    <link rel="stylesheet" type="text/css" href="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/css/photoswipe.min.css">
+    <script src="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/photoswipe.min.js" type="text/javascript" defer></script>
+    <script src="[unas_shop_url]/!common_packages/jquery/plugins/photoswipe/photoswipe-ui-default.min.js" type="text/javascript" defer></script>
+    <script>
+        {% if alt_images_disp %}
+            var $activeProductImg = '.js-slick--alts .slick-slide img';
+            var $productImgContainer = '.js-slick--alts';
+            var $slickContainerThumbs = '.js-slick--thumbs';
+            var $clickElementToInitPs = '.slick-slide';
+        {% else %}
+            var $activeProductImg = '.artdet__img-main';
+            var $productImgContainer = '.artdet__img-main-wrap';
+            var $clickElementToInitPs = '.artdet__img-main';
+        {% endif %}
+
+            var initPhotoSwipeFromDOM = function() {
+                var $pswp = $('.pswp')[0];
+                var $psDatas = $('.photoSwipeDatas');
+                var image = [];
+
+                $psDatas.each( function() {
+                    var $pics     = $(this),
+                        getItems = function() {
+                            var items = [];
+                            $pics.find('a').each(function() {
+                                var $href   = $(this).attr('href'),
+                                        $size   = $(this).data('size').split('x'),
+                                        $width  = $size[0],
+                                        $height = $size[1];
+
+                                var item = {
+                                    src : $href,
+                                    w   : $width,
+                                    h   : $height
+                                };
+
+                                items.push(item);
+                            });
+                            return items;
+                        };
+
+                    var items = getItems();
+
+                    $($productImgContainer).on('click', $clickElementToInitPs, function(event) {
+                        event.preventDefault();
+
+                        var $index = $(this).index();
+                        var options = {
+                            index: $index,
+                            history: false,
+                            bgOpacity: 0.5,
+                            shareEl: false,
+                            showHideOpacity: false,
+                            getThumbBoundsFn: function(index) {
+                                var thumbnail = document.querySelectorAll($activeProductImg)[index];
+                                var pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+                                var zoomedImgHeight = items[index].h;
+                                var zoomedImgWidth = items[index].w;
+                                var zoomedImgRatio = zoomedImgHeight / zoomedImgWidth;
+                                var rect = thumbnail.getBoundingClientRect();
+                                var zoomableImgHeight = rect.height;
+                                var zoomableImgWidth = rect.width;
+                                var zoomableImgRatio = (zoomableImgHeight / zoomableImgWidth);
+                                var offsetY = 0;
+                                var offsetX = 0;
+                                var returnWidth = zoomableImgWidth;
+
+                                if (zoomedImgRatio < 1) { /* a nagyított kép fekvő */
+                                    if (zoomedImgWidth < zoomableImgWidth) { /*A nagyított kép keskenyebb */
+                                        offsetX = (zoomableImgWidth - zoomedImgWidth) / 2;
+                                        offsetY = (Math.abs(zoomableImgHeight - zoomedImgHeight)) / 2;
+                                        returnWidth = zoomedImgWidth;
+                                    } else { /*A nagyított kép szélesebb */
+                                        offsetY = (zoomableImgHeight - (zoomableImgWidth * zoomedImgRatio)) / 2;
+                                    }
+
+                                } else if (zoomedImgRatio > 1) { /* a nagyított kép álló */
+                                    if (zoomedImgHeight < zoomableImgHeight ) { /*A nagyított kép alacsonyabb */
+                                        offsetX = (zoomableImgWidth - zoomedImgWidth) / 2;
+                                        offsetY = (zoomableImgHeight - zoomedImgHeight) / 2;
+                                        returnWidth = zoomedImgWidth;
+                                    } else { /*A nagyított kép magasabb */
+                                        offsetX = (zoomableImgWidth - (zoomableImgHeight / zoomedImgRatio)) / 2;
+                                        if (zoomedImgRatio > zoomableImgRatio) returnWidth = zoomableImgHeight / zoomedImgRatio;
+                                    }
+                                } else { /*A nagyított kép négyzetes */
+                                    if (zoomedImgWidth < zoomableImgWidth ) { /*A nagyított kép keskenyebb */
+                                        offsetX = (zoomableImgWidth - zoomedImgWidth) / 2;
+                                        offsetY = (Math.abs(zoomableImgHeight - zoomedImgHeight)) / 2;
+                                        returnWidth = zoomedImgWidth;
+                                    } else { /*A nagyított kép szélesebb */
+                                        offsetY = (zoomableImgHeight - zoomableImgWidth) / 2;
+                                    }
+                                }
+
+                                return {x:rect.left + offsetX, y:rect.top + pageYScroll + offsetY, w:returnWidth};
+                            },
+                            getDoubleTapZoom: function(isMouseClick, item) {
+                                if(isMouseClick) {
+                                    return 1;
+                                } else {
+                                    return item.initialZoomLevel < 0.7 ? 1 : 1.5;
+                                }
+                            }
+                        };
+
+                        var photoSwipe = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
+                        photoSwipe.init();
+
+                        {% if alt_images_disp %}
+                            var psIndex = photoSwipe.getCurrentIndex();
+                            photoSwipe.listen('initialZoomIn', function() {
+                                $($productImgContainer).slick("slickSetOption", "asNavFor", "", false);
+                            });
+                            photoSwipe.listen('initialZoomOut', function() {
+                                $($productImgContainer).slick("slickSetOption", "asNavFor", $slickContainerThumbs, false);
+                            });
+                            photoSwipe.listen('afterChange', function() {
+                                psIndex = photoSwipe.getCurrentIndex();
+                                $(".slick-slide.slick-current", $slickContainerThumbs).removeClass('slick-current');
+                                $(".slick-slide[data-slick-index="+psIndex+"]", $slickContainerThumbs).addClass('slick-current');
+                                $($productImgContainer).slick("slickGoTo", psIndex);
+                            });
+                        {% endif %}
+                    });
+                });
+            };
+    </script>
+{% endif %}
+
+<div id='page_artdet_content' class='artdet'>
+    <div class="artdet__breadcrumb-prev-next pb-3 row no-gutters align-items-center">
+        <div class="breadcrumb__outer col">
+            [[ breadcrumb ]]
+        </div>
+        <div class="col-auto d-flex artdet__pagination">
+            {% if prev_next_disp %}
+                <div class='artdet__pagination-btn artdet__pagination-prev'>
+                    <div onclick="{{ button_prev_onclick }}" class="page_artdet_prev_icon btn btn-link font-m font-md-l px-2 py-0 icon--arrow-left"></div>
+                </div>
+                <div class='artdet__pagination-btn artdet__pagination-next ml-2'>
+                    <div onclick="{{ button_next_onclick }}" class="page_artdet_next_icon btn btn-link font-m font-md-l px-2 py-0 icon--arrow-right"></div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {{ start_script }}
+    <div class='artdet__inner pt-5 border-top artdet--type-2'>
+        {{ product_form_start }}
+
+        <div class="artdet__pic-data-wrap mb-3 mb-lg-5 js-product">
+            <div class="row">
+                <div class='artdet__img-outer col-lg-6 pr-lg-5'>
+                    <div class="artdet__newstat-name-rating d-flex d-lg-none row no-gutters align-items-center mb-5">
+                        <div class="row no-gutters artdet__name-rating">
+                            {% if new_disp %}
+                                <div class="ardet__new-outer col-12 d-block">
+                                    <div class="artdet__new badge badge--new">{{ text.status_new }}</div>
+                                </div>
+                            {% endif %}
+                            {% if reviews_highlighted_disp %}
+                                <div class="artdet__rating-highlighted col-auto rating-stars font-xs" title="{{ reviews_score_avg }}">
+                                    <div class="rating-stars__back text-primary">
+                                        <div class="rating-stars__front" style="width: {{ reviews_score_percent }}%;"></div>
+                                    </div>
+                                </div>
+                                <div class="artdet__rating-highlighted-numbers col-auto pl-2 text-primary font-xs">
+                                    <span class="artdet__rating-highlighted-score-num pr-2 font-weight-bold">{{ reviews_score_avg }}</span>
+                                    <span class="artdet__rating-highlighted-reviews-count">({{ reviews_count }} {{ text.review }})</span>
+                                </div>
+                            {% endif %}
+                            <h1 class='artdet__name font-weight-bold text-uppercase m-0 line-clamp--3-14 col-12 font-xl font-md-xxl'>{{ name }}</h1>
+                        </div>
+                    </div>
+                    <div class='artdet__img-inner with-abs {% if alt_images_disp %}has-alt-img{% endif %} position-relative'>
+                        <div class='artdet__img-inner-abs'>
+                            <div class='artdet__img-wrapper slick-list-until-md-outer slick-has-counter px-5 mt-3'>
+                                {% if alt_images_disp %}
+                                    <div class="artdet__img--alts slick-list-until-md-inner slick-arrow--small js-slick--alts">
+                                        <figure class="artdet__img-main-wrap product-img-wrapper position-relative text-center">
+                                            <img class="artdet__img-main product-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ img_url }}"{% if img_retina_exists %} data-srcset="{{ img_retina_url }} {{ img_retina_size }}"{% endif %} alt="{{ img_alt }}" title="{{ img_alt }}" id="main_image" />
+                                            <div class="loading-spinner"></div>
+                                        </figure>
+                                        {% for alt_img in alt_images %}
+                                            <figure class="artdet__img-wrap--alt">
+                                                <img class="artdet__img--alt lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ alt_img.url }}"{% if alt_img.retina_exists %} data-srcset="{{ alt_img.retina_url }} {{ alt_img.retina_size }}"{% endif %} alt="{{ alt_img.alt }}" title="{{ alt_img.title }}" />
+                                            </figure>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="slick-counter"></div>
+                                    <div class="artdet__img--thumbs-wrap d-none d-lg-block slick-indent-md slick-center slick-arrow--middle slick-arrow--small slick-gap--10 mt-3">
+                                        <div class="artdet__img--thumbs js-slick--thumbs clearfix">
+                                            <div class="artdet__img-wrap--thumb">
+                                                <img class="artdet__img-main--thumb lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ img_thumbnail_url }}"{% if img_thumbnail_retina_exists %} data-srcset="{{ img_thumbnail_retina_url }} {{ img_thumbnail_retina_size }}"{% endif %} alt="{{ img_alt }}" title="{{ img_alt }}" />
+                                            </div>
+                                            {% for alt_img in alt_images %}
+                                                <div class="artdet__img-wrap--thumb">
+                                                    <img class="artdet__img--thumb lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ alt_img.thumbnail_url }}"{% if alt_img.thumbnail_retina_exists %} data-srcset="{{ alt_img.thumbnail_retina_url }} {{ alt_img.thumbnail_retina_size }}"{% endif %} alt="{{ alt_img.alt }}" title="{{ alt_img.title }}" />
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        $(document).ready(function() {
+                                            // execute above function
+                                            $($productImgContainer).on("init", function (event, slick) {
+                                                initPhotoSwipeFromDOM();
+                                            });
+
+                                            $($productImgContainer).on('init reInit afterChange', function(event, slick){
+                                                $($productImgContainer+' ~ .slick-counter').html((Math.ceil(slick.currentSlide/slick.slickGetOption('slidesToShow'))+1)+' / '+ Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow')));
+                                                if(Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow'))===1){
+                                                    $($productImgContainer+' ~ .slick-counter').html('');
+                                                }
+                                            });
+
+                                            // Main/Product image slider for product page
+                                            $($productImgContainer).slick({
+                                                slidesToShow: 1,
+                                                slidesToScroll: 1,
+                                                swipe: true,
+                                                infinite: false,
+                                                draggable: true,
+                                                arrows: true,
+                                                speed: 300,
+                                                lazyLoad: 'ondemand',
+                                                mobileFirst: true,
+                                                asNavFor: $slickContainerThumbs,
+                                                prevArrow: '<div class="slick-prev"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="sr-text">Previous</span></div>',
+                                                nextArrow: '<div class="slick-next"><i class="fa fa-arrow-right" aria-hidden="true"></i><span class="sr-text">Next</span></div>',
+                                                responsive: [
+                                                    {
+                                                        breakpoint: 991,
+                                                        settings: {
+                                                            draggable: false,
+                                                            swipe: false,
+                                                            arrows: false
+                                                        }
+                                                    }
+                                                ]
+                                            });
+                                            // Thumbnail/alternates slider for product page
+                                            $($slickContainerThumbs).slick({
+                                                slidesToShow: 2,
+                                                slidesToScroll: 1,
+                                                infinite: false,
+                                                centerPadding: '0px',
+                                                asNavFor: $productImgContainer,
+                                                speed: 300,
+                                                focusOnSelect: true,
+                                                touchThreshold: 100,
+                                                useTransform: true,
+                                                waitForAnimate: false,
+                                                lazyLoad: 'ondemand',
+                                                mobileFirst: true,
+                                                prevArrow: '<div class="slick-prev"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="sr-text">Previous</span></div>',
+                                                nextArrow: '<div class="slick-next"><i class="fa fa-arrow-right" aria-hidden="true"></i><span class="sr-text">Next</span></div>'
+                                            });
+                                        });
+                                    </script>
+                                {% else %}
+                                    <figure class="artdet__img-main-wrap {% if img_exists %}js-photoswipe--main {% endif %}position-relative text-center artdet-product-img-wrapper">
+                                        <img class="artdet__img-main product-img" src="{{ img_url }}"{% if img_retina_exists %} srcset="{{ img_retina_url }} {{ img_retina_size }}"{% endif %} alt="{{ img_alt }}" title="{{ img_alt }}" id="main_image" />
+                                    </figure>
+                                {% endif %}
+
+                                {% if img_exists %}
+                                    {% if not alt_images_disp %}
+                                        <script>
+                                            $(document).ready(function() {
+                                                initPhotoSwipeFromDOM();
+                                            });
+                                        </script>
+                                    {% endif %}
+
+                                    <div class="photoSwipeDatas invisible">
+                                        <a href="{{ img_original_url }}" data-size="{{ img_original_width }}x{{ img_original_height }}"></a>
+                                        {% if alt_images_disp %}
+                                            {% for alt_img in alt_images %}
+                                                {% if alt_img.original_disp %}
+                                                    <a href="{{ alt_img.original_url }}" data-size="{{ alt_img.original_width }}x{{ alt_img.original_height }}"></a>
+                                                {% else %}
+                                                    <a href="{{ alt_img.url }}" data-size="510x510"></a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='artdet__data-outer col-lg-6 pt-4 pt-lg-0 pl-lg-5'>
+                    <div class="artdet__newstat-name-rating d-none d-lg-flex row no-gutters align-items-center mb-5">
+                        <div class="row no-gutters artdet__name-rating">
+                            {% if new_disp %}
+                                <div class="ardet__new-outer col-12 d-block">
+                                    <div class="artdet__new badge badge--new">{{ text.status_new }}</div>
+                                </div>
+                            {% endif %}
+                            {% if reviews_highlighted_disp %}
+                                <div class="artdet__rating-highlighted-wrap js-scroll-to-reviews col-auto d-flex">
+                                    <div class="artdet__rating-highlighted rating-stars font-xs" title="{{ reviews_score_avg }}">
+                                        <div class="rating-stars__back text-primary">
+                                            <div class="rating-stars__front" style="width: {{ reviews_score_percent }}%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="artdet__rating-highlighted-numbers pl-2 text-primary font-xs">
+                                        <span class="artdet__rating-highlighted-score-num pr-2 font-weight-bold">{{ reviews_score_avg }}</span>
+                                        <span class="artdet__rating-highlighted-reviews-count">({{ reviews_count }} {{ text.review }})</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <h2 class='artdet__name font-weight-bold text-uppercase m-0 line-clamp--3-14 col-12'>{{ name }}</h2>
+                        </div>
+                    </div>
+                    <div class="artdet__prices row no-gutters mb-5">
+                        {% if sale_disp %}
+                            <div class="artdet__sale-outer col-12">
+                                <div class="artdet__sale badge badge--sale">
+                                    -<span id='price_save_{{ sku_id }}'>{{ sale_percent }}%</span>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if stock_disp %}
+                            <div class="artdet__stock-outer col-12">
+                                <div class="artdet__stock badge badge--stock text-uppercase font-weight-normal px-3{% if not stock_text_only %} stock-number{% endif %}{% if stock_available %} stock-available{% else %}{% if no_stock_but_buyable_disp %} stock-can-order{% else %} no-stock{% endif %}{% endif %}">
+                                    <div class="artdet__stock-text product-stock-text{% if variants_disp %} has-tooltip{% endif %}">
+                                        {% if stock_available %}
+                                            <div class="artdet__stock-title product-stock-title icon--b-check">
+                                                {% if not stock_interval_text_exists or (variants_disp and variants_stock_enabled) %}
+                                                    {{ text.status_on_stock }}
+                                                {% endif %}
+
+                                                {% if (stock_text_only and not variant_disp and stock_interval_text_exists) or (not stock_text_only and not variants_stock_enabled) %}
+                                                    {% if not variants_stock_enabled %}
+                                                        <span class="round-bracket-around text-lowercase">{{ stock }}</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            {% if variants_disp and variants_stock_enabled %}
+                                                <span class="tooltip-text">
+                                                        {% for variant in stock_variant %}
+                                                            {% if stock_text_only %}
+                                                                <div class='stock-variant'>
+                                                                <span class='stock-variant__title'>{{ variant.title }}:</span>
+                                                                <span class='stock-variant__qty'>
+                                                                 {% if variant.available and variant.reach_min_qty %}
+                                                                     {% if variant.stock_interval_text_exists %}
+                                                                         {{ variant.qty }}
+                                                                     {% endif %}
+                                                                     {% if not variant.stock_interval_text_exists %}
+                                                                         {{ text.status_on_stock }}
+                                                                     {% endif %}
+                                                                 {% else %}
+                                                                     {% if no_stock_but_buyable_disp %}
+                                                                         {{ text.status_orderable }}
+                                                                     {% else %}
+                                                                         {{ text.status_no_stock }}
+                                                                     {% endif %}
+                                                                 {% endif %}
+                                                                </span>
+                                                            </div>
+                                                            {% else %}
+                                                                {% if (variant.available and variant.reach_min_qty) or no_stock_visible %}{# csak akkor ha vásárolható, vagy "vásárolható akkor is, ha nincs raktáron" #}
+                                                                    <div class='stock-variant'>
+                                                                    <span class='stock-variant__title'>{{ variant.title }}:</span>
+                                                                    <span class='stock-variant__qty'>{{ variant.qty }}&nbsp;<span class='stock-variant__unit'>{% if not variant.stock_interval_text_exists %}{{ unit }}{% endif %}</span></span>
+                                                                </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </span>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if no_stock_but_buyable_disp %}
+                                                <div class="artdet__stock-title product-stock-title icon--b-exclamation-2">{{ text.status_orderable }}</div>
+                                            {% else %}
+                                                <div class="artdet__stock-title product-stock-title icon--b-close">{{ text.status_no_stock }}</div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if prices_disp %}
+                            <div class="artdet__price-base-and-sale col-12 row no-gutters text-cn align-items-baseline{% if price_sale_disp %} has-sale-price{% endif %}">
+                                {% if price_sale_disp %}
+                                    <div class="artdet__price-discount product-price--sale col-auto pr-3 font-weight-bold">
+                                        {{ price_sale }}
+                                    </div>
+                                {% endif %}
+
+                                {% if price_disp %}
+                                    <div class="artdet__price-base col-auto product-price--base{% if not price_sale_disp %} font-weight-bold{% elseif price_line_through %} text-line-through{% endif %}">
+                                        {{ price }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if price_unit_disp %}
+                                <div class="artdet__price-unit col-12">{{ text.unit_price }}: {{ price_unit }}</div>
+                            {% endif %}
+
+                            {% if sale_text_disp %}
+                                <div class="artdet__price-discount-period col-12 line-height-12">
+                                    <span class="artdet__price-discount-period-start">{{ text.start }}: {{ sale_start }}</span>&nbsp;&nbsp;
+                                    <span class="artdet__price-discount-period-end">
+                                        {% if sale_have_end %}
+                                            {{ text.end }}: {{ sale_end }}
+                                        {% else %}
+                                            {{ text.while_stock_lasts }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            {% endif %}
+
+                            {% if sale_countdown_disp %}
+                                <div class="artdet__countdown d-block d-sm-flex {% if sale_countdown_animation_disp %}countdown--animated align-items-center{% else %}countdown--simple align-items-baseline{% endif %}">
+                                    <div class="cd__label pr-1">{{ text.sale_countdown }}:</div>
+                                    {% if sale_countdown_animation_disp %}
+                                        <div id="cd_color_front"></div><div id="cd_color_back"></div>
+                                    {% endif %}
+                                    <div id="cd_custom"></div>
+                                    <script>
+                                        startSaleCountdown(
+                                            '{{ sale_countdown_date_start }}',
+                                            '{{ sale_countdown_date_end }}',
+                                            '{{ text.day }}',
+                                            '{{ text.hour }}',
+                                            '{{ text.minute }}',
+                                            '{{ text.second }}',
+                                            {% if sale_countdown_animation_disp %}true{% else %}false{% endif %}
+                                        );
+                                    </script>
+                                </div>
+                            {% endif %}
+
+                            {% if login_needed %}
+                                <div class="artdet__price-login-btn-wrap">
+                                    <button class="artdet__price-login-btn btn btn-link" type="button" onclick="overlay_login()">{{ text.need_login_to_prices }}</button>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    {% if plus_service_disp %}
+                        <div id='artdet__service-plus' class='plus-service mb-5'>
+                            <div class='plus-service__inner usn form-group'>
+                                {% if plus_service_can_choose_none_disp %}
+                                    <div class='plus-service__item plus-service__item--none form-check mb-2 px-0 service_plus_radio'>
+                                        <input class='plus-service__radio-input form-check-input' id='service_plus_none_radio' name='service_plus' value='' type='radio' checked='checked' />
+                                        <label class='plus-service__label form-check-label align-items-center' for='service_plus_none_radio'>
+                                            <span class='plus-service__name'>{{ text.dont_want_plus_service }}</span>
+                                        </label>
+                                    </div>
+                                {% endif %}
+                                {% for service in plus_services %}
+                                    <div class='plus-service__item service_plus_radio form-check mb-2 px-0'>
+                                        <input class='product-service-plus__radio-input form-check-input' name='service_plus' id='{{ service.id }}' value='{{ service.id }}' type='radio' {% if service.checked %} checked='checked'{% endif %}/>
+                                        <label class='plus-service__label form-check-label align-items-center' for='{{ service.id }}'>
+                                            <span class='plus-service__name'>{{ service.name }}&nbsp;<span class='round-bracket-around'>{{ service.price }}</span></span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if product_types_disp %}
+                        <div id="artdet__type" class="product-type border-top border-bottom py-4 mb-5{% if product_type_style_select %} row gutters-5{% endif %}">
+                            {% for param in product_type_params %}
+                                {% if product_type_style_select %}
+                                    <div class="product-type__item col-sm-6" id="page_artdet_product_type_{{ param.id }}">
+                                        <div class="product-type__values form-label-group form-select-group">
+                                            {% if param.desc_disp %}<div class="artdet__product-type-desc param-details-icon icon--info has-tooltip"><span class="tooltip-text">{{ param.desc }}</span></div>{% endif %}
+                                            <select class='product_type_select form-control' id='param_type_{{ param.id }}' data-param_id='{{ param.id }}'>
+                                                {% for value_attribute in param.value_attributes %}
+                                                    <option value='{{ value_attribute.value_orig }}' {% if value_attribute.selected %} selected="selected"{% endif %}>{{ value_attribute.value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="param_type_{{ param.id }}">{{ param.title }}</label>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="product-type__item row gutters-5 align-items-center mb-3{% if param.desc_disp %} has-description{% endif %}" id="page_artdet_product_type_{{ param.id }}">
+                                        <div class="product-type__title col-auto d-inline-flex align-items-center position-relative">
+                                            {{ param.title }}:{% if param.desc_disp %}<span class="artdet__product-type-desc icon--info has-tooltip ml-2"><span class="tooltip-text">{{ param.desc }}</span></span>{% endif %}
+                                        </div>
+                                        <div class="product-type__values col d-inline-flex flex-wrap">
+                                            {% for value_attribute in param.value_attributes %}
+                                                <div class='product-type__value-wrap m-2 product-type__value--{{ param.type }}{% if value_attribute.selected %} is-active{% endif %}{% if value_attribute.base_type %} is-base{% endif %}' onclick='product_type_mod("{{ param.id }}","{{ value_attribute.value_orig }}");' data-sku='{{ value_attribute.sku }}' {% if param.type in ['color','color_text'] %}style="background-color:#{{ value_attribute.value_orig }};" data-hexa="{{ value_attribute.value_orig }}"{% endif %} >
+                                                    <a class='product-type__value-link d-flex align-items-center justify-content-center position-relative{% if param.type != "color" %} btn btn-outline-primary py-2 font-s{% endif %}' href='{{ value_attribute.url }}' title='{{ value_attribute.title }}'>
+                                                        <span class='product-type__value text-truncate'>{{ value_attribute.value }}</span>
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                            <input class='product_type_select' type='hidden' id='param_type_{{ param.id }}' data-param_id='{{ param.id }}' value='{{ param.value_act }}' />
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if variants_disp %}
+                        <div id="artdet__other" class='product-variants row gutters-5 mb-4'>
+                            {% if variant_1_disp %}
+                                <div class='product-variant product-variant--1{% if variant_3_disp %} col-sm-4{% else %} col-sm-6{% endif %}'>
+                                    <div class='product-variant__select-outer form-label-group form-select-group js-variant-wrap'>
+                                        {{ variant_1_hidden }}
+                                        <select name="egyeb_list1" id="egyeb_list1_{{ sku_id }}" class="form-control" onchange="changeVariant(this)">
+                                            {% for option in variant_1_options %}
+                                                <option value='{{ option.value }}' {% if option.selected %}selected="selected"{% endif %} {% if option.disabled %} style='display:none;' disabled="disabled"{% endif %}>{{ option.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="egyeb_list1_{{ sku_id }}" class="font-weight-bold">{{ variant_1_title }}</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if variant_2_disp %}
+                                <div class='product-variant product-variant--2{% if variant_3_disp %} col-sm-4{% else %} col-sm-6{% endif %}'>
+                                    <div class='product-variant__select-outer form-label-group form-select-group js-variant-wrap'>
+                                        {{ variant_2_hidden }}
+                                        <select name="egyeb_list2" id="egyeb_list2_{{ sku_id }}" class="form-control" onchange="changeVariant(this)">
+                                            {% for option in variant_2_options %}
+                                                <option value='{{ option.value }}' {% if option.selected %}selected="selected"{% endif %} {% if option.disabled %} style='display:none;' disabled="disabled"{% endif %}>{{ option.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                       <label for="egyeb_list2_{{ sku_id }}" class="font-weight-bold">{{ variant_2_title }}</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if variant_3_disp %}
+                                <div class='product-variant product-variant--3 col-sm-4'>
+                                    <div class='product-variant__select-outer form-label-group form-select-group js-variant-wrap'>
+                                        {{ variant_3_hidden }}
+                                        <select name="egyeb_list3" id="egyeb_list3_{{ sku_id }}" class="form-control" onchange="changeVariant(this)">
+                                            {% for option in variant_3_options %}
+                                                <option value='{{ option.value }}' {% if option.selected %}selected="selected"{% endif %} {% if option.disabled %} style='display:none;' disabled="disabled"{% endif %}>{{ option.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="egyeb_list3_{{ sku_id }}" class="font-weight-bold">{{ variant_3_title }}</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {{ variants_hidden }}
+
+                    {% if cart_disp or compare_disp or favourites_disp or inquire_disp %}
+                        <div id='artdet__cart' class='artdet__cart-compare-favourites-outer text-center mb-5'>
+                            <div class="artdet__cart-compare-favourites-inner row no-gutters align-items-center">
+                                {% if cart_disp %}
+                                    {% if can_add_to_cart_disp %}
+                                        <div class='col artdet__cart'>
+                                            <div class="row no-gutters artdet__cart-inner flex-nowrap align-items-center justify-content-center">
+                                                <div class="col-auto page_qty_input_outer mr-2 py-2 py-md-3 border rounded {% if cart_unit_disp %}has-tooltip{% endif %}">
+                                                    <div class="artdet__cart-btn-input-wrap d-flex justify-content-center">
+                                                        <button type='button' class='qtyminus qtyminus_common qty_disable icon--minus btn--square-sm btn btn-link' aria-label="quantity minus"></button>
+                                                        <div class="artdet__cart-input-wrap page_qty_input_wrap d-flex align-items-center justify-content-center">
+                                                            <input name="db" id="{{ cart_input_id }}" type="number" value="{{ cart_input_value_number }}" maxlength="7" class="artdet__cart-input page_qty_input text-cn font-weight-bold text-center" data-min="{{ cart_input_data_min }}" data-max="{{ cart_input_data_max }}" data-step="{{ cart_input_data_step }}" step="{{ cart_input_data_step }}" aria-label="quantity input">
+                                                            {% if cart_unit_disp %}
+                                                                <div class='artdet__cart-unit text-center usn tooltip-text'>{{ unit }}</div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <button type='button' class='qtyplus qtyplus_common icon--plus btn--square-sm btn btn-link' aria-label="quantity plus"></button>
+                                                    </div>
+                                                </div>
+                                                <div class='col artdet__cart-btn-wrap usn'>
+                                                    <button class="artdet__cart-btn btn btn-primary btn-block font-weight-bold font-m font-md-l px-2 py-2 py-md-3 js-main-product-cart-btn" type="button" onclick="{% if not variants_disp %}{{ cart_onclick_value }}{% else %}checkVariants(this);inputsErrorHandling();{% endif %}" {{ cart_target }} {{ cart_analytics_event }} data-cartadd="{{ cart_onclick_value }}">{{ text.button_add_to_cart }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="artdet__cart-no-stock text-uppercase pr-2">{{ text.status_no_stock }}</div>
+                                    {% endif %}
+                                {% else %}
+                                    {% if inquire_disp %}
+                                        <div id="artdet__inquire" class='col artdet__inquire-btn-wrap text-center my-4'>
+                                            <button type="button" class="artdet__inquire-btn btn btn-primary btn-block" onclick="{{ inquire_onclick }}">{{ text.button_inquire }}</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="artdet__cart-not-buyable text-uppercase pr-2">{{ text.status_not_buyable }}</div>
+                                    {% endif %}
+                                {% endif %}
+                                {% if compare_disp %}
+                                    <div class='artdet__function-outer artdet-func-compare col-auto ml-2'>
+                                        <div class='artdet__function-btn border rounded d-inline-flex position-relative align-items-center justify-content-center has-tooltip page_artdet_func_compare_{{ sku_id }}{% if compare_checked %} page_artdet_func_compare_checked{% endif %}' onclick='{{ compare_onclick }}' id='page_artdet_func_compare' role="button" aria-label="{{ text.comparison }}">
+                                            <div class="artdet__function-icon compare__icon font-l icon--compare"></div>
+                                            <div class="artdet__function-text tooltip-text page_artdet_func_compare_text_{{ sku_id }}" data-text-add="{{ text.comparison }}" data-text-delete="{{ text.delete_from_compare }}">{% if compare_checked %}{{ text.delete_from_compare }}{% else %}{{ text.comparison }}{% endif %}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if favourites_disp %}
+                                    <div class='artdet__function-outer favourites__btn-outer artdet-func-favourites col-auto ml-2 page_artdet_func_favourites_outer_{{ sku_id }}{% if favourites_checked %} added{% endif %}'>
+                                        <div class='artdet__function-btn border rounded d-inline-flex position-relative align-items-center justify-content-center has-tooltip page_artdet_func_favourites_{{ sku_id }} {% if favourites_checked %}remove_favourites{% endif %}' onclick='{{ favourite_onclick }}' id='page_artdet_func_favourites' role="button" aria-label="{{ favourite_text }}">
+                                            <div class="artdet__function-icon favourites__icon font-l icon--favo"></div>
+                                            <div class="artdet__function-text tooltip-text page_artdet_func_favourites_text_{{ sku_id }}">{{ favourite_text }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="artdet__badges position-relative mb-1">
+                        {% if status_1_disp %}
+                            {% if status_1_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=3" aria-label="{{ status_1 }}">{% endif %}
+                                <div class="artdet__custom-badge badge badge--custom-1 px-3">{{ status_1 }}</div>
+                            {% if status_1_link_disp %}</a>{% endif %}
+                        {% endif %}
+
+                        {% if status_2_disp %}
+                            {% if status_2_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=4" aria-label="{{ status_2 }}">{% endif %}
+                                <div class="artdet__custom-badge badge badge--custom-2 px-3">{{ status_2 }}</div>
+                            {% if status_2_link_disp %}</a>{% endif %}
+                        {% endif %}
+
+                        {% if status_3_disp %}
+                            {% if status_3_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=5" aria-label="{{ status_3 }}">{% endif %}
+                                <div class="artdet__custom-badge badge badge--custom-3 px-3">{{ status_3 }}</div>
+                            {% if status_3_link_disp %}</a>{% endif %}
+                        {% endif %}
+                    </div>
+
+                    {% if qty_discount_disp %}
+                        <div id="artdet__discount" class='discount mb-5 border border-primary rounded'>
+                            <div class="row no-gutters discount__content align-items-center p-3">
+                                <div class="col-12 col-sm-auto justify-content-center d-flex">
+                                    <div class="discount__title text-primary text-uppercase font-xs">{{ text.quantity_discount }}</div>
+                                </div>
+                                <div class="col font-s">
+                                    {% for row in qty_discount_rows %}
+                                        <div class="row no-gutters text-center align-items-center">
+                                            <div class="col" data-label="{{ text.quantity }}">
+                                                <div class="discount__from-wrap font-s">
+                                                    <span class="discount__from">{{ row.from }}+</span>
+                                                    <span class="discount__unit">&nbsp;{{ unit }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col font-s" data-label="{{ text.discount }}">
+                                                {% if row.no_discount %}
+                                                    <span class="discount__text-no-discount">-</span>
+                                                {% else %}
+                                                    {% if row.percent %}
+                                                        <span class="discount__amount percent-based">-{{ row.discount_amount }}</span>%
+                                                    {% else %}
+                                                        <span class="discount__amount amount-based">-{{ row.discount_amount }}</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col text-cn font-weight-bold font-m font-md-l" data-label="{{ text.product_price }}">
+                                                {{ row.discount_price }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if bundle_products_disp %}
+                        <div id="navbar__pane-bundle-products" class='bundle-product'>
+                            <script type="text/javascript">
+                                $(document).ready(function(){ $("#navbar__pane-bundle-products").load("{{ bundle_products_script_ajax_url }}"); });
+                            </script>
+                        </div>
+                    {% endif %}
+
+                {% if products_in_bundle_disp %}
+                    <div id="navbar__pane-products-in-bundle" class="product-in-bundle mb-5 bg-8 py-4">
+                        <h6 class='product-in-bundle__title text-center font-weight-bold text-uppercase mb-4'>
+                            {{ text.products_in_bundle }}
+                        </h6>
+                        <div class="js-bundle-product-wrapper">
+                            <div class="loading-spinner__wrap col-12 py-5">
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                    {% if short_desc_disp %}
+                        <div id="artdet__short-descrition" class="artdet__short-descripton mb-5">
+                            <div class="artdet__short-descripton-content text-justify font-s font-sm-m">{{ short_desc }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if params_spec_disp %}
+                        <div id="artdet__param-spec" class="artdet__spec-params mb-3">
+                            {% for param_spec in params_spec %}
+                                {% if (param_spec.type not in ['cust_input_text', 'cust_input_select', 'cust_input_file']) %}
+                                    <div class="artdet__spec-param py-2 product_param_type_{{ param_spec.type }}" id="page_artdet_product_param_spec_{{ param_spec.id }}" >
+                                        <div class="row gutters-10 align-items-center text-left">
+                                            <div class="col-5">
+                                                <div class="artdet__spec-param-title pl-4 d-inline-block position-relative">
+                                                    {{ param_spec.title }}
+                                                    {% if param_spec.desc_disp %}
+                                                        <a href='#' class='page_artdet_param_desc param_desc_popup param_desc_popup_ver4 has-tooltip' onclick='return false' title=''><div class="tooltip-text">{{ param_spec.desc }}</div></a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-7">
+                                                <div class="artdet__spec-param-value">
+                                                    {% if param_spec.type == 'color' %}<div class="artdet__spec-param--color-outer">{% endif %}
+                                                    {{ param_spec.value }}
+                                                    {% if param_spec.type == 'color' %}</div>{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="artdet__spec-param py-3 product_param_type_{{ param_spec.type }}" id="page_artdet_product_param_spec_{{ param_spec.id }}" >
+                                        {% if param_spec.type == 'cust_input_text' %}
+                                            <div class="row no-gutters align-items-center text-left">
+                                                <div class="col col-sm-8 form-label-group">
+                                                    {% if param_spec.desc_disp %}<div class="param-details-icon has-tooltip icon--info2"><div class="tooltip-text">{{ param_spec.desc }}</div></div>{% endif %}
+                                                    <input type='text' placeholder='{{ param_spec.title }}' name="cust_input_text" class='cust_input cust_input_text form-control {% if _context["param_" ~ param_spec.id ~ "_required"] %}required {% endif %} {% if _context["param_" ~ param_spec.id ~ "_stored"] %}stored {% endif %}' id='{{ param_spec.id }}' {% if param_spec.maxlength_disp %} maxlength="{{ param_spec.maxlength }}" {% endif %}>
+                                                    <label for="{{ param_spec.id }}">{{ param_spec.title }}</label>
+                                                </div>
+                                            </div>
+                                        {% elseif param_spec.type == 'cust_input_file' %}
+                                            <div class="row no-gutters align-items-center text-left">
+                                                <div class="col col-sm-8 input-group mb-2 px-0">
+                                                    <div class="col px-0 form-label-group mb-0">
+                                                        {% if param_spec.desc_disp %}<div class="param-details-icon has-tooltip icon--info2"><div class="tooltip-text">{{ param_spec.desc }}</div></div>{% endif %}
+                                                        <input readonly type='text' name="cust_input_file-filename" placeholder="{{ param_spec.title }}" class='cust_input_file-filename form-control bg-white' id='{{ param_spec.id }}-filename' value=''>
+                                                        <label for="{{ param_spec.id }}-filename" onclick="return false;">{{ param_spec.title }}</label>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <label for="{{ param_spec.id }}" class="{{ param_spec.id }}-label m-0 btn btn-primary font-xs px-3" data-label="{{ text.select_file }}">{{ text.select_file }}</label>
+                                                    </div>
+                                                </div>
+                                                <input type='file' name="cust_input_file" class='cust_input cust_input_file {% if _context["param_" ~ param_spec.id ~ "_required"] %}required {% endif %} d-none' id='{{ param_spec.id }}' onchange="file_input_filname_change(this);">
+                                                <span class="file-uploading-icon position-relative overflow-hidden mb-2 p-3">
+                                                        <span class="file-uploading-icon__file icon--file"></span>
+                                                        <span class="file-uploading-icon__arrow-up icon--arrow-up position-absolute animation-slide-up"></span>
+                                                    </span>
+                                                <span class="file-uploaded-icon position-relative overflow-hidden mb-2 p-3 text-success"><span class="icon--check"></span></span>
+                                            </div>
+                                        {% elseif param_spec.type == 'cust_input_select' %}
+                                            <div class="row no-gutters align-items-center text-left">
+                                                <div class="col col-sm-8 form-label-group form-select-group">
+                                                    {% if param_spec.desc_disp %}<div class="param-details-icon has-tooltip icon--info2"><div class="tooltip-text">{{ param_spec.desc }}</div></div>{% endif %}
+                                                    <select name='cust_input_select' class='cust_input cust_input_select form-control {% if _context["param_" ~ param_spec.id ~ "_required"] %}required {% endif %}' id='{{ param_spec.id }}'>
+                                                        {% for option in _context["param_" ~ param_spec.id ~ "_options"] %}
+                                                            <option value="{{ option.value }}" {% if option.disabled %}disabled="disabled" style="display:none;"{% endif %} {% if option.selected %}selected="selected"{% endif %}>{{ option.text }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="{{ param_spec.id }}">{{ param_spec.title }}</label>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if point_highlighted_disp %}
+                        <div class="artdet__virtual-point-highlighted my-5">
+                            <span class="">{{ text.points_for_purchase }}:</span>
+                            <span class="font-weight-bold">{{ point }}</span>
+                        </div>
+                    {% endif %}
+
+                    {% if recommend_disp or print_disp or question_disp or subscribe_disp %}
+                        <div id="artdet__functions" class="artdet__function d-flex justify-content-center border-top">
+                            {% if subscribe_disp %}
+                                {% if not login_needed %}
+                                    <div class='artdet__subscribe-btn has-tooltip my-3 mx-5' onclick='{{ button_subscribe_onclick }}' id='{{ button_subscribe_id }}' role="button" aria-label="{{ button_subscribe_text }}">
+                                        <div class="artdet__function-icon icon--bell font-xxl"></div>
+                                        <div class="artdet__function-text tooltip-text">{{ subscribe_text }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            {% if recommend_disp %}
+                                <div class="artdet-func-recommend has-tooltip my-3 mx-5" onclick='{{ recommend_onclick }}' id='page_artdet_func_recommend' role="button" aria-label="{{ text.recommend }}">
+                                    <div class="artdet__function-icon icon--mail font-xxl"></div>
+                                    <div class="artdet__function-text tooltip-text">{{ text.recommend }}</div>
+                                </div>
+                            {% endif %}
+                            {% if print_disp %}
+                                <div class="artdet-func-print d-none d-lg-block has-tooltip my-3 mx-5" onclick='{{ print_onclick }}' id='page_artdet_func_print' role="button" aria-label="{{ text.button_print }}">
+                                    <div class="artdet__function-icon icon--print font-xxl"></div>
+                                    <div class="artdet__function-text tooltip-text">{{ text.button_print }}</div>
+                                </div>
+                            {% endif %}
+                            {% if question_disp %}
+                                <div class="artdet-func-question has-tooltip my-3 mx-5" onclick='{{ question_onclick }}' id='page_artdet_func_question' role="button" aria-label="{{ text.question_about_product }}">
+                                    <div class="artdet__function-icon icon--question font-xxl"></div>
+                                    <div class="artdet__function-text tooltip-text">{{ text.question_about_product }}</div>
+                                 </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if cross_disp %}
+            <div id="artdet__additional-product--cross" class='additional-product--cross'>
+                <script type="text/javascript">
+                    $(document).ready(function(){ $("#artdet__additional-product--cross").load("{{ cross_script_ajax_url }}"); });
+                </script>
+            </div>
+        {% endif %}
+
+        {% if gift_disp %}
+            <div id="artdet__gift-products" class='gift-product'>
+                <script type="text/javascript">
+                    $(document).ready(function(){ $("#artdet__gift-products").load("{{ gift_script_ajax_url }}"); });
+                </script>
+            </div>
+        {% endif %}
+
+        {% if long_desc_disp %}
+            <section id="artdet__long-description" class="long-description mb-5">
+                <div class="long-description__title d-flex align-items-center justify-content-center">
+                    <h6 class="js-animate-title-dots">
+                        {{ text.details }}
+                    </h6>
+                </div>
+                <div class="long-description__content font-s font-sm-m text-justify">{{ long_desc }}</div>
+            </section>
+        {% endif %}
+
+        {% if product_param_disp or data_1_disp or data_2_disp or data_3_disp or sku_disp or link_disp or weight_disp or point_disp or min_qty_disp or unit_step_disp %}
+            <div id="artdet__datas" class="data mb-3 mb-sm-5">
+                <div class="data__title d-flex align-items-center justify-content-center">
+                    <h6 class="js-animate-title-dots">
+                        {{ text.data }}
+                    </h6>
+                </div>
+                <div class="data__items p-0 py-sm-5 font-xs font-sm-m row gutters-20">
+                    {% if params_disp %}
+                        {% for param in params %}
+                            <div class="data__item col-md-6 col-lg-4 data__item-param">
+                                <div class="row gutters-5 h-100 align-items-center py-1">
+                                    <div class="data__item-title col-5 pl-4" id="page_artdet_product_param_title_{{ param.id }}">
+                                        {{ param.title }}
+                                        {% if param.desc_disp %}
+                                            <span class='page_artdet_param_desc param_desc_popup param_desc_popup_ver4 has-tooltip'><span class="tooltip-text">{{ param.desc }}</span></span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="data__item-value col-7" id="page_artdet_product_param_value_{{ param.id }}">{{ param.value }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% if data_1_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-plus1">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ data_1_title }}</div>
+                                <div class="data__item-value col-7">{{ data_1_value }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if data_2_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-plus2">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ data_2_title }}</div>
+                                <div class="data__item-value col-7">{{ data_2_value }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if data_3_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-plus3">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ data_3_title }}</div>
+                                <div class="data__item-value col-7">{{ data_3_value }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if sku_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-sku">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ text.sku }}</div>
+                                <div class="data__item-value col-7">{{ sku }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if link_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-plus-data-url">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ text.website }}</div>
+                                <div class="data__item-value col-7">
+                                    <a href="{{ link_url }}" target="_blank" rel="nofollow">{{ link_text }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if weight_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-weight">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ text.weight }}</div>
+                                <div class="data__item-value col-7">{{ weight }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if point_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-virtual-point">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ text.points_for_purchase }}</div>
+                                <div class="data__item-value col-7">{{ point }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if min_qty_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-min-quantity">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ text.minimum_order_quantity }}</div>
+                                <div class="data__item-value col-7">{{ min_qty }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if unit_step_disp %}
+                        <div class="data__item col-md-6 col-lg-4 data__item-unit-step">
+                            <div class="row gutters-5 h-100 align-items-center py-1">
+                                <div class="data__item-title col-5 pl-4">{{ text.available_quantities }}</div>
+                                <div class="data__item-value col-7">{{ unit_step }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% for section in custom_sections %}
+            <div id="artdet__add-datas" class="art-add-datas">
+                {% if section.content_disp %}
+                    <div class="art-add-data__item-{{ section.num }} mb-4">
+                        <div class="art-add-data__title d-flex align-items-center justify-content-center">
+                            <h6 class="js-animate-title-dots">{{ section.title }}</h6>
+                        </div>
+                        <div class="art-add-data__content py-3 text-justify font-s font-sm-m">
+                            {{ section.content }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if reviews_disp %}
+            <div id="artdet__art-forum" class="art-forum js-reviews-content my-5">
+                <div class="art-forum__title d-flex align-items-center justify-content-center">
+                    <h6 class='js-animate-title-dots'>
+                        {{ text.reviews }}
+                    </h6>
+                </div>
+                <div class="art-forum__content py-3">
+                    {% if reviews_facebook_disp %}
+                        <div class='art-forum__facebook'>{{ reviews_facebook_content }}</div>
+                    {% else %}
+                        {% if already_reviewed %}
+                            <div class='artforum__review border-bottom pb-5'>
+                                <div class="row">
+                                    <div class="col-sm-5 col-md-3">
+                                        <div class="review-summary">
+                                            <h4 class="review-summary__average-text mb-3">
+                                                {{ text.reviews_avg }}:
+                                            </h4>
+                                            <div class="review-summary__stars rating-stars text-primary font-m font-md-xl">
+                                                <div class="rating-stars__back">
+                                                    <div class="rating-stars__front" style="width: {{ reviews_score_percent }}%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="review-summary__score-wrap font-m font-md-xl">
+                                                <span class="review-summary__score-num pr-2 font-weight-bold">{{ reviews_score_avg }}</span>
+                                                <span class="review-summary__reviews-count">({{ reviews_count }} {{ text.review }})</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7 col-md-5">
+                                        <div class="artforum__summary-bars mt-4 mt-sm-0">
+                                            <div class="artforum__summary-bar mb-2">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto text-right d-flex justify-content-end align-items-center pr-3 d-flex justify-content-end align-items-center pr-3">
+                                                        <div class="star-5-text">5</div>
+                                                        <div class="icon icon--star icon--solid icon--ml text-primary"></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="progress-bar-full">
+                                                            <div class="progress-bar" style="width: calc( 100% * {{ review_star_5_count }} / {{ reviews_count }});"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto text-left pl-3">({{ review_star_5_count }})</div>
+                                                </div>
+                                            </div>
+                                            <div class="artforum__summary-bar mb-2">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto text-right d-flex justify-content-end align-items-center pr-3 d-flex justify-content-end align-items-center pr-3">
+                                                        <div class="star-5-text">4</div>
+                                                        <div class="icon icon--star icon--solid icon--ml text-primary"></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="progress-bar-full">
+                                                            <div class="progress-bar" style="width: calc( 100% * {{ review_star_4_count }} / {{ reviews_count }});"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto text-left pl-3">({{ review_star_4_count }})</div>
+                                                </div>
+                                            </div>
+                                            <div class="artforum__summary-bar mb-2">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto text-right d-flex justify-content-end align-items-center pr-3 d-flex justify-content-end align-items-center pr-3">
+                                                        <div class="star-5-text">3</div>
+                                                        <div class="icon icon--star icon--solid icon--ml text-primary"></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="progress-bar-full">
+                                                            <div class="progress-bar" style="width: calc( 100% * {{ review_star_3_count }} / {{ reviews_count }});"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto text-left pl-3">({{ review_star_3_count }})</div>
+                                                </div>
+                                            </div>
+                                            <div class="artforum__summary-bar mb-2">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto text-right d-flex justify-content-end align-items-center pr-3 d-flex justify-content-end align-items-center pr-3">
+                                                        <div class="star-5-text">2</div>
+                                                        <div class="icon icon--star icon--solid icon--ml text-primary"></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="progress-bar-full">
+                                                            <div class="progress-bar" style="width: calc( 100% * {{ review_star_2_count }} / {{ reviews_count }});"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto text-left pl-3">({{ review_star_2_count }})</div>
+                                                </div>
+                                            </div>
+                                            <div class="artforum__summary-bar">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto text-right d-flex justify-content-end align-items-center pr-3 d-flex justify-content-end align-items-center pr-3">
+                                                        <div class="star-5-text">1</div>
+                                                        <div class="icon icon--star icon--solid icon--ml text-primary"></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="progress-bar-full">
+                                                            <div class="progress-bar" style="width: calc( 100% * {{ review_star_1_count }} / {{ reviews_count }});"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto text-left pl-3">({{ review_star_1_count }})</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="artforum__write-your-own-opinion mt-4 mt-md-0 text-center text-md-left">
+                                            <h4>{{ text.question_no_review }}</h4>
+                                            <div class='product-review__write-review-btn-outer mt-3'>
+                                                <button class="product-review__write-review-btn btn btn-primary" type="button" onclick='location.href="{{ reviews_url }}"'>{{ text.more_reviews_and_write_review }}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-reviews">
+                                {% for review in reviews %}
+                                    <div class='product-review border-bottom py-5'>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="product-review__head d-flex flex-wrap align-items-center">
+                                                    <div class="col-auto pl-0 pr-3">
+                                                        <div class="product-review__avatar bg-primary">
+                                                            {% if review.author_name_disp %}
+                                                                <div class="product-review__avatar-first-letter text-white">{{ review.author_name }}</div>
+                                                            {% else %}
+                                                                <div class="product-review__avatar-default-icon icon--comment"></div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col px-0">
+                                                        {% if review.author_name_disp %}
+                                                            <div class="product-review__author line-clamp--3-14 font-weight-bold">{{ review.author_name }}</div>
+                                                        {% endif %}
+                                                        <div class="product-review__created-at d-flex font-s">
+                                                            <div class="product-review__created-date">{{ review.date }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-9">
+                                                <div class="product-review__body mt-2">
+                                                    <div class="product-review__stars rating-stars text-primary">
+                                                        <div class="rating-stars__back">
+                                                            <div class="rating-stars__front" style="width:calc( 100% * {{ review.score }} / 5);"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='product-review__wrap'>
+                                                        <div class='product-review__message my-3 text-justify'>{{ review.message }}</div>
+                                                        {% if pro_con_disp %}
+                                                            <div class="product-review__adv-disadv row">
+                                                                <div class="col-sm-6">
+                                                                    <div class="product-review__advantage mb-3 pl-2">
+                                                                        <div class="font-weight-bold">{{ text.advantages }}:</div> {{ review.pro }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <div class="product-review__disadvantage mb-2 pl-2">
+                                                                        <div class="font-weight-bold">{{ text.disadvantages }}:</div> {{ review.con }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="artforum__write-your-own-opinion">
+                                <div class="row justify-content-around align-items-center">
+                                    <h4 class="my-3 mx-2">{{ text.be_the_first_reviewer }}</h4>
+                                    <div class='product-review__write-review-btn-outer mx-2'>
+                                        <button class="product-review__write-review-btn btn btn-primary font-md" type="button" onclick="location.href='{{ reviews_url }}'">{{ text.more_reviews_and_write_review }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if additional_products_disp %}
+        <div id="navbar__pane-additional" class="additional-product slick-list-until-md-outer mb-5 slick-arrow--middle slick-arrow--small slick-gap slick-center navbar__pane slick-has-counter">
+            <div class="additional-product__title d-flex align-items-center justify-content-center">
+                <h6 class="js-animate-title-dots">{{ text.additional_products }}</h6>
+            </div>
+            <div class="js-additional-product-wrapper">
+                <div class="loading-spinner__wrap col-12">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if similar_products_disp %}
+        <div id="navbar__pane-similar" class="similar-product slick-list-until-md-outer mb-5 slick-arrow--middle slick-arrow--small slick-center slick-gap slick-has-counter">
+            <div class="similar-product__title d-flex align-items-center justify-content-center">
+                <h6 class='js-animate-title-dots'>
+                    {{ text.similar_products }}
+                </h6>
+            </div>
+            <div class="js-similar-product-wrapper">
+                <div class="loading-spinner__wrap col-12">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if prices_disp %}
+            {% if credit_disp %}
+                <div id="artdet__credits" class='artdet-credits my-5'>
+                    {% if cetelem_disp %}
+                        <div class="artdet-credit__title" id="page_artdet_credit_head">{{ text.credit_calculator }}</div>
+                        <div class="artdet-credit__content p-3" id="page_artdet_credit">
+                            <div>{{ text.cetelem_custom_text_1 }}</div>
+                            {{ cetelem_content }}
+                            <div>{{ text.cetelem_custom_text_2 }}</div>
+                        </div>
+                    {% endif %}
+                    {% if cofidis_disp %}
+                        <div class="artdet-credit__title" id="page_artdet_cofidis_credit_head">{{ text.credit_calculator }}</div>
+                        <div class="artdet-credit__content p-3" id="page_artdet_cofidis_credit">{{ cofidis_content }}</div>
+                    {% endif %}
+                    {% if otp_aruhitel_disp %}
+                        <div class="artdet-credit__title" id="page_artdet_otp_aruhitel_credit_head">{{ text.credit_calculator }}</div>
+                        <div class="artdet-credit__content p-3" id="page_artdet_otp_aruhitel_credit">{{ otp_aruhitel_content }}</div>
+                    {% endif %}
+                    {% if money_hu_disp %}
+                        {% if money_hu_head_disp %}
+                            <div class="artdet-credit__title" id="page_artdet_bankracio_credit_head">{{ text.credit_calculator }}</div>
+                        {% endif %}
+                        <div class="artdet-credit__content {% if not bankracio_head_disp %}d-block{% endif %}" id="page_artdet_bankracio_credit">
+                            <div id="bankracio_hu_payment_banner">
+                                <div data-br-service="banner/br_hitel_responsive_14" data-place="{{ shop_id }}"></div>
+                                <script>
+                                    (function() {
+                                        var script = document.createElement("script"); script.type = "text/javascript"; script.async = true;
+                                        script.src = "https://static.bankracio.hu/assets/js/brhu_insert.js";
+                                        document.getElementsByTagName("head")[0].appendChild(script);
+                                    })();
+                                </script>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <script type="text/javascript">
+                        var open_cetelem=false;
+                        $("#page_artdet_credit_head").click(function() {
+                            if(!open_cetelem) {
+                                $("#page_artdet_credit").slideDown( "100", function() {});
+                                open_cetelem = true;
+                            } else {
+                                $("#page_artdet_credit").slideUp( "100", function() {});
+                                open_cetelem = false;
+                            }
+                        });
+
+                        var open_cofidis=false;
+                        $("#page_artdet_cofidis_credit_head").click(function() {
+                            if(!open_cofidis) {
+                                $("#page_artdet_cofidis_credit").slideDown( "100", function() {});
+                                open_cofidis = true;
+                            } else {
+                                $("#page_artdet_cofidis_credit").slideUp( "100", function() {});
+                                open_cofidis = false;
+                            }
+                        });
+
+                        var open_otp_aruhitel=false;
+                        $("#page_artdet_otp_aruhitel_credit_head").click(function() {
+                            if(!open_otp_aruhitel) {
+                                $("#page_artdet_otp_aruhitel_credit").slideDown( "100", function() {});
+                                open_otp_aruhitel = true;
+                            } else {
+                                $("#page_artdet_otparuhitel_credit").slideUp( "100", function() {});
+                                open_otp_aruhitel = false;
+                            }
+                        });
+
+                        var open_bankracio=false;
+                        $("#page_artdet_bankracio_credit_head").click(function() {
+                            if(!open_bankracio) {
+                                $("#page_artdet_bankracio_credit").slideDown( "100", function() {});
+                                open_bankracio = true;
+                            } else {
+                                $("#page_artdet_bankracio_credit").slideUp( "100", function() {});
+                                open_bankracio = false;
+                            }
+                        });
+                    </script>
+                </div>
+            {% endif %}
+        {% endif %}
+        {{ product_form_end }}
+
+        <div id="artdet__retargeting" class='artdet__retargeting'>
+            {% if retargeting_div_product_disp %}
+                {% if stock_available %}
+                    {{ retargeting_div_product }}
+                {% endif %}
+                {% if not stock_disabled %}
+                    {% if not stock_available %}
+                        {{ retargeting_div_out_of_stock }}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if social_media_disp %}
+            <div class="artdet__social row gutters-1 align-items-center justify-content-end font-l">
+                {% if social_share_disp %}
+                    {% for type in social_shares %}
+                        <div class="artdet__social-icon col-auto">
+                            <div class='artdet__social-icon-inner artdet__social-icon-{{ type.name }} border text-center font-s' onclick='{{ type.onclick_value }}'></div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if facebook_like_disp %}
+                    <div class="col-auto d-flex">{{ facebook_like_content }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if img_exists %}
+        <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="pswp__bg"></div>
+            <div class="pswp__scroll-wrap">
+                <div class="pswp__container">
+                    <div class="pswp__item"></div>
+                    <div class="pswp__item"></div>
+                    <div class="pswp__item"></div>
+                </div>
+                <div class="pswp__ui pswp__ui--hidden">
+                    <div class="pswp__top-bar">
+                        <div class="pswp__counter"></div>
+                        <button class="pswp__button pswp__button--close"></button>
+                        <button class="pswp__button pswp__button--fs"></button>
+                        <button class="pswp__button pswp__button--zoom"></button>
+                        <div class="pswp__preloader">
+                            <div class="pswp__preloader__icn">
+                                <div class="pswp__preloader__cut">
+                                    <div class="pswp__preloader__donut"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                        <div class="pswp__share-tooltip"></div>
+                    </div>
+                    <button class="pswp__button pswp__button--arrow--left"></button>
+                    <button class="pswp__button pswp__button--arrow--right"></button>
+                    <div class="pswp__caption">
+                        <div class="pswp__caption__center"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    {% if additional_products_disp or similar_products_disp %}
+    /*** Slick elements ***/
+    function productListSlick($elem){
+        $($elem).on('init reInit afterChange', function(event, slick){
+            $($elem+' ~ .slick-counter').html((Math.ceil(slick.currentSlide/slick.slickGetOption('slidesToShow'))+1)+' / '+ Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow')));
+            if(Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow'))===1){
+                $($elem+' ~ .slick-counter').html('');
+            }
+        });
+        $($elem).not('.slick-initialized').slick({
+            autoplay: false,
+            arrows: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            useTransform: true,
+            adaptiveHeight: false,
+            touchThreshold: 80,
+            mobileFirst: true,
+            lazyLoad: 'ondemand',
+            waitForAnimate: true,
+            responsive: [
+                {
+                    breakpoint: 575,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3
+                    }
+                },
+                {
+                    breakpoint: 991,
+                    settings: {
+                        draggable: false,
+                        slidesToShow: 4,
+                        slidesToScroll: 4
+                    }
+                }
+            ]
+        });
+    }
+    $(document).ready(function(){
+        {% if additional_products_disp %}
+        $(".js-additional-product-wrapper").load("{{ additional_products_url }}", function (response) {
+            if (response==="no") {
+                $("#navbar__pane-additional").addClass("d-none");
+                return;
+            }
+            productListSlick('.additional-product__items');
+        });
+        {% endif %}
+
+        {% if similar_products_disp %}
+        $(".js-similar-product-wrapper").load("{{ similar_products_url }}", function (response) {
+            if (response==="no") {
+                $("#navbar__pane-similar").addClass("d-none");
+                return;
+            }
+
+            productListSlick('.similar-product__items');
+        });
+        {% endif %}
+    });
+    {% endif %}
+    $(document).ready(function(){
+        {% if reviews_highlighted_disp %} $('.js-scroll-to-reviews').on('click', function(){ scrollToElement('.js-reviews-content'); }); {% endif %}
+        {% if products_in_bundle_disp %} $(".js-bundle-product-wrapper").load("{{ bundle_product_url }}"); {% endif %}
+    });
+</script>

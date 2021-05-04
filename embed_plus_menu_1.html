@@ -1,0 +1,12 @@
+{% if menu_disp %}
+	{% for menu_item in menu_list %}
+		<li class="plus-menu{% if menu_item.selected %} is-selected{% endif %}{% if menu_item.menu_sub_disp %} has-child{% endif %}" data-id="{{ menu_item.id }}" data-level="{{ level }}">
+			<a class="plus-menu__name" href="{{ menu_item.url }}"{% if menu_item.target_blank %} target="_blank"{% endif %}>{{ menu_item.name }}</a>
+			{% if menu_item.menu_sub_disp %}
+				<ul class="plus-menu__sub">
+					{{ menu_item.menu_sub_list }}
+				</ul>
+			{% endif %}
+		</li>
+	{% endfor %}
+{% endif %}

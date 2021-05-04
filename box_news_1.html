@@ -1,0 +1,14 @@
+<div id='box_news_content' class='box_content'>
+    {% for news_item in news %}
+        <div class="box_news_item">
+            <div class="box_news_date">{{ news_item.date }} {{ news_item.time }}</div>
+            <div class="box_news_title"><a href="{{ news_item.url }}">{{ news_item.title }}</a></div>
+            <div class="box_news_content">{{ news_item.content }}</div>
+        </div>
+    {% endfor %}
+    {% if news_more_disp %}
+        <div class="box_news_button_more">
+            <a href="{{ news_url }}">{{ text.button_next }}</a>
+        </div>
+    {% endif %}
+</div>

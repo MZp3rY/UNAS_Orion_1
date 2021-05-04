@@ -1,0 +1,28 @@
+<div id='page_search_content' class='page_content'>
+    {% if no_product %}
+        <div class="viewing-sorting-filter-top border my-3">
+            <div class="viewing-sorting-filter-top__inner row gutters-5 px-2 align-items-center position-relative">
+                [[ box|name:shop_filter ]]
+            </div>
+        </div>
+        <div class="product-list-wrapper row gutters-10">
+            <div id='page_art_head_box' class='col-12 py-4 text-uppercase font-l'>{{ text.search_no_product }}</div>
+        </div>
+    {% endif %}
+    {% if too_many %}
+        <div id='page_art_head_box' class='py-4 text-uppercase font-l'>{{ text.too_many_search_result }}</div>
+    {% endif %}
+    {% if too_short %}
+        <div id='page_art_head_box' class='py-4 text-uppercase font-l'>{{ text.too_short_search_word }}</div>
+    {% endif %}
+
+    {{ product_list }}
+    {% if retargeting_div_search_disp %}
+        {{ retargeting_div_search }}
+    {% endif %}
+    {% if complex_disp %}
+        <div class='my-4 text-center'>
+            <button type="button" class="btn btn-primary" onclick="location.href='{{ complex_url }}'">{{ text.button_new_search }}</button>
+        </div>
+    {% endif %}
+</div>

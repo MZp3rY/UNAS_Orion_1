@@ -1,0 +1,34 @@
+{{ backvar(cat_img_maxwidth,185) }}
+{{ backvar(cat_img_maxheight,132) }}
+{{ backvar(cat_img_resize_ratio,0) }}
+
+{% for cat in cat_list %}
+    <li class="cat-menu mb-5 js-cat-menu-{{ cat.id }}" data-level="{{ level }}" data-id="{{ cat.id }}">
+        {% if cat.product_count_disp or cat.product_new_count_disp %}
+            <div class="cat-menu__badges pb-1">
+                {% if cat.product_new_count_disp %}
+                    <div class="cat-menu__product-new-count badge badge--cat-new px-2 text-lowercase">
+                        <span class="font-weight-bold">{{ cat.product_new_count }}</span>&nbsp;{{ text.status_new }}
+                    </div>
+                {% endif %}
+                {% if cat.product_count_disp %}
+                    <div class="cat-menu__product-count badge badge--cat-qty px-2">
+                        <span class="font-weight-bold">{{ cat.product_count }}</span>&nbsp;{{ text.product }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <a href="{{ cat.url }}" title="{{ cat.name }}" {% if cat.target_blank %} target="_blank"{% endif %}>
+            <div class="cat-menu__img-wrapper mb-2">
+                <div class="cat-menu__img-wrapper-inner position-relative">
+                    <img class="cat-menu__img lazyload product-img" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ cat.img_url }}"{% if cat.img_retina_exists %} data-srcset="{{ cat.img_retina_url }} {{ cat.img_retina_size }}"{% endif %} alt="{{ cat.name }}" title="{{ cat.name }}" />
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </a>
+        <a class="cat-menu__name line-clamp--2-12" href="{{ cat.url }}" {% if cat.target_blank %} target="_blank"{% endif %}>
+            {{ cat.name }}
+        </a>
+        {% if cat.cat_sub_disp %}{{ cat.cat_sub_list }}{% endif %}
+    </li>
+{% endfor %}

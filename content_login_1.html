@@ -1,0 +1,64 @@
+<div class='page-login page_content' id='page_login_content'>
+    {% if custom_content_top_disp %}
+        <div class='page_txt'>{{ custom_content_top }}</div>
+        <div class="line-separator"></div>
+    {% endif %}
+    <div class="page-login__inner container-max-md mx-auto px-0 py-3">
+        <div class="row gutters-20">
+            <div class="col-sm-6 page-login__sign-in-col">
+                {{ form_start }}
+                <div class="page-login__sign-in py-3">
+                    <h4 class="page-login-title text-uppercase py-2 font-xl mb-3">{{ text.is_returning_customer }}</h4>
+                    <div class="form-group form-label-group page-login__name">
+                        <input class="page_login_input form-control" name="shop_user_login" id="shop_user_login_page" placeholder="{{ username_title }}" type="text" />
+                        <label for="shop_user_login_page">{{ username_title }}</label>
+                    </div>
+                    <div class="form-group form-label-group page-login__password ">
+                        <input class="page_login_input form-control" name="shop_pass_login" id="shop_pass_login_page" placeholder="{{ text.password }}" type="password"/>
+                        <label for="shop_pass_login_page">{{ text.password }}</label>
+                    </div>
+                    <button type="button" class="page-login__remind-btn btn btn-link p-0 mb-4 text-primary font-xs" onclick="overlay_login_remind();">{{ text.forgot_my_password }}</button>
+                    <button class="page-login__sign-in-btn btn btn-primary btn-block mb-3">{{ text.button_login }}</button>
+                    {% if facebook_disp or google_disp %}
+                        <div class="page-login__third-parties d-flex align-items-center">
+                            {% if facebook_disp %}
+                                <div class="facebook-login-outer btn btn-block btn-outline-primary position-relative {% if google_login_disp %}mr-3{% endif %}">
+                                    Facebook
+                                    <iframe class="facebook_login position-absolute w-100 h-100" scrolling="no" src="{{ facebook_url }}"></iframe>
+                                </div>
+                            {% endif %}
+                            {% if google_disp %}
+                                <div class="google-login-outer btn btn-block btn-outline-primary position-relative mt-0">
+                                    Google
+                                    <iframe class="google_login position-absolute w-100 h-100" scrolling="no" src="{{ google_url }}"></iframe>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                {{ form_end }}
+            </div>
+            <div class="col-sm-6">
+                <div class="page-login__reg py-3" id='page_login_reg'>
+                    <h4 class="page-login-title text-uppercase py-2 font-xl mb-3">{{ text.is_new_customer }}</h4>
+                    <h5 class="page-login-text">{{ text.registration_advantages }}</h5>
+                    <ul class="page-login__reg-adv">
+                        <li>{{ text.registration_promo_text_1 }}</li>
+                        <li>{{ text.registration_promo_text_2 }}</li>
+                        <li>{{ text.registration_promo_text_3 }}</li>
+                    </ul>
+                    <button class="overlay-reg__btn-reg btn btn-primary btn-block mb-3" onclick="location.href='{{ reg_url }}'">{{ text.registration }}</button>
+                    {% if noreg_disp %}
+                        <button class="overlay-reg__btn-no-reg btn btn-primary btn-block" onclick="location.href='{{ noreg_url }}'">
+                            {{ text.button_continue_without_registration }}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if custom_content_bottom_disp %}
+        <div class="line-separator"></div>
+        <div class='page_txt'>{{ custom_content_bottom }}</div>
+    {% endif %}
+</div>

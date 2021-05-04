@@ -1,0 +1,15 @@
+<div class="order-steps page_orderflow_step_{{ step_count }} mt-2 mb-3 my-md-5" id="page_orderflow_outer">
+    <div class="order-steps-inner d-flex no-gutters align-items-start justify-content-center">
+        {% for step in steps %}
+            <div class="col-auto order-step order-step--{{ step.key }} flex-column{% if fade_reg and step.key == 'reg' %} is-done{% endif %}{% if fade_mods and step.key == 'mods' %} is-done{% endif %}{% if fade_control and step.key == 'control' %} is-done{% endif %}{% if fade_send and step.key == 'send' %} is-done{% endif %}{% if fade_checkout and step.key == 'checkout' %} is-done{% endif %}{% if step.key == actual_key %} is-active{% endif %}">
+                {% if link_reg and step.key == 'reg' %}<a href="{{ link_reg_url }}">{% endif %}
+                {% if link_mods and step.key == 'mods' %}<a href="{{ link_mods_url }}">{% endif %}
+                <div class="order-step__icon text-center"></div>
+                <div class="order-step__text pt-3 pt-md-4 icon-on-top text-center text-body">{{ step.title }}</div>
+                {% if link_reg and step.key == 'reg' %}</a>{% endif %}
+                {% if link_mods and step.key == 'mods' %}</a>{% endif %}
+            </div>
+            {% if not loop.last %}<div class="col-auto order-step__dots{% if actual_key == 'mods' and step.key == 'reg' %} is-done{% endif %}{% if actual_key == 'send' and step.key == 'mods' %} is-done{% endif %}{% if actual_key == 'control' and step.key == 'mods' %} is-done{% endif %}{% if actual_key == 'send' and step.key == 'control' %} is-done{% endif %}{% if actual_key == 'checkout' and step.key == 'send' %} is-done{% endif %}"></div>{% endif %}
+        {% endfor %}
+    </div>
+</div>

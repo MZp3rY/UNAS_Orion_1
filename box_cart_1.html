@@ -1,0 +1,76 @@
+{% if not ajax_disp %}
+<div class="cart-box-col flex-y-center">
+    <div id='box_cart_content' class='cart-box flex-y-center js-dropdown-container'>
+{% endif %}
+        <button class="cart-box__btn js-dropdown--btn dropdown--btn {% if not cart_empty %}has-product{% endif %}" aria-label="cart button">
+            <span class="cart-box__btn-icon icon--cart">
+                {% if not cart_empty %}
+                    <span class='cart-box__item-num position-absolute font-weight-bold'>{{ total_product_count }}</span>
+                {% endif %}
+            </span>
+        </button>
+        <div class='dropdown--content dropdown--content-r js-dropdown--content cart-box__dropdown js-cart-box__dropdown bg-white drop-shadow {% if not cart_empty %}p-lg-4{% endif %}'>
+            <div class="cart-box__btn-close d-lg-none dropdown--btn-close js-dropdown--btn-close"></div>
+            {% if cart_empty %}
+                <div class="cart-box__empty py-4 font-s">
+                    <span class='cart-box__empty-text'>{{ text.cart_is_empty }}.</span>
+                    <a class="cart-box__jump-to-products-btn btn-link text-primary" href="[unas_shop_url]/sct/0/">{{ text.click_here_to_purchase }}</a>
+                </div>
+            {% else %}
+                <div class="cart-box__dropdown-inner d-flex flex-column d-xl-block h-100">
+                    <div class='cart-box__items js-cart-box__dropdown__items'>
+                        {% for product in products %}
+                            <div class='cart-box__item py-4 border-bottom'>
+                                <div class="row gutters-5 position-relative">
+                                    <a class="cart-box__del-btn position-relative icon--close" href='{{ product.delete_url }}' title="{{ text.delete }}"></a>
+                                    {% if product.img_allowed %}
+                                        <div class="col-auto">
+                                            <div class='cart-box__pic-wrap position-relative'>
+                                                <a href='{{ product.url }}' title='{{ product.name }}'>
+                                                    <img class="cart-box__pic" src='{{ product.img_url }}'{% if product.img_retina_exists %} srcset='{{ product.img_retina_url }} {{ product.img_retina_size }}'{% endif %} alt='{{ product.img_alt }}' title='{{ product.img_alt }}' />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col">
+                                        <div class='cart-box__name font-weight-bold font-s line-height-12 text-left'>
+                                            <a href='{{ product.url }}'>{{ product.name }}</a>
+                                        </div>
+                                        {% if product.variant_1_disp or product.variant_2_disp or product.variant_3_disp %}
+                                            <div class='cart-box__variants font-xs text-left mt-2'>
+                                                {% if product.variant_1_disp %}<div class="row no-gutters">{{ product.variant_1_title }}: {{ product.variant_1_value }}</div>{% endif %}
+                                                {% if product.variant_2_disp %}<div class="row no-gutters">{{ product.variant_2_title }}: {{ product.variant_2_value }}</div>{% endif %}
+                                                {% if product.variant_3_disp %}<div class="row no-gutters">{{ product.variant_3_title }}: {{ product.variant_3_value }}</div>{% endif %}
+                                            </div>
+                                        {% endif %}
+                                        <div class='cart-box__volume col px-0 font-xs mt-2'>
+                                            <span class='cart-box__volume-qty'>{{ product.qty }}</span>
+                                            <span class='cart-box__volume-unit'>{{ product.unit }}</span>
+                                        </div>
+                                        <div class="cart-box__item-price--full font-s font-weight-bold text-right text-cn font-weight-bold">{{ product.total_price }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class='cart-box__sum font-weight-bold pt-2 pb-4'>
+                        <div class="row no-gutters">
+                            <div class="col px-0 m-auto">
+                                <div class='cart-box__sum-text text-lowercase font-l text-cn font-weight-bold'>{{ text.total_amount }}:</div>
+                            </div>
+                            <div class="col px-0">
+                                <div class='cart-box__sum-price text-cn font-weight-bold'>{{ total_price }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-box__to-cart-wrap">
+                        <button class="cart-box__to-cart btn btn-primary btn-block" onclick="location.href='{{ order_url }}'" type='button'>{{ text.button_checkout }}</button>
+                    </div>
+                    <button class="cart-box__to-cart-link btn btn-link btn-block" onclick="location.href='{{ cart_url }}'" type='button'>{{ text.button_go_to_cart }}</button>
+                </div>
+            {% endif %}
+        </div>
+{% if not ajax_disp %}
+    </div>
+</div>
+{% endif %}

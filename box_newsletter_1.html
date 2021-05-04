@@ -1,0 +1,78 @@
+{% if start_disp %}
+	<div class="subscribe-newsletter paralax-section">
+        <div class="paralax-wrap">
+            <div class="paralax lazyload" data-bgset="[[ element|name:start_item_4;width:1920;layout:bg ]]"></div>
+        </div>
+        <div class="paralax-content">
+            <div class="subscribe-newsletter__container container py-5">
+                <div class="row justify-content-center m-0">
+                    <div class="subscribe-newsletter__title-and-content col-md mb-4 m-md-auto">
+                        [[ element|name:start_newsletter_title;class:newsletter-box__title text-center text-white text-md-left font-weight-bold text-uppercase px-2 pr-4 font-xl;layout:html ]]
+                        [[ element|name:start_newsletter_text;class:newsletter-box__text text-center text-white text-md-left px-2 pr-4;layout:html ]]
+                    </div>
+                    <div class="subscribe-newsletter__box col-md-auto px-0">
+                        <div class='subscribe-newsletter__box--box subscribe-newsletter__box-input-count-{{ field_num }}'>
+                            {{ normal_form_start }}
+                            {% if name_disp %}
+                                <div class='form-label-group subscribe-newsletter-box__name subscribe-newsletter-box__input p-0 mb-2'>
+                                    <input name="news_name" placeholder="{{ text.name }}" value="{{ name_value }}" id="news_name" type="text" maxlength="200" class="subscribe-newsletter-box__name form-control">
+                                    <label for="news_name">{{ text.name }}</label>
+                                </div>
+                            {% endif %}
+                            {% if address_disp %}
+                                <div class='form-label-group subscribe-newsletter-box__address subscribe-newsletter-box__input p-0 mb-2'>
+                                    <input name="news_addr" placeholder="{{ text.address }}" value="{{ address_value }}" id="news_addr" type="text" maxlength="200" class="subscribe-newsletter-box__address form-control">
+                                    <label for="news_addr">{{ text.address }}</label>
+                                </div>
+                            {% endif %}
+                            <div class='form-label-group subscribe-newsletter-box__email subscribe-newsletter-box__input p-0 mb-2'>
+                                <input id="news_emai" placeholder="{{ text.email }}" name="news_emai" value="{{ email_value }}" type="text" maxlength="200" class="subscribe-newsletter-box__email text-lowercase form-control">
+                                <label for="news_emai">{{ text.email }}</label>
+                            </div>
+                            <div class='subscribe-newsletter-box__privacy_policy px-0 py-2 font-xs form-check'>
+                                <input name="news_privacy_policy" class="form-check-input" id="news_privacy_policy_{{ box_num }}" type="checkbox" value="1">
+                                <label for='news_privacy_policy_{{ box_num }}' class="text-white form-check-label">{{ text.accept_privacy_policy }}</label>
+                            </div>
+                            <div class=' subscribe-newsletter-box__button-up-wrap py-2'>
+                                <button class="subscribe-newsletter-box__button-up btn btn-primary w-100" type="button" onclick="newsletter{{ box_num }}_submit();">{{ text.button_subscribe }}</button>
+                            </div>
+                            {{ end_script }}
+                            {{ normal_form_end }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class='newsletter__box--box newsletter__box-input-count-{{ field_num }}'>
+        {{ normal_form_start }}
+        <div class='row no-gutters align-items-center justify-content-center'>
+            {% if name_disp %}
+                <div class='col-sm-12 col-lg-auto align-self-center form-label-group newsletter-box__name newsletter-box__input p-0 mb-1 text-center'>
+                    <input name="news_name" value="{{ name_value }}" placeholder="{{ text.name }}" id="news_name" type="text" maxlength="200" class="newsletter-box__name form-control" tabindex="1">
+                    <label for="news_name">{{ text.name }}</label>
+                </div>
+            {% endif %}
+            {% if address_disp %}
+                <div class='col-sm-12 col-lg-auto align-self-center form-label-group newsletter-box__address newsletter-box__input p-0 mb-1 text-center'>
+                    <input name="news_addr" value="{{ address_value }}" placeholder="{{ text.address }}" id="news_addr" type="text" maxlength="200" class="newsletter-box__address form-control" tabindex="2">
+                    <label for="news_addr">{{ text.address }}</label>
+                </div>
+            {% endif %}
+            <div class='col-sm-12 col-lg-auto align-self-center form-label-group newsletter-box__email newsletter-box__input p-0 mb-1 text-center'>
+                <input id="news_emai" value="{{ email_value }}" placeholder="{{ text.email }}" name="news_emai" type="text" maxlength="200" class="newsletter-box__email text-lowercase form-control" tabindex="3">
+                <label for="news_emai">{{ text.email }}</label>
+            </div>
+            <div class='col-12 newsletter-box__privacy_policy py-2 font-xs form-check'>
+                <input name="news_privacy_policy" class="form-check-input" id="news_privacy_policy_{{ box_num }}" type="checkbox" value="1" tabindex="4">
+                <label for='news_privacy_policy_{{ box_num }}' class="form-check-label">{{ text.accept_privacy_policy }}</label>
+            </div>
+            <div class='col-auto align-self-center newsletter-box__button-up-wrap px-0 py-2 text-center'>
+                <button class="newsletter-box__button-up btn btn-primary w-100" tabindex="5" type="button" onclick="newsletter{{ box_num }}_submit();">{{ text.button_subscribe }}</button>
+            </div>
+        </div>
+        {{ end_script }}
+        {{ normal_form_end }}
+    </div>
+{% endif %}

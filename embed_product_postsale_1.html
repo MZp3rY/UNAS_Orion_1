@@ -1,0 +1,55 @@
+{{ backvar(main_img_maxwidth,280) }}
+{{ backvar(main_img_maxheight,300) }}
+
+<div class="container js-postsale-container">
+    <div class="row">
+        <div class="col-12 col-md-6 popup-postsale-artdet-left d-flex align-items-center justify-content-center">
+            <img class='lazyload' src="[unas_shop_url]/main_pic/space.gif" data-src="{{ img_url }}"{% if img_retina_exists %} data-srcset="{{ img_retina_url }} {{ img_retina_size }}"{% endif %} id="main_image" alt="{{ img_alt }}" title="{{ img_alt }}" />
+        </div>
+        <div class="col-12 col-md-6 popup-postsale-artdet-right">
+            <div class="popup-postsale-artdet-product__name mb-3 text-uppercase font-weight-bold line-clamp--2-12 font-xxl">{{ name }}</div>
+            {% if price_disp %}
+                <div class="popup-postsale-artdet-product__normal-price">
+                    {{ text.base_price }}:  <span class="text-line-through text-cn font-xxl">{{ price }}</span>
+                </div>
+            {% endif %}
+
+            {% if price_sale_disp %}
+                <div class="popup-postsale-artdet-product__sale-price">
+                    {{ text.sale_price }}: <span class="text-line-through text-cn font-xxl">{{ price_sale }}</span>
+                </div>
+            {% endif %}
+
+            {% if postsale_price_disp %}
+                <div class="popup-postsale-artdet-product__postsale-price text-danger font-weight-bold">
+                    {{ text.postsale_price }}: <span class="popup-postsale-artdet-product__postsale-price-amount text-cn font-xxl">{{ postsale_price }}</span>
+                </div>
+            {% endif %}
+
+            <div class="popup-postsale-artdet-order__total-amount my-3">
+                {{ postsale_total_price }}
+            </div>
+
+            <div class="popup-postsale-ardtet-informations mb-3">
+                {{ text.postsale_info_text }}
+            </div>
+            <div class="page_postsale_buttons text-center">
+                <button type="button" onclick="popup_action_postsale({{ order_key }},'{{ sku_always }}');" class="popup-postsale-artdet-function-postsale-button btn btn-primary btn-block mb-2">{{ text.button_want_it }}</button>
+                <button type="button" onclick="$.shop_popup('close')" class="popup-postsale-artdet-function-postsale-link btn btn-link">{{ text.button_not_want_it }}</button>
+            </div>
+            <div class="beforesend m-auto text-center"></div>
+            <div class="success_wrapper">
+                <div class="success"></div>
+                <div class="success_text my-2">
+                    {{ text.product_added_to_order }}
+                </div>
+                <div class="clear_fix"></div>
+            </div>
+            <div class="success_wrapper">
+                <button type="button" onclick="$.shop_popup('close')" class="popup-postsale-artdet-function-postsale-button-close btn btn-primary">
+                    {{ text.button_close }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

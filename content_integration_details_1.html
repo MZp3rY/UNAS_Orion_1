@@ -1,0 +1,6 @@
+<div id='page_help_checkout_content' class='page_content'>
+    {% for section in sections %}
+        {% if section.title_disp %}<div class='page_artdet_name_outer'><div class='page_artdet_name'><strong>{{ section.title }}</strong></div></div>{% endif %}
+        {% if section.content_disp %}<div class='page_help_content text-justify'>{{ section.content }}</div>{% endif %}
+    {% endfor %}
+</div>

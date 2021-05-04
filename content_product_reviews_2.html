@@ -1,0 +1,217 @@
+{{ backvar(review_count_per_page,4) }}
+{{ backvar(product_img_width,50) }}
+{{ backvar(product_img_height,50) }}
+
+<div id='page_artforum_content' class='page--artforum page_content py-4 py-md-5 artforum--type-2'>
+    {% if reviews_disp %}
+        {{ script }}
+
+        {% if already_reviewed %}
+            <div class='artforum__subitle-wrap d-flex align-items-center justify-content-center'>
+                <h1 class="artforum__subtitle js-animate-title-dots">{{ text.reviews_about_product }}</h1>
+            </div>
+            <div class='artforum__review pb-5'>
+                <div class="row review-summary-block align-items-center my-2">
+                    <div class="col-lg-auto mr-lg-auto my-2 my-lg-0">
+                        <div class="review-summary row gutters-5 align-items-center justify-content-start">
+                            <div class="review-summary__average-text col-auto text-uppercase font-weight-bold">
+                                {{ text.reviews_avg }}:
+                            </div>
+                            <div class="col-auto">
+                                <div class="row no-gutters">
+                                    <div class="review-summary__stars rating-stars text-primary col-auto">
+                                        <div class="rating-stars__back">
+                                            <div class="rating-stars__front" style="width: {{ reviews_score_percent }}%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="review-summary__score-wrap col-auto pl-2">
+                                        <span class="review-summary__score-num px-2 py-1 border rounded font-weight-bold">{{ reviews_score_avg }}</span>
+                                        <span class="review-summary__reviews-count pl-3 font-s">({{ reviews_count }} {{ text.review }})</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-auto ml-lg-auto my-2 my-lg-0">
+                        <div class="artforum__write-your-own-opinion row gutters-5 align-items-center justify-content-lg-end">
+                            <div class="artforum__write-your-own-opinion-text col-auto my-2 font-s">{{ text.question_no_review }}</div>
+                            <div class="artforum__buttons-wrap col-auto">
+                                <div class="artforum__buttons-wrap-inner row gutters-5">
+                                    <div class='artforum__jump-to-writing-btn-outer col-auto'>
+                                        <button type="button" class='artforum__jump-to-writing-btn js-scroll-down btn btn-primary py-2' data-scroll='writing-review'>{{ text.button_write_review }}</button>
+                                    </div>
+                                    <div class="col-auto artforum__btn-back-wrap">
+                                        <button class="artforum__btn-back btn btn-primary py-2" type="button" onclick="location.href='{{ back_url }}'" title='{{ text.button_back }}'>{{ text.button_back }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if paging_disp %}
+                    <nav class="artforum-paging paging--top d-flex align-items-center justify-content-center py-1 py-md-3 border-bottom border-top" aria-label="pagination">
+                        {{ paging_content }}
+                    </nav>
+                {% endif %}
+                <div class="product-reviews">
+                    <div class="row gutters-40">
+                        {% for review in reviews %}
+                            <div class='product-review col-md-6 mt-4'>
+                                <div class="product-review__head row gutters-10 align-items-center mb-3 mb-lg-4">
+                                    <div class="product-review__stars-outer col-auto d-inline-flex align-items-center">
+                                        <div class="product-review__stars rating-stars text-primary font-xs">
+                                            <div class="rating-stars__back">
+                                                <div class="rating-stars__front" style="width:calc( 100% * {{ review.score }} / 5);"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if review.author_name_disp %}
+                                        <div class="product-review__author col-auto flex-grow-1">{{ review.author_name }}</div>
+                                    {% endif %}
+                                    <div class="product-review__created-at col-auto font-s">{{ review.date }}</div>
+                                </div>
+                                <div class="product-review__body">
+                                    <div class='product-review__wrap'>
+                                        <div class='product-review__message mb-4 text-justify'>{{ review.message }}</div>
+                                        {% if pro_con_disp %}
+                                            <div class="product-review__adv-disadv">
+                                                <div class="product-review__advantage">
+                                                    <strong>{{ text.advantages }}:</strong> {{ review.pro }}
+                                                </div>
+                                                <div class="product-review__disadvantage">
+                                                    <strong>{{ text.disadvantages }}:</strong> {{ review.con }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if paging_disp %}
+                    <nav class="artforum-paging paging--bottom d-flex align-items-center justify-content-center py-1 py-md-3 border-top border-bottom" aria-label="pagination">
+                        {{ paging_content }}
+                    </nav>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="writing-review__title-wrap d-flex align-items-center justify-content-center">
+            <h2 class="writing-review__title js-animate-title-dots">{{ text.write_review_about_product }}</h2>
+        </div>
+        <div class="writing-review my-5 container-max-md mx-auto">
+            <div class="writing-review__product-pic-name-wrap row no-gutters mb-5 align-items-center">
+                {% if product_img_disp %}
+                    <div class="writing-review__product-pic-wrap col-auto">
+                        <img src="{{ product_img_url }}" alt="{{ product_img_alt }}" title="{{ product_img_title }}" id="{{ product_img_id }}" />
+                    </div>
+                {% endif %}
+
+                <div class="writing-review__product-name-wrap col pl-4">
+                    <div class='writing-review__product-name text-uppercase font-weight-bold'>{{ product_name }}</div>
+                </div>
+            </div>
+
+            {{ form_start }}
+            {% if login_needed %}
+                <div class="writing-review__info my-2 font-xs font-md-s">{{ text.not_logged_in }}</div>
+            {% endif %}
+            <div class='writing-review__form-inner mb-5'>
+                <div class="row gutters-5">
+                    <div class="col-sm mb-3">
+                        <div class="writing-review__name form-label-group {% if author_name_error_disp %} has-fault{% endif %}">
+                            <input name="forum_name" placeholder="{{ text.name }}" id="forum_name" type="text" class="form-control {% if author_name!= '' %}fixed{% endif %}" maxlength="100" {% if login_needed %}readonly="1"{% endif %} value="{{ author_name }}"/>
+                            <label for="forum_name" {% if login_needed %}class="fixed"{% endif %}>{{ text.name }}</label>
+                            {% if author_name_error_disp %}
+                                <div class='text-danger p-2 font-s'>{{ text.error_required }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if author_email_disp %}
+                        <div class="col-sm mb-3">
+                            <div class="writing-review__email form-label-group {% if author_email_error_disp %} has-fault{% endif %}">
+                                <input name="forum_emai" placeholder="{{ text.email }}" id="forum_emai" type="text" class="form-control text-lowercase {% if author_email!= '' %}fixed{% endif %}" maxlength="100" {% if login_needed %}readonly="1"{% endif %} value="{{ author_email }}"/>
+                                <label for="forum_emai" {% if login_needed %}class="fixed"{% endif %}>{{ text.email }}</label>
+                                {% if author_email_error_disp %}
+                                    <div class='text-danger p-2 font-s'>{{ author_email_error_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-12 mb-3">
+                        <div class="writing-review__message form-label-group {% if message_error_disp %} has-fault{% endif %}">
+                            <textarea name="forum_message" placeholder="{{ text.message }}" id="forum_message" class="form-control">{{ posted_message }}</textarea>
+                            <label for="forum_message">{{ text.message }}</label>
+                            {% if message_error_disp %}
+                                <div class='text-danger p-2 font-s'>{{ text.error_required }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if pro_con_disp %}
+                        <div class="col-sm mb-3">
+                            <div class="writing-review__advantage form-label-group {% if pro_error_disp %} has-fault{% endif %}">
+                                <textarea name="forum_message_pros" placeholder="{{ text.advantages }}" class="form-control" id="forum_message_pros">{{ posted_pro }}</textarea>
+                                <label for="forum_message_pros">{{ text.advantages }}</label>
+                                {% if pro_error_disp %}
+                                    <div class='text-danger p-2 font-s'>{{ text.error_required }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-sm mb-3">
+                            <div class="writing-review__disadvantage form-label-group {% if con_error_disp %} has-fault{% endif %}">
+                                <textarea name="forum_message_cons" placeholder="{{ text.disadvantages }}" class="form-control" id="forum_message_cons">{{ posted_con }}</textarea>
+                                <label for="forum_message_cons">{{ text.disadvantages }}</label>
+                                {% if con_error_disp %}
+                                    <div class='text-danger p-2 font-s'>{{ text.error_required }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-sm-12 mb-3">
+                        <div class="writing-review__score d-flex align-items-center" id="page_artforum_write_score">
+                            <div class='writing-review__score-label mb-0 mr-2 font-s font-md-m'>{{ text.rating }}:</div>
+                            <div class='writing-review__score-value'>
+                                <div class='page_artforum_write_score_wrap position-relative'>
+                                    <span class="rating text-primary">
+                                        <input class="rating-input d-none" id="rating-input-1-5" name="forum_score" type="radio" value="5" {% if posted_score == 5 or posted_score is not defined %}checked="checked"{% endif %}/><label for="rating-input-1-5" class="rating-star m-0" data-rating="5"></label>
+                                        <input class="rating-input d-none" id="rating-input-1-4" name="forum_score" type="radio" value="4" {% if posted_score == 4 %}checked="checked"{% endif %}/><label for="rating-input-1-4" class="rating-star m-0" data-rating="4"></label>
+                                        <input class="rating-input d-none" id="rating-input-1-3" name="forum_score" type="radio" value="3" {% if posted_score == 3 %}checked="checked"{% endif %}/><label for="rating-input-1-3" class="rating-star m-0" data-rating="3"></label>
+                                        <input class="rating-input d-none" id="rating-input-1-2" name="forum_score" type="radio" value="2" {% if posted_score == 2 %}checked="checked"{% endif %}/><label for="rating-input-1-2" class="rating-star m-0" data-rating="2"></label>
+                                        <input class="rating-input d-none" id="rating-input-1-1" name="forum_score" type="radio" value="1" {% if posted_score == 1 %}checked="checked"{% endif %}/><label for="rating-input-1-1" class="rating-star m-0" data-rating="1"></label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="writing-review__policy {% if pp_error_disp %}has-fault{% endif %}">
+                            <div class='writing-review__policy form-check px-0'>
+                                <input name="forum_privacy_policy" id="forum_privacy_policy" class="form-check-input" type="checkbox" value="1" {% if pp_accepted %}checked="checked"{% endif %}/>
+                                <label for="forum_privacy_policy" class="form-check-label font-xs font-md-s">{{ text.accept_privacy_policy }}</label>
+                            </div>
+                            {% if pp_error_disp %}
+                                <div class='text-danger p-2 font-s'>{{ text.error_privacy_policy }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class='btn-wrap col-12 text-center mt-5'>
+                        {% if recaptcha_disp %}
+                            {{ recaptcha_script }}
+                            <button class="g-recaptcha btn btn-primary" {{ recaptcha_attributes }}>{{ text.button_send }}</button>
+                        {% else %}
+                            <button name="button" class="btn btn-primary" type="button" onclick="{{ button_onclick_value }}">{{ text.button_send }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {{ form_end }}
+        </div>
+    {% endif %}
+</div>

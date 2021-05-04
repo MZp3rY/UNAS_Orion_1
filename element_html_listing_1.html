@@ -1,0 +1,32 @@
+{{ backvar(slide_max_count,10) }}
+{{ backvar(enable,maintitle,img,img_link,html) }}
+
+{% if element_disp %}
+    <div class="{{ name }}">
+        {% if main_title_disp %}
+            <h6 class="footer__header mt-2 mt-lg-0 font-m font-md-xl">
+                {{ main_title }}
+            </h6>
+        {% endif %}
+        {% for slide in slides %}
+            {% if slide.img_default_disp %}
+                {% if slide.img_link_disp %}<a href="{{ slide.img_link_url }}"{% if slide.target_blank %} target="_blank"{% endif %}>{% endif %}
+                <picture>
+                    {% if slide.img_small_disp %}
+                        <source media="(max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px)" srcset="{{ slide.img_small_url }}{% if slide.img_small_retina_disp %}, {{ slide.img_small_retina_url }} 2x{% endif %}">
+                    {% endif %}
+                    {% if slide.img_medium_disp %}
+                        <source media="(max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px)" srcset="{{ slide.img_medium_url }}{% if slide.img_medium_retina_disp %}, {{ slide.img_medium_retina_url }} 2x{% endif %}">
+                    {% endif %}
+                    {% if slide.img_large_disp %}
+                        <source media="(max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px)" srcset="{{ slide.img_large_url }}{% if img_large_retina_disp %}, {{ slide.img_large_retina_url }} 2x{% endif %}">
+                    {% endif %}
+                    <img src="{{ slide.img_default_url }}" alt="{% if slide.alt_disp %}{{ slide.alt }}{% else %}{{ service_name }}{% endif %}"{% if slide.img_default_retina_disp %} srcset="{{ slide.img_default_retina_url }} 2x"{% endif %} />
+                </picture>
+                {% if slide.img_link_disp %}</a>{% endif %}
+            {% endif %}
+            {{ slide.html }}
+        {% endfor %}
+    </div>
+{% endif %}
+

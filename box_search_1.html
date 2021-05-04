@@ -1,0 +1,24 @@
+<div class="search-col js-dropdown-container">
+    <button class="search__btn js-search-btn js-dropdown--btn dropdown--btn" id="search__btn" aria-label="searchbar button">
+        <span class="search__btn-icon icon--search"></span>
+    </button>
+    <div class="search__dropdown dropdown--content js-dropdown--content dropdown--content-r d-xl-block">
+        <div class="search__btn-close icon--close btn btn--square btn-link d-lg-none dropdown--btn-close js-dropdown--btn-close"></div>
+        <div id='box_search_content{{ suffix }}' class="position-relative">
+            {{ form_start }}
+                <div class="input-group form-label-group mb-0">
+                    <input name="search" id="box_search_input{{ suffix }}" placeholder="{{ text.search }}" type="text" maxlength="100" class="ac_input form-control" autocomplete="off" required />
+                    <label for="box_search_input{{ suffix }}">{{ text.search }}</label>
+                    <div class='search-box__search-btn-outer input-group-append' title='{{ text.search }}'>
+                        <button class='search-btn btn btn-primary rounded border-primary text-center icon--search' aria-label="search"></button>
+                    </div>
+                    <div class="search__loading">
+                        <div class="loading-spinner--small"></div>
+                    </div>
+                </div>
+                <div class="search-box__mask"></div>
+            {{ form_end }}
+            <div class="ac_results{{ suffix }}"></div>
+        </div>
+    </div>
+</div>

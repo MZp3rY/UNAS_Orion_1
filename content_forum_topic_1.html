@@ -1,0 +1,105 @@
+<div class='forum-topic page_content'id='page_forum_topic_content'>
+    {% if back_disp %}
+        <div class="forum-topic__btn-back-wrap mb-3">
+            <button class="forum-topic__btn-back btn btn-primary" type="button" onclick="location.href='{{ back_url }}'" title="{{ text.button_back }}">{{ text.button_back }}</button>
+        </div>
+    {% endif %}
+    <div class="forum-topic__title bg-8 p-3 text-center font-l text-uppercase">{{ topic_title }}</div>
+    {% if comments_disp %}
+        {% if paging_disp %}
+            <nav class="forum-topic-paging d-flex align-items-center justify-content-center my-4 py-3 border-top" aria-label="pagination">
+                {{ paging_content }}
+            </nav>
+        {% endif %}
+        <div class='forum-topic__posts mb-5'>
+            {% for comment in comments %}
+                <div class='forum-topic__post'>
+                    <div class='forum-topic__post-header p-3 font-weight-bold border-bottom border-primary'>
+                        <div class="row align-items-baseline">
+                            <div class="col-sm-8">
+                                <div class='forum-topic__post-name-and-email d-flex flex-wrap align-items-baseline'>
+                                    <div class='forum-topic__num-wrap font-l bg-primary mr-3 d-inline-flex align-items-center justify-content-center'>
+                                        <span class='forum-topic__num text-white'>{{ comment.num }}</span>
+                                    </div>
+                                    <div class='forum-topic__post-name mr-2'>
+                                        {{ comment.name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class='forum-topic__post-date-and-time d-flex align-items-baseline justify-content-end font-s'>
+                                    <div class="forum-topic__post-date">{{ comment.date }}&nbsp;-&nbsp;</div>
+                                    <div class="forum-topic__post-time">{{ comment.time }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='page_artforum_element_message p-3'>
+                        {{ comment.content }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class='page_artforum_element mb-5'>
+            <div class='page_artforum_element_message'>
+                <div class='page_artforum_element_no text-center p-3'>
+                    {{ text.no_comments_in_topic }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if new_comment_disp %}
+        {{ new_comment_form_start }}
+        <div class='forum-new-note bg-8 p-5 container-max-md mx-auto'>
+            <div class="forum-new-note__title text-uppercase text-center py-2 font-xl mb-3">{{ text.comment_on_the_topic }}</div>
+            <div class="row gutters-5">
+                <div class='col-md-6 page_design_fault_out mb-3 {% if new_comment_name_error_disp %}has-fault{% endif %}'>
+                    <div class='page_forum_newnote_name form-label-group'>
+                        <input name="name" id="name" type="text" placeholder="{{ text.name }}" class="form-control" value="{{ new_comment_posted_name }}" maxlength="100" />
+                        <label for='name'>{{ text.name }}</label>
+                    </div>
+                    {% if new_comment_name_error_disp %}
+                        <div class="text-danger font-xs">{{ text.error_required }}</div>
+                    {% endif %}
+                </div>
+                {% if new_comment_email_disp %}
+                    <div class='col-md-6 page_design_fault_out mb-3 {% if new_comment_email_error_disp %}has-fault{% endif %}'>
+                        <div class='page_forum_newnote_email form-label-group'>
+                            <input name="emai" id="emai" type="text" placeholder="{{ text.email }}" class="form-control text-lowercase" value="{{ new_comment_posted_email }}" maxlength="100" />
+                            <label for='emai'>{{ text.email }}</label>
+                        </div>
+                        {% if new_comment_email_error_disp %}
+                            <div class="text-danger font-xs">{{ new_comment_email_error_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <div class='col-12 page_design_fault_out mb-3 {% if new_comment_content_error_disp %}has-fault{% endif %}'>
+                    <div class='page_forum_newnote_message form-label-group'>
+                        <textarea name="note" id="note" placeholder="{{ text.comment }}" class="form-control">{{ new_comment_posted_comment }}</textarea>
+                        <label for='note'>{{ text.comment }}</label>
+                    </div>
+                    {% if new_comment_content_error_disp %}
+                        <div class="text-danger font-xs">{{ text.error_required }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class='page_forum_newnote_privacy_policy mb-4 {% if new_comment_pp_error_disp %}has-fault{% endif %}'>
+                <input name="newitem_privacy_policy" class="form-check-input" id="newitem_privacy_policy" type="checkbox" value="1" {% if new_comment_pp_checked %}checked="checked"{% endif %}/>
+                <label class="font-s form-check-label" for="newitem_privacy_policy">{{ text.accept_privacy_policy }}</label>
+                {% if new_comment_pp_error_disp %}
+                    <div class="text-danger font-xs">{{ text.error_privacy_policy }}</div>
+                {% endif %}
+            </div>
+            <div class='page_forum_newnote_button text-center my-3'>
+                {% if recaptcha_disp %}
+                    {{ recaptcha_script }}
+                    <button class="g-recaptcha btn btn-primary" {{ recaptcha_attributes }}>{{ text.button_send_comment }}</button>
+                {% else %}
+                    <button name="Submit" class="btn btn-primary">{{ text.button_send_comment }}</button>
+                {% endif %}
+            </div>
+        </div>
+        {{ new_comment_form_end }}
+    {% endif %}
+</div>

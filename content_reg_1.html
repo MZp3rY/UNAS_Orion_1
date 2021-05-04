@@ -1,0 +1,623 @@
+<div id='page_reg_content' class='page_content{% if no_reg %} no_reg{% endif %}'>
+    {% if not orderflow_disp %}
+        <div class="d-flex align-items-center justify-content-center">
+            <h1 class="js-animate-title-dots">
+                {% if reg_type == 'reg' %}
+                    {{ text.new_customer_registration }}
+                {% elseif reg_type == 'mod' %}
+                    {{ text.modify_cusomer_data }}
+                {% endif %}
+            </h1>
+        </div>
+    {% endif %}
+
+    {% if custom_content_top_disp %}
+        <div id='page_txt_reg_top'>{{ custom_content_top }}</div>
+        <div class="line-separator"></div>
+    {% endif %}
+
+    <!-- TABS -->
+    {% if tabs_disp %}
+        <div id="page_tabs_outer" class="page_tabs position-relative text-center d-none d-lg-flex justify-content-around clearfix usn">
+            {% if tab_orders_disp %}
+                <div id="tab_orders" rel="orders" class="page_tab" onclick="location.href='{{ tab_orders_url }}'">{{ text.orders }}</div>
+            {% endif %}
+            {% if tab_discount_disp %}
+                <div id="tab_discount" rel="discount" class="page_tab" onclick="location.href='{{ tab_discount_url }}'">{{ text.discounts }}</div>
+            {% endif %}
+            {% if tab_favourites_disp %}
+                <div id="tab_favourites" rel="favourites" class="page_tab" onclick="location.href='{{ tab_favourites_url }}'">{{ text.favourites }}</div>
+            {% endif %}
+            {% if tab_saved_filters_disp %}
+                <div id="tab_saved_filters" rel="saved_filters" class="page_tab" onclick="location.href='{{ tab_saved_filters_url }}'">{{ text.saved_filters }}</div>
+            {% endif %}
+            {% if tab_modify_disp %}
+                <div id="tab_reg" rel="reg" class="page_tab page_tab_active" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+            {% endif %}
+            <div class="page_tab" id="tab_logout" rel="logout" onclick="location.href='{{ tab_logout_url }}'">{{ text.logout }}</div>
+        </div>
+
+        <div id="page_tabs2_outer" class="page_tabs2 clearfix usn">
+            {% if tab_orders_disp %}
+                <div id="tab2_orders" rel="orders" class="page_tab2" onclick="location.href='{{ tab_orders_url }}'">{{ text.orders }}</div>
+            {% endif %}
+            {% if tab_discount_disp %}
+                <div id="tab2_discount" rel="discount" class="page_tab2" onclick="location.href='{{ tab_discount_url }}'">{{ text.discounts }}</div>
+            {% endif %}
+            {% if tab_favourites_disp %}
+                <div id="tab2_favourites" rel="favourites" class="page_tab2" onclick="location.href='{{ tab_favourites_url }}'">{{ text.favourites }}</div>
+            {% endif %}
+            {% if tab_saved_filters_disp %}
+                <div id="tab2_saved_filters" rel="saved_filters" class="page_tab2" onclick="location.href='{{ tab_saved_filters_url }}'">{{ text.saved_filters }}</div>
+            {% endif %}
+            {% if tab_modify_disp %}
+                <div id="tab2_reg" rel="reg" class="page_tab2 page_tab2_active" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+            {% endif %}
+            <div class="page_tab2" id="tab2_logout" rel="logout" onclick="location.href='{{ tab_logout_url }}'">{{ text.logout }}</div>
+        </div>
+    {% endif %}
+
+    {{ orderflow }}
+    {{ main_script }}
+    {{ form_start }}
+
+    <div class="new-cust__form-inner container-max-lg mx-auto px-0 py-5">
+        {% if reg_disp %}
+            <div class="new-cust__reg new-cust-section mb-3" id="newcust_reg">
+                <div class='text-uppercase py-2 font-xl mb-3'>{{ text.registration_data }}</div>
+                <div class="row">
+                    {% if username_disp %}
+                        <div class="col-md-4" id="div_out_username">
+                            <div class="new-customer__username customer-block page_design_fault_out mb-3 {% if username_error_disp %}page_design_fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="temp_cust_username" placeholder="{{ text.username }}" id="cust_username" type="text" class="form-control check_username" value="{{ username }}" maxlength="100" {% if username_readonly %} readonly="yes" {% endif %}  />
+                                    <label for="cust_username">{{ text.username }}</label>
+                                    <div class="page_design_fault_text new-cust-fault-text text-danger font-xs"><strong>{% if username_error_disp %}{{ username_error_text }}{% endif %}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if email_disp %}
+                        <div class="col-md-4" id="div_out_email">
+                            <div class="new-customer__email customer-block mb-3 page_design_fault_out {% if email_error_disp %}page_design_fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input id="emai" placeholder="{{ text.email }}" name="emai" type="text" class="form-control text-lowercase check_email" value="{{ email }}" maxlength="100" {% if email_readonly %} readonly="yes" {% endif %} />
+                                    <label for="emai">{{ text.email }}</label>
+                                    <div class="page_design_fault_text new-cust-fault-text text-danger font-xs"><strong>{% if email_error_disp %}{{ email_error_text }}{% endif %}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if password_disp %}
+                        <div class="col-md-4" id="div_out_passwd">
+                            <div class="new-customer__password customer-block mb-3 page_design_fault_out {% if password_error_disp %}page_design_fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="passwd1" placeholder="{{ text.password }}" id="passwd1" type="password" class="form-control check_passwd" value="{{ password }}" maxlength="100" />
+                                    <label for="passwd1">{{ text.password }}</label>
+                                    <div class="page_design_fault_text new-cust-fault-text text-danger font-xs"><strong>{% if password_error_disp %}{{ password_error_text }}{% endif %}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="div_out_passwd_again">
+                            <div class="new-customer__password customer-block mb-3 page_design_fault_out {% if password_error_disp %}page_design_fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="passwd2" placeholder="{{ text.password_again }}" id="passwd2" type="password" class="form-control check_passwd" value="{{ password_again }}" maxlength="100" />
+                                    <label for="passwd2">{{ text.password_again }}</label>
+                                    <div class="page_design_fault_text new-cust-fault-text text-danger font-xs"><strong>{% if password_error_disp %}{{ password_error_text }}{% endif %}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if customer_groups_disp %}
+                    <div class="col-md-4 page_design_fault_out d-flex flex-column justify-content-end mb-3">
+                        <div class='customer__customer-group-outer form-label-group form-select-group'>
+                            <select name="customer_group" id="customer_group" class="form-control">
+                                <option value="0" {% if not customer_groups_selected %} selected {% endif %}>{{ text.no_group }}</option>
+                                {% for customer_group in customer_groups %}
+                                <option value="{{ customer_group.id }}" {% if customer_group.selected %} selected {% endif %}>{{ customer_group.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="customer_group">{{ text.customer_group }}</label>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if company_disp %}
+                        <div class="col-md-4 page_design_fault_out d-flex flex-column justify-content-end mb-3 {% if choose_company_error_disp %}has-fault{% endif %}" id="div_out_company_choose">
+                            <div class="form-group">
+                                <div class="reg-company__wrap form-check p-0 mb-2">
+                                    <input class="form-check-input" id="is-company" type="radio" onclick="{% if billing_readonly %}return false;{% else %}handle_vat_on_click(1);{% endif %}" {% if company_checked %} checked="checked" {% endif %} name="choose_company" value="1" />
+                                    <label class="form-check-label" for="is-company">{{ text.company }}</label>
+                                </div>
+                                <div class="reg-person__wrap form-check p-0 {% if other_customers_without_tax_number_disp %}mb-2{% endif %}">
+                                    <input class="form-check-input" id="is-person" type="radio" onclick="{% if billing_readonly %}return false;{% else %}handle_vat_on_click(0);{% endif %}" {% if not (company_checked or choose_company_disable_check) %} checked="checked" {% endif %} name="choose_company" value="0" />
+                                    <label class="form-check-label" for="is-person">{{ text.private_person }}</label>
+                                </div>
+
+                                {% if other_customers_without_tax_number_disp %}
+                                <div class="reg-is-other-person-with-tax-number__wrap form-check p-0">
+                                    <input class="form-check-input" id="is-other-person-with-tax-number" type="radio" onclick="{% if billing_readonly %}return false;{% else %}handle_vat_on_click(0);{% endif %}" {% if other_customers_without_tax_number_checked %} checked="checked" {% endif %} name="choose_company" value="2" />
+                                    <label class="form-check-label" for="is-other-person-with-tax-number">{{ text.other_customers_without_tax_number }}</label>
+                                </div>
+                                {% endif %}
+
+                                <div class="new-cust-fault-text text-danger font-xs">{{ choose_company_error_text }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if contact_disp %}
+            <div class="new-cust__contact new-cust-section mb-3" id="newcust_contact">
+                <div class='text-uppercase py-2 font-xl mb-3'>{{ text.contact_data }}</div>
+                <div class="row">
+                    {% if contact_email_disp %}
+                        <div class="col-md-4" id="div_out_email">
+                            <div class='contact-email customer-block mb-3 page_design_fault_out {% if contact_email_error_disp %}page_design_fault{% endif %}'>
+                                <div class='contact-email__value form-label-group'>
+                                    <input id="contact_email" placeholder="{{ text.email }}" name="emai" type="text" class="form-control text-lowercase check_email" value="{{ email }}" maxlength="100"  />
+                                    <label for="contact_email">{{ text.email }}</label>
+                                    <div class="page_design_fault_text new-cust-fault-text text-danger font-xs"><strong>{% if contact_email_error_disp %}{{ contact_email_error_text }}{% endif %}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if contact_name_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class='contact-name customer-block mb-3 {% if contact_name_error_disp %}has-fault{% endif %}'>
+                                <div class='contact-name__value form-label-group'>
+                                    <input id="kap_nev" placeholder="{{ text.name }}" name="kap_nev" type="text" class="form-control" value="{{ contact_name }}" maxlength="100"   />
+                                    <label for="kap_nev">{{ text.name }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if contact_name_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if contact_phone_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class='contact-phone customer-block mb-3 {% if contact_phone_error_disp %}has-fault{% endif %}'>
+                                <div class='contact-phone__value row no-gutters'>
+                                    <div class="input-group w-auto">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text px-1">+</span>
+                                        </div>
+                                        <div class="form-label-group">
+                                            <input name="kap_tel_country" placeholder="{{ text.phone_country }}" id="kap_tel_country" type="number" class="form-control page_input_width_phone_country" value="{{ contact_phone_country }}" maxlength="3" autocomplete="contact-phone-country-code"  />
+                                            <label for="kap_tel_country">{{ text.phone_country }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-label-group col">
+                                        <input name="kap_tel_sub" placeholder="{{ text.phone_number }}" id="kap_tel_sub" type="number" class="form-control page_input_width_phone" value="{{ contact_phone_sub }}" onKeyPress="if(this.value.length==20) return false;" maxlength="20"  />
+                                        <label for="kap_tel_sub">{{ text.phone_number }}</label>
+                                    </div>
+                                </div>
+                                <div class="new-cust-fault-text text-danger font-xs">{% if contact_phone_error_disp %}{{ contact_phone_error_text }}{% endif %}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if contact_mobile_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class='contact-mobile customer-block mb-3 {% if contact_mobile_error_disp %}has-fault{% endif %}'>
+                                <div class='contact-mobile__value row no-gutters'>
+                                    <div class="input-group w-auto">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text px-1">+</span>
+                                        </div>
+                                        <div class="form-label-group">
+                                            <input name="kap_mobile_country" placeholder="{{ text.phone_country }}" id="kap_mobile_country" type="number" class="form-control page_input_width_phone_country" value="{{ contact_mobile_country }}" maxlength="3" autocomplete="contact-mobile-country-code"  />
+                                            <label for="kap_mobile_country">{{ text.phone_country }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-label-group col">
+                                        <input name="kap_mobile_sub" placeholder="{{ text.mobile_phone_number }}" id="kap_mobile_sub" type="number" class="form-control page_input_width_phone" value="{{ contact_mobile_sub }}" onKeyPress="if(this.value.length==20) return false;" maxlength="20"  />
+                                        <label for="kap_mobile_sub">{{ text.mobile_phone_number }}</label>
+                                    </div>
+                                </div>
+                                <div class="new-cust-fault-text text-danger font-xs">{% if contact_mobile_error_disp %}{{ contact_mobile_error_text }}{% endif %}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if company_disp and no_reg %}
+                        <div class="col-md-4 page_design_fault_out d-flex flex-column justify-content-end mb-3 {% if choose_company_error_disp %}has-fault{% endif %}" id="div_out_company_choose">
+                            <div class="form-group">
+                                <div class="reg-company__wrap form-check p-0 mb-2">
+                                    <input class="form-check-input" id="is-company" type="radio" onclick="{% if billing_readonly %}return false;{% else %}handle_vat_on_click(1);{% endif %}" {% if company_checked %} checked="checked" {% endif %} name="choose_company" value="1" />
+                                    <label class="form-check-label" for="is-company">{{ text.company }}</label>
+                                </div>
+                                <div class="reg-person__wrap form-check p-0 {% if other_customers_without_tax_number_disp %}mb-2{% endif %}">
+                                    <input class="form-check-input" id="is-person" type="radio" onclick="{% if billing_readonly %}return false;{% else %}handle_vat_on_click(0);{% endif %}" {% if not (company_checked or choose_company_disable_check) %} checked="checked" {% endif %} name="choose_company" value="0" />
+                                    <label class="form-check-label" for="is-person">{{ text.private_person }}</label>
+                                </div>
+                                {% if other_customers_without_tax_number_disp %}
+                                <div class="reg-person__wrap form-check p-0">
+                                    <input class="form-check-input" id="is-other-person-with-tax-number" type="radio" onclick="{% if billing_readonly %}return false;{% else %}handle_vat_on_click(0);{% endif %}" {% if other_customers_without_tax_number_checked %} checked="checked" {% endif %} name="choose_company" value="2" />
+                                    <label class="form-check-label" for="is-other-person-with-tax-number">{{ text.other_customers_without_tax_number }}</label>
+                                </div>
+                                {% endif %}
+                                <div class="new-cust-fault-text text-danger font-xs">{% if choose_company_error_disp %}{{ choose_company_error_text }}{% endif %}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if primary_disp %}
+            <div class="new-cust__default-mod newcust_section_2 mb-3" id="newcust_default_mod">
+                <div class='text-uppercase py-2 font-xl mb-3'>{{ primary_title }}</div>
+                {% if select_address_disp and not primary_readonly %}
+                    <div class="new-cust__default-addresses customer-block mb-3 row gutters-5" id='div_out_default_address'>
+                        <div class="col">
+                            <div class='form-label-group form-select-group mb-0'>
+                                <select {% if primary_addresses_hide_select %} style="display:none" {% endif %} name="default_{{ primary_hidden_value }}_address" class="form-control addresses"  id="select_default_{{ primary_hidden_value }}_address">
+                                    <option value='' id='add_address'>--- {{ text.add_new_address }} ---</option>
+                                    {% for option in primary_addresses %}
+                                        <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="select_default_{{ primary_hidden_value }}_address">{{ text.addresses }}</label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type='button' class='delete_address btn btn-primary h-100' onclick='delete_address_check()'>{{ text.delete }}</button>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if select_address_disp %} <input type="hidden" value="{{ primary_hidden_value }}" id="default"> {% endif %}
+
+                <div class="row">
+                    {% if primary_name_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__default-name customer-block mb-3 {% if primary_name_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ primary }}_nev" placeholder="{{ text.name }}" id="default_nev" type="text" class="form-control" value="{{ primary_name }}" maxlength="100" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="default_nev">{{ text.name }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_name_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_country_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__default-country customer-block mb-3 {% if primary_country_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group form-select-group">
+                                    <select name="{{ primary }}_orszag" id="default_orszag" class="form-control">
+                                        {% for option in primary_country_options %}
+                                            <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %} {% if option.disabled %}disabled="disabled"{% endif %} rel="{{ option.rel }}">
+                                                {{ option.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="default_orszag">{{ text.country }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_country_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_zip_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__default-zip customer-block mb-3 {% if primary_zip_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ primary }}_irany" placeholder="{{ text.zip_code }}" id="default_irany" type="text" class="form-control {% if check_zip %}check_zip{% endif %}" value="{{ primary_zip }}" maxlength="10" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="default_irany">{{ text.zip_code }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_zip_error_disp %}{{ primary_zip_error_text }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_county_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__default-county customer-block mb-3 {% if primary_county_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ primary }}_megye" placeholder="{{ primary_county_title }}" id="default_megye" type="text" class="form-control" value="{{ primary_county }}" maxlength="100" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="default_megye">{{ primary_county_title }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_county_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_city_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__default-city customer-block mb-3 {% if primary_city_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ primary }}_varos" placeholder="{{ text.city }}" id="default_varos" type="text" class="form-control" value="{{ primary_city }}" maxlength="100" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="default_varos">{{ text.city }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_city_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_street_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__default-street customer-block mb-3 {% if primary_street_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ primary }}_utca" placeholder="{{ text.street_address }}" id="default_utca" type="text" class="form-control" value="{{ primary_street }}" maxlength="100" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="default_utca">{{ text.street_address }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_street_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_vat_disp %}
+                        <div class="col-md-4 page_design_fault_out" id="div_out_default_vat">
+                            <div class="new-customer__default-vat customer-block mb-3 {% if primary_vat_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input id="szam_ado" placeholder="{{ text.company_vat_number }}" name="szam_ado" type="text" class="form-control" value="{{ primary_vat }}" size="20" maxlength="20" autocomplete="vat-number" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="szam_ado">{{ text.company_vat_number }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_vat_error_disp %}{{ primary_vat_error_text }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if primary_eu_vat_disp %}
+                        <div class="col-md-4 page_design_fault_out" id="div_out_default_eu_vat">
+                            <div class="new-customer__default-eu-vat customer-block mb-3 {% if primary_eu_vat_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input id="szam_ado_eu" placeholder="{{ text.eu_vat_number }}" name="szam_ado_eu" type="text" class="form-control" value="{{ primary_eu_vat }}" size="20" maxlength="20" autocomplete="vat-number" {% if primary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="szam_ado_eu">{{ text.eu_vat_number }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if primary_eu_vat_error_disp %}{{ primary_eu_vat_error_text }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if same_address_disp %}
+                        <div class="col-12">
+                            <div class="new-customer__default-same customer-block mb-3">
+                                <div class="new-customer-title">{{ same_address_title }}</div>
+                                <div class="form-check px-0 py-2">
+                                    <input name="shipping_same" id="shipping_same" class="form-check-input" type="checkbox" value="1" {% if same_address_checked %}checked="checked"{% endif %} onclick="shipping_same_action();"/>
+                                    <label for="shipping_same" class="form-check-label font-s">{{ text.shipping_and_payment_addresses_same }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if secondary_disp %}
+            <div class="new-cust__other-mod newcust_section_2 mb-3" id="newcust_other_mod" {% if same_address_checked %} style="display:none;"{% endif %}>
+                <div class='text-uppercase py-2 font-xl mb-3'>{{ secondary_title }}</div>
+                {% if select_address_disp and not secondary_readonly %}
+                    <div class="new-cust__other-addresses customer-block mb-3" id='div_out_other_address'>
+                        <div class='page_design_fault_out'>
+                            <div class='form-label-group form-select-group d-flex'>
+                                <select {% if secondary_addresses_hide_select %} style="display:none" {% endif %} name="default_{{ secondary_hidden_value }}_address" class="form-control addresses"  id="select_other_{{ secondary_hidden_value }}_address">
+                                    <option value='' id='add_address'>--- {{ text.add_new_address }} ---</option>
+                                    {% for option in secondary_addresses %}
+                                        <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>{{ option.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="select_other_{{ secondary_hidden_value }}_address">{{ text.addresses }}</label>
+                            </div>
+                            <input type="hidden" value="{{ secondary_hidden_value }}" id="other">
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    {% if secondary_name_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__other-name customer-block mb-3 {% if secondary_name_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ secondary }}_nev" placeholder="{{ text.name }}" id="other_nev" type="text" class="form-control" value="{{ secondary_name }}" maxlength="100" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_nev">{{ text.name }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_name_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_country_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__other-country customer-block mb-3 {% if secondary_country_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group form-select-group">
+                                    <select name="{{ secondary }}_orszag" id="other_orszag" class="form-control">
+                                        {% for option in secondary_country_options %}
+                                            <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %} {% if option.disabled %}disabled="disabled"{% endif %} rel="{{ option.rel }}">
+                                                {{ option.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="other_orszag">{{ text.country }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_country_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_zip_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__other-zip customer-block mb-3 {% if secondary_zip_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ secondary }}_irany" placeholder="{{ text.zip_code }}" id="other_irany" type="text" class="form-control {% if check_zip %}check_zip{% endif %}" value="{{ secondary_zip }}" maxlength="10" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_irany">{{ text.zip_code }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_zip_error_disp %}{{ secondary_zip_error_text }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_county_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__other-county customer-block mb-3 {% if secondary_county_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ secondary }}_megye" placeholder="{{ secondary_county_title }}" id="other_megye" type="text" class="form-control" value="{{ secondary_county }}" maxlength="100" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_megye">{{ secondary_county_title }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_county_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_city_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__other-city customer-block mb-3 {% if secondary_city_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ secondary }}_varos" placeholder="{{ text.city }}" id="other_varos" type="text" class="form-control" value="{{ secondary_city }}" maxlength="100" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_varos">{{ text.city }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_city_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_street_disp %}
+                        <div class="col-md-4 page_design_fault_out">
+                            <div class="new-customer__other-street customer-block mb-3 {% if secondary_street_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="{{ secondary }}_utca" placeholder="{{ text.street_address }}" id="other_utca" type="text" class="form-control" value="{{ secondary_street }}" maxlength="100" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_utca">{{ text.street_address }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_street_error_disp %}{{ text.error_required }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_vat_disp %}
+                        <div class="col-md-4 page_design_fault_out" id="div_out_other_vat">
+                            <div class="new-customer__other-vat customer-block mb-3 {% if secondary_vat_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="szam_ado" placeholder="{{ text.company_vat_number }}" id="other_ado" type="text" class="form-control" value="{{ secondary_vat }}" size="13" maxlength="13" autocomplete="vat-number" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_ado">{{ text.company_vat_number }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_vat_error_disp %}{{ secondary_vat_error_text }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if secondary_eu_vat_disp %}
+                        <div class="col-md-4 page_design_fault_out" id="div_out_other_eu_vat">
+                            <div class="new-customer__other-eu-vat customer-block mb-3 {% if secondary_eu_vat_error_disp %}has-fault{% endif %}">
+                                <div class="form-label-group">
+                                    <input name="szam_ado_eu" placeholder="{{ text.eu_vat_number }}" id="other_ado_eu" type="text" class="form-control" value="{{ secondary_eu_vat }}" size="13" maxlength="13" autocomplete="vat-number" {% if secondary_readonly %} readonly="yes" {% endif %} />
+                                    <label for="other_ado_eu">{{ text.eu_vat_number }}</label>
+                                    <div class="new-cust-fault-text text-danger font-xs">{% if secondary_eu_vat_error_disp %}{{ secondary_eu_vat_error_text }}{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if customer_params_disp %}
+            <div class="new-cust__other newcust_section_2 mb-3" id="newcust_other">
+                <div class='text-uppercase py-2 font-xl mb-3'>{{ text.other_customer_data }}</div>
+                <div class="row new-cust__params">
+                    {% for param in customer_params %}
+                        <div class='col-md-12 new-cust__param customer-block mb-3 {% if param.error_disp %}has-fault{% endif %}' id='div_out_cust_param_{{ param.id }}'>
+                            {% if param.radio_disp %}
+                                <div class="mb-2">{{ param.title }}</div>
+                                <div class='form-group'>
+                                    {% for option in param.radio_options %}
+                                        <div class="cust_param_radio_wrap_{{ option.value }} form-check mb-2 px-0">
+                                            <input id="cust_param_radio_{{ param.id }}_{{ option.value }}" class="form-check-input" name="cust_param_{{ param.id }}" type="radio" value="{{ option.value }}" {% if option.checked %}checked="checked"{% endif %}/>
+                                            <label for="cust_param_radio_{{ param.id }}_{{ option.value }}" class="form-check-label">{{ option.text }}</label>
+                                        </div>
+                                    {% endfor %}
+                                    {% if param.error_disp %}
+                                        <div class="new-cust-fault-text text-danger font-xs">{{ text.error_required }}</div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class='form-label-group'>
+                                    <input type="text" placeholder="{{ param.title }}" name="cust_param_{{ param.id }}" id="cust_param_{{ param.id }}" class="form-control" value="{{ param.value }}" maxlength="100" />
+                                    <label for="cust_param_{{ param.id }}">{{ param.title }}</label>
+                                    {% if param.error_disp %}
+                                        <div class="new-cust-fault-text text-danger font-xs">{{ text.error_required }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if checkbox_disp %}
+            <div class="new-cust__checkboxes newcust_section mb-3" id="newcust_checkbox">
+                {% if newsletter_disp %}
+                    <div id='div_out_newsletter' class='newcust_row mb-2'>
+                        <div class='page_design_fault_out fs-0 form-check px-0 py-2 {% if newsletter_error_disp %}has-fault{% endif %}'>
+                            <input name="news_mail" id="news_mail" type="checkbox" value="1" class="form-check-input" {% if newsletter_checked %}checked="checked"{% endif %}>
+                            <label for="news_mail" class="new-cust__newsletter-label form-check-label font-s">{{ text.subscribe_shop_newsletter }}</label>
+                            {% if newsletter_error_disp %}
+                                <div class="new-cust-fault-text text-danger font-xs">{{ text.error_required }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if profile_disp %}
+                    <div id='div_out_profile_allow' class='newcust_row mb-2'>
+                        <div class='page_design_fault_out fs-0 form-check px-0 py-2 {% if profile_error_disp %}has-fault{% endif %}'>
+                            <input name="profile_allow" id="profile_allow" type="checkbox" value="1" class="form-check-input"{% if profile_checked %}checked="checked"{% endif %}>
+                            <label for="profile_allow" class="new-cust__profile-label form-check-label  font-s">{{ text.allow_profiling }}</label>
+                            {% if profile_error_disp %}
+                                <div class="new-cust-fault-text text-danger font-xs">{{ text.error_required }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if terms_disp %}
+                    <div id='div_out_terms' class='newcust_row mb-2'>
+                        {% if terms_checkbox_disp %}
+                            <div class='page_design_fault_out fs-0 form-check px-0 py-2 {% if terms_error_disp %}has-fault{% endif %}'>
+                                <input name="terms" id="terms" type="checkbox" value="1" class="form-check-input"{% if terms_checked %}checked="checked"{% endif %}>
+                                <label for="terms" class="new-cust__terms-label form-check-label font-s">{{ text.accept_terms_and_privacy_policy }}</label>
+                                {% if terms_error_disp %}
+                                    <div class="new-cust-fault-text text-danger font-xs">{{ text.error_required }}</div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="new-cust__terms-accept font-s">
+                                {{ text.accept_terms_and_privacy_policy }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="new-cust__buttons">
+            {% if no_reg %}
+                <button class="btn btn-primary mb-2" id="button_next">{{ text.button_next }}</button>
+            {% else %}
+                {% if reg %}
+                    <button class="btn btn-primary mb-2" id="button_reg">{{ text.registration }}</button>
+                {% endif %}
+                {% if mod %}
+                    <button class="btn btn-primary mb-2" id="button_mod">{{ text.button_modify }}</button>
+                {% endif %}
+            {% endif %}
+
+            {% if facebook_disp %}
+                <div class="facebook-login-outer btn btn-outline-primary position-relative mb-2">
+                    Facebook
+                    <iframe class="facebook_login w-100 h-100 position-absolute" scrolling="no" src="{{ facebook_url }}"></iframe>
+                </div>
+            {% endif %}
+
+            {% if google_disp %}
+                <div class="google-login-outer btn btn-outline-primary position-relative mb-2">
+                    Google
+                    <iframe class="google_login w-100 h-100 position-absolute" scrolling="no" src="{{ google_url }}"></iframe>
+                </div>
+            {% endif %}
+
+            {% if delete_customer %}
+                <button type="button" class="btn btn-outline-primary mb-2" id="button_del" onclick="delete_customer()">{{ text.button_delete_profile }}</button>
+                <script>
+                    function delete_customer(){
+                        $("#overlay_delete_customer").overlay().load();
+                    }
+                </script>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ form_end }}
+
+    {% if custom_content_bottom_disp %}
+        <div class="line-separator"></div>
+        <div class='page_txt' id="page_txt_reg_bottom"><div class='page_shop_txt'>{{ custom_content_bottom }}</div></div>
+    {% endif %}
+
+</div>

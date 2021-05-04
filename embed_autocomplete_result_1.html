@@ -1,0 +1,23 @@
+{{ backvar(img_maxwidth,40) }}
+{{ backvar(img_maxheight,40) }}
+
+<div class='search_style_0 {% if not price_disp %}no_price{% endif %}'>
+    <div class="ac_pic">
+        <img src="{{ img_url }}"{% if img_retina_exists %} srcset="{{ img_retina_url }} {{ img_retina_size }}"{% endif %} alt="{{ img_alt }}" />
+    </div>
+    <div class='ac_name'>
+        <span class='search_name'>{{ name }}</span>
+    </div>
+    {% if category %}
+        <div class='ac_price'>
+            <span class='search_price'><i>{{ text.search_autocomplete_category }}</i></span>
+        </div>
+    {% endif %}
+    {% if product %}
+        {% if price_disp %}
+            <div class='ac_price'>
+                <span class='search_price'>{{ price_actual }}</span>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>

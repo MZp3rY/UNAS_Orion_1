@@ -1,0 +1,14 @@
+<div class="order-track__status_history text-center d-inline-block {% if status_histories_disp %}has-tooltip icon--a-history{% endif %}">
+    {% if status_histories_disp %}
+    <div class="tooltip-text text-wrap">
+        <div class="tooltip-text-inner">
+            {% for status in status_histories %}
+            <div class="row gutters-5 order-track__status_history_row my-2">
+                <div class="col-6">{{ status.date }}</div>
+                <div class="col-6 text-left">{{ status.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>

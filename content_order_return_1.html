@@ -1,0 +1,400 @@
+{{ backvar(img_maxwidth,70) }}
+{{ backvar(img_maxheight,70) }}
+
+{% if custom_content_top_disp %}
+    <div class='page_txt'>{{ custom_content_top }}</div>
+    <div class="line-separator"></div>
+{% endif %}
+
+<div id='page_order_return_content' class='page_content'>
+    <div class="container">
+        {{ form_start }}
+            <div class="order-control__cart border-bottom pt-4 mb-5">
+                <h4 class="contact-title control-main-title text-uppercase text-cn font-weight-bold font-l mb-4">{{ text.ordered_products }}</h4>
+                <div class="order-control__cart-header py-1 font-s d-none d-md-block text-center border-bottom border-top">
+                    <div class="row no-gutters">
+                        <div class="col">
+                            <div class="order-control__cart-header-name">{{ text.product_name }}</div>
+                        </div>
+                        <div class="col-2 text-center">
+                            <div class="order-control__cart-header-price">{{ text.price }}</div>
+                        </div>
+                        <div class="col-2">
+                            <div class="order-control__cart-header-qty">{{ text.quantity }}</div>
+                        </div>
+                        <div class="col-2">
+                            <div class="order-control__cart-header-sum text-right pr-3">{{ text.total_amount }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-return-products">
+                    {% for product in products %}
+                        {% if product.plus_item %}
+                            <div class="order-return-product order-return__item-row control-plus-item row no-gutters align-items-center bg-8 py-3 mb-2 {% if product.error_disp %} has-fault{% endif %}">
+                                <div class="order-return__checkbox_wrap col-12 row no-gutters pb-3">
+                                    <div class="col-auto col-md-1 order-return__checkbox">
+                                        <div class="order-return__radio-wrap form-check d-flex align-items-center justify-content-center">
+                                            <input type="checkbox" id="return_item_checkbox_{{ product.num }}" class="return_item form-check-input" name="{{ product.return_item_input_name }}" value="{{ order_key }}¤{{ product.num }}¤{{ product.qty }}" data-sku="{{ product.data_sku }}" {% if product.checked %} checked{% endif %}>
+                                            <label class="order-return__label form-check-label" for="return_item_checkbox_{{ product.num }}"></label>
+                                        </div>
+                                    </div>
+                                    <div class="col col-md-5 order_return__return_cause pr-3">
+                                        {% if return_cause_type == 'options' %}
+                                            {% if product.input_return_cause_disp %}
+                                                <div class="form-label-group form-select-group">
+                                                    <select disabled="disabled" class="js_return_cause_input form-control" name="{{ product.input_return_cause_name }}" id="return_item_{{ product.input_return_cause_id }}">
+                                                        {% for option in product.return_cause_options %}
+                                                            <option value="{{ option.value }}"{% if option.selected %}} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="return_item_{{ product.input_return_cause_id }}">{{ text.product_return_cause }}</label>
+                                                </div>
+                                            {% else %}
+                                                <input type="hidden" name="{{ product.input_return_cause_name }}" value="">
+                                            {% endif %}
+                                        {% else %}
+                                            {% if product.input_return_cause_disp %}
+                                                <div class="form-label-group">
+                                                    <textarea value="{{ product.input_return_cause_value }}" class="js_return_cause_input form-control" type="text" placeholder="{{ text.product_return_cause }}" id="return_item_{{ product.input_return_cause_id }}" name="{{ product.input_return_cause_name }}" rows="2" readonly></textarea>
+                                                    <label for="return_item_{{ product.input_return_cause_id }}">{{ text.product_return_cause }}</label>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-1 d-flex justify-content-center align-items-center">
+                                    <div class="control-plus-item__discount-icon font-xl font-md-xxl {% if product.type == 'gift' %}icon--gift{% elseif product.type == 'service_plus' %}icon--plus{% else %}icon--percent{% endif %}"></div>
+                                </div>
+                                <div class="col col-md-6 control-plus-item__details-col">
+                                    {% if product.type == "service_plus" %}
+                                        <div class="control-plus-item__plus-service d-flex">
+                                            <div class="col pl-2 px-md-3">
+                                                <div class="control-plus-item__plus-service-text font-s font-md-m">{{ text.plus_service }}</div>
+                                                <div class="control-plus-item__plus-service-name-and-qty-wrap mt-1 font-s">
+                                                    <span class="control-plus-item__plus-service-name">{{ product.name }}</span>
+                                                    <span class="control-plus-item__qty-and-unit d-none">
+                                                        <span class="control-plus-item__qty">{{ product.qty }}</span>
+                                                        <span class="control-plus-item__unit">{{ product.unit }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="control-plus-item__plus-discount d-flex">
+                                            <div class="col pl-2 px-md-3">
+                                                {% if product.variant_1_disp %}
+                                                    <div class="control-plus-item__name font-s font-md-m">{{ product.name }}</div>
+                                                    <div class='control-plus-item__discount align-items-center font-xs font-md-s'>
+                                                        {% if product.type == "gift" %}
+                                                            <span class="control-plus-item__discount-type pr-1">{{ product.variant_1_title }}:</span>
+                                                            <span class="control-plus-item__discount-for-sku">{{ product.variant_1_value }}</span>
+                                                        {% else %}
+                                                            <span class="control-plus-item__discount-value">
+                                                                <span class="plus-item-coupon-text pr-1">{{ text.coupon_code }}:</span>
+                                                                <span class="plus-item-coupon-value">{{ product.variant_1_value }}</span>
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="control-plus-item__qty-and-unit d-none">
+                                                        <span class="control-plus-item__qty">{{ product.qty }}</span>
+                                                        <span class="control-plus-item__unit">{{ product.unit }}</span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-auto col-md-4 control-plus-item__prices-col text-right ml-auto">
+                                    <div class="control-plus-item__prices-wrap d-flex justify-content-end align-items-center">
+                                        <div class='control-item-plus-prices{% if product.type == "service_plus" %} control-item-plus__service{% else %} control-item-plus__discount{% endif %} pr-3'>
+                                            {% if price_net_disp %}
+                                                <div class="control-item-plus__price-net-wrap text-right text-cn">
+                                                    <span class="control-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                    <span class="control-item-plus__service-price-net pl-2 font-md-l">{{ product.total_price_net }}</span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="control-item-plus__service-price-gross-wrap text-right text-cn font-weight-bold">
+                                                <span class="control-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                <span class="control-item-plus__service-price-gross pl-2 font-md-l">{{ product.total_price_gross }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="order-return-product order-return__item-row border-top pb-3 pb-md-4 pt-3 pt-md-5 mt-1 mt-md-4 row no-gutters align-items-center position-relative {% if product.error_disp %} has-fault{% endif %}">
+                                <div class="order-return__checkbox_wrap col-12 row no-gutters pb-3">
+                                    <div class="col-auto col-md-1 order-return__checkbox">
+                                        <div class="order-return__radio-wrap form-check d-flex align-items-center justify-content-center">
+                                            <input type="checkbox" id="return_item_checkbox_{{ product.num }}" class="return_item form-check-input" name="{{ product.return_item_input_name }}" value="{{ order_key }}¤{{ product.num }}¤{{ product.qty }}" data-sku="{{ product.data_sku }}" {% if product.checked %} checked{% endif %}>
+                                            <label class="order-return__label form-check-label" for="return_item_checkbox_{{ product.num }}"></label>
+                                        </div>
+                                    </div>
+                                    <div class="col col-md-5 order_return__return_cause pr-3">
+                                        {% if return_cause_type == 'options' %}
+                                            {% if product.input_return_cause_disp %}
+                                                <div class="form-label-group form-select-group">
+                                                    <select disabled="disabled" class="js_return_cause_input form-control" name="{{ product.input_return_cause_name }}" id="return_item_{{ product.input_return_cause_id }}">
+                                                        {% for option in product.return_cause_options %}
+                                                            <option value="{{ option.value }}"{% if option.selected %}} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="return_item_{{ product.input_return_cause_id }}">{{ text.product_return_cause }}</label>
+                                                </div>
+                                            {% else %}
+                                                <input type="hidden" name="{{ product.input_return_cause_name }}" value="">
+                                            {% endif %}
+                                        {% else %}
+                                            {% if product.input_return_cause_disp %}
+                                                <div class="form-label-group">
+                                                    <textarea value="{{ product.input_return_cause_value }}" class="js_return_cause_input form-control" type="text" placeholder="{{ text.product_return_cause }}" id="return_item_{{ product.input_return_cause_id }}" name="{{ product.input_return_cause_name }}" rows="2" readonly></textarea>
+                                                    <label for="return_item_{{ product.input_return_cause_id }}">{{ text.product_return_cause }}</label>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col order-return-product__name-variant-param pl-5 px-md-3 mb-3 mb-md-0 order-2">
+                                    <div class="order-return-product__name line-clamp--3-12 font-s font-md-m">
+                                        {{ product.name }}
+                                    </div>
+                                    {% if product.variant_1_disp or product.variant_2_disp or product.variant_3_disp %}
+                                        <div class='order-return-product__variants mt-2 font-xs font-md-s'>
+                                            {% if product.variant_1_disp %}
+                                                <div class='order-return-product__variant row no-gutters align-items-center order-return-product__variant-1'>
+                                                    <div class="order-return-product__variant-title col-auto pr-2">{{ product.variant_1_title }}:</div>
+                                                    <div class="order-return-product__variant-value col">{{ product.variant_1_value }}</div>
+                                                </div>
+                                            {% endif %}
+                                            {% if product.variant_2_disp %}
+                                                <div class='order-return-product__variant row no-gutters align-items-center order-return-product__variant-2'>
+                                                    <div class="order-return-product__variant-title col-auto pr-2">{{ product.variant_2_title }}:</div>
+                                                    <div class="order-return-product__variant-value col">{{ product.variant_2_value }}</div>
+                                                </div>
+                                            {% endif %}
+                                            {% if product.variant_3_disp %}
+                                                <div class='order-return-product__variant row no-gutters align-items-center order-return-product__variant-3'>
+                                                    <div class="order-return-product__variant-title col-auto pr-2">{{ product.variant_3_title }}:</div>
+                                                    <div class="order-return-product__variant-value col">{{ product.variant_3_value }}</div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% if product.params_disp %}
+                                        <div class="order-return-product__params mt-2 font-xs font-md-s">
+                                            {% for param in product.params %}
+                                                <div class='order-return-product__param row no-gutters order-return-product__param-{{ param.id }}'>
+                                                    <span class="order-return-product__param-name col-auto pr-2">{{ param.title }}:</span>
+                                                    <span class="order-return-product__param-value col">{{ param.value }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="break-row d-md-none"></div> <!-- break -->
+
+                                <div class="col-3 col-md-1 order-return-product__pic-col order-1">
+                                    <div class="order-return-product__pic-outer product-img-wrapper">
+                                        <img class="order-return-product__pic product-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" />
+                                        <div class="loading-spinner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-2 order-return-product__qty-col my-2 my-md-0 order-5 order-md-4">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto font-s d-md-none">{{ text.quantity }}</div>
+                                        <div class="col order-return-product__qty-wrap font-s font-md-m text-right text-md-center mb-2 mb-md-0 pr-3 pr-md-0">
+                                            <div class="order-return-product__qty">{{ product.qty }}<span class="order-return-product__unit">&nbsp;{{ product.unit }}</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-2 order-return-product__prices-col order-4 order-md-3 text-sm-right text-md-center pr-md-3 my-2 my-md-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto font-s d-md-none">{{ text.total_amount }}</div>
+                                        <div class="col order-return-product__prices row no-gutters text-right ml-auto pr-3">
+                                            {% if price_net_disp %}
+                                                <div class="col-12 order-return-product__price-net text-cn">
+                                                    <span class="control-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                    <span class="net-price--current d-inline-block pl-1 font-md-l">{{ product.total_price_net }}</span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="col-12 order-return-product__price-gross font-weight-bold text-cn">
+                                                <span class="control-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                <div class="gross-price--current d-inline-block pl-1 font-md-l">{{ product.total_price_gross }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col col-md-2 order-return-product__sum-prices-col order-6 order-md-5 my-2 my-md-0">
+                                    <div class="cart-item__sum-prices row no-gutters align-items-center justify-content-end w-100">
+                                        <div class="col-auto font-s d-md-none">{{ text.total_amount }}</div>
+                                        <div class="col order-return-product__sum-prices-inner row no-gutters w-100 pr-3 text-right">
+                                            {% if price_net_disp %}
+                                                <div class="col-12 order-return-product__sum-price-net text-cn">
+                                                    <span class="control-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                    <span class="d-inline-block price-sum-net pl-1 font-md-l">{{ product.total_price_net }}</span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="col-12 order-return-product__sum-price-gross font-weight-bold text-cn">
+                                                <span class="control-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                <span class="d-inline-block price-sum-gross pl-1 font-md-l">{{ product.total_price_gross }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if shipping_method_disp %}
+                <div class="order-mods-section mb-5">
+                    <h4 class="order-return__shipping-method-title text-uppercase text-cn font-weight-bold font-l mb-4">
+                        {{ text.shipping_method }}
+                    </h4>
+                    {% for method in shipping_methods %}
+                        <div class="order-mods__item js-order-mods-item py-3">
+                            <div class="row no-gutters align-items-start">
+                                <div class="col-auto order-mods__radio-col">
+                                    <div class="order-mods__radio-wrap">
+                                        <input type="radio" id="szall_id_{{ method.id }}" name="szall" value='{{ method.input_value }}' {% if method.radio_checked %} checked{% endif %}>
+                                        <label class="order-mods__label p-0" for="szall_id_{{ method.id }}"></label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <header class="order-mods__header">
+                                        <label class="order-mods__label order-mods__name" for="szall_id_{{ method.id }}">{{ method.name }}</label>
+                                        {% if method.details_disp %}
+                                            <div class='order-mods__details my-3 js-order-mods-details'>{{ method.details }}</div>
+                                        {% endif %}
+                                    </header>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if payment_method_disp %}
+                <div class="order-mods-section mb-5">
+                    <h4 class="order-return__payment-method-title text-uppercase text-cn font-weight-bold font-l mb-4">
+                        {{ text.payment_method }}
+                    </h4>
+                    {% for method in payment_methods %}
+                        <div class="order-mods__item js-order-mods-item py-3">
+                            <div class="row no-gutters align-items-start">
+                                <div class="col-auto order-mods__radio-col">
+                                    <div class="order-mods__radio-wrap">
+                                        <input class="payment_radio" id="fiz_id_{{ method.id }}" data-type="{{ method.input_hidden_value }}" type="radio" name="fiz" value='{{ method.input_value }}¤{{ method.input_hidden_value }}'{% if method.radio_checked %} checked{% endif %}>
+                                        <label class="order-mods__label p-0" for="fiz_id_{{ method.id }}"></label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <header class="order-mods__header">
+                                        <label class="order-mods__label order-mods__name" for="fiz_id_{{ method.id }}">{{ method.name }}</label>
+                                        {% if method.details_disp %}
+                                            <div class='order-mods__details my-3 js-order-mods-details'>{{ method.details }}</div>
+                                        {% endif %}
+                                    </header>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if customer_params_disp %}
+                <div class="mb-3" id="bank_account_data">
+                    <h4 class="order-return__customer-parameters-title text-uppercase text-cn font-weight-bold font-l mb-4">
+                        {{ text.more_customer_data }}
+                    </h4>
+                    {% for param in customer_params %}
+                        {% if param.disp %}
+                            <div class="order-return__customer-parameter mb-3 {% if param.error_disp %} has-fault{% endif %}" data-payment-type="{{ param.payment_type }}">
+                                {% if param.type == 'radio' %}
+                                    <div class="mb-2">{{ param.name }}</div>
+                                    <input type="hidden" name="cust_param[]" id="cust_param_hidden_{{ param.id }}" value="">
+                                    {% for option in param.options %}
+                                        <div class="cust_param_radio_wrap_{{ option.value }} form-check mb-2 px-0">
+                                            <input id="cust_param_radio_{{ param.id }}_{{ option.num }}" class="form-check-input" name="cust_param_{{ param.id }}" type="radio" value="{{ option.text }}" {% if option.checked %}checked="checked"{% endif %}/>
+                                            <label for="cust_param_radio_{{ param.id }}_{{ option.num }}" class="form-check-label">{{ option.text }}</label>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="form-label-group mb-3" id="customer_parameter_{{ param.id }}">
+                                        <input type="text" name="cust_param[]" class="form-control" id="{{ param.id }}" value="{{ param.value }}" placeholder="{{ param.name }}">
+                                        <label for="{{ param.id }}">{{ param.name }}</label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-label-group mb-3" id="return-order__comment">
+                <textarea name="input_customer_comment" class="form-control" id="input_customer_comment" placeholder="{{ text.note }}" rows="5">{{ comment_value }}</textarea>
+                <label for="input_customer_comment">{{ text.note }}</label>
+            </div>
+            
+            <button id="order_return_send" class="btn btn-primary mb-3" type="button" onclick="$('#return_order').submit();">{{ text.button_order_return_start }}</button>
+            <button id="button_back" class="btn btn-outline-primary mb-3" type="button" onclick="location.href='{{ back_url }}';">{{ text.button_back }}</button>
+        {{ form_end }}
+    </div>
+</div>
+
+{% if custom_content_bottom_disp %}
+    <div class="line-separator"></div>
+    <div class='page_txt' id="page_txt_reg_bottom">{{ custom_content_bottom }}</div>
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        var returnViewHandler = new returnOrderViewHandler({
+            returnItem:"[id^='return_item_checkbox_']",
+            rowItem: ".order-return__item-row",
+            typeInput: parseInt($("#type_input").val()),
+            inputItem: ".js_return_cause_input",
+            errorClass: "has-fault",
+            customerParamRowClass:".order-return__customer-parameter",
+            customerParamWrapper:"#bank_account_data",
+            paymentRadioClass:".payment_radio",
+            paymentTypeAttr:"data-payment-type",
+            visibleClass:"js_visible_mod",
+            notVisibleClass:"js_not_visible_mod",
+            returnSendButton:"#order_return_send",
+            customerParameterRadio: "[id^=cust_param_radio_]",
+            convertClickedIndex:false
+        });
+
+        returnViewHandler.returnItemClick();
+        returnViewHandler.filterMods($(".payment_radio:checked").attr("data-type"));
+        returnViewHandler.paymentRadioClick();
+        returnViewHandler.isAnyChecked(1);
+        returnViewHandler.customerParameterRadioClick();
+
+        // Add active class on page load to selected item
+        var checkedRadio = $(".js-order-mods-item input[type=radio]:checked");
+        checkedRadio.closest(".js-order-mods-item").addClass("order-mods--active").find('.js-order-mods-details').slideDown();
+
+        function removeActiveClassFromOrderMods(section) {
+            var $orderModsSection = section.closest('.order-mods-section');
+            $(".js-order-mods-item", $orderModsSection).each(function() {
+                var $this = $(this);
+                if ($this.hasClass('order-mods--active')) {
+                    $this.removeClass('order-mods--active').find('.js-order-mods-details').slideUp();
+                }
+            })
+        }
+
+        $('.js-order-mods-item input[type=radio]').on('change', function() {
+            var $this = $(this);
+            removeActiveClassFromOrderMods($this);
+            $this.closest(".js-order-mods-item").addClass("order-mods--active").find('.js-order-mods-details').slideDown();
+        });
+    });
+</script>

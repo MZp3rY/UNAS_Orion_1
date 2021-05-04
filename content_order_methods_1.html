@@ -1,0 +1,715 @@
+<div id='page_order_mods_content' class='page_content'>
+    {{ form_start }}
+    <div class="row">
+        <div class="col-xl-9 mods-left-content">
+            {% if custom_content_top_disp %}
+                <div class='page_txt'>{{ custom_content_top }}</div>
+                <div class='page_hr'><hr/></div>
+            {% endif %}
+
+            {{ orderflow }}
+
+            <input type="hidden" name="mods_send" value="ok" />
+            <input type="hidden" name="fiz_spec" value="{{ payment_spec }}" />
+            <input type="hidden" name="fiz_id" id="fiz_id" value="" />
+            <input type="hidden" name="szall_spec" value="{{ shipping_spec }}" />
+            <input type="hidden" name="szall_id" id="szall_id" value="" />
+
+            <div class="order-mods__main js-methods-validation row gutters-5 pt-4 mb-5">
+                <div class="col-12 col-md-6">
+                    {% if primary_disp %}<!-- this is the master (1st) payment/shipping method -->
+                        <section class="order-mods-section order-mods-section--master icon-on-top order-mods__{{ primary_type }}-section border p-3 p-md-5 h-100" id="page_order_mods_{{ primary_type }}">
+                            <div class="d-flex align-items-center justify-content-center py-3">
+                                <h4 class="order-mods__main-title text-uppercase font-weight-bold text-cn font-l">{{ primary_title }}</h4>
+                            </div>
+                            <div class="order-mods">
+                                {% for method in primary_methods %}
+                                    <div class="order-mods__item py-3 js-order-mods-item" id="{{ method.outer_id }}">
+                                        <div class="row no-gutters align-items-start">
+                                            <div class="col-auto order-mods__radio-col">
+                                                <div class="order-mods__radio-wrap">
+                                                    {% if primary_type == "billing" %}
+                                                        <input name="fiz" id="{{ method.radio_id }}" class="fiz_radio" type="radio" value="{{ method.radio_value }}" rel_spec="{{ method.radio_rel_spec }}" rel_connect="{{ method.radio_rel_connect }}" onclick="{{ method.radio_onclick_value }}" {% if method.radio_checked %}checked="checked"{% endif %} rel_type="{{ method.radio_rel_type }}" rel_online="{{ method.radio_rel_online }}" rel_checkout_direct="{{ method.radio_rel_checkout_direct }}" />
+                                                    {% endif %}
+                                                    {% if primary_type == "shipping" %}
+                                                        <input name="szall" id="{{ method.radio_id }}" class="szall_radio" type="radio" value="{{ method.radio_value }}" rel_spec="{{ method.radio_rel_spec }}" rel_connect="{{ method.radio_rel_connect }}" onclick="{{ method.radio_onclick_value }}" {% if method.radio_checked %}checked="checked"{% endif %} />
+                                                    {% endif %}
+                                                    <label class="order-mods__label p-0" for="{{ method.radio_id }}"></label>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <header class="order-mods__header row gutters-5">
+                                                    {% if primary_type == "billing" %}<!-- if the master type is payment -->
+                                                        <label class="col order-mods__label order-mods__name d-flex m-0 pb-2" for="fiz_id_{{ method.id }}">{{ method.name }}</label>
+                                                    {% endif %}
+
+                                                    {% if primary_type == "shipping" %}<!-- if the master type is shipping -->
+                                                        <label class="col order-mods__label order-mods__name m-0 pb-2" for="szall_id_{{ method.id }}">{{ method.name }}</label>
+                                                        <div class="col-auto order-mods__shipping-cost-wrap d-flex text-cn font-weight-bold">
+                                                            <div class="order-mods__shipping-cost-text mr-2 d-none">{{ text.shipping_cost }}:</div>
+                                                            <div class="order-mods__shipping-cost text-nowrap">{{ method.shipping_cost }}</div>
+                                                            <span class="order-mods__shipping-cost-hidden">{{ method.shipping_cost_raw }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if method.logo_disp %}
+                                                        <div class="col-12 order-mods__logo-wrap">
+                                                            {% if method.logo_link_disp %}<a href="{{ method.logo_link_url }}" title="{{ method.logo_alt }}" target="{{ method.logo_link_target }}">{% endif %}
+                                                            <img class="order-mods__logo" src="{{ method.logo_img_url }}" alt="{{ method.logo_alt }}" title="{{ method.logo_alt }}" />
+                                                            {% if method.logo_link_disp %}</a>{% endif %}
+                                                        </div>
+                                                    {% endif %}
+                                                </header>
+
+                                                {% if method.details_disp or method.link_disp or method.logo_disp or method.delivery_point_disp %}
+                                                    <div class="order-mods__details js-order-mods-details">
+                                                        {% if method.details_disp %}
+                                                            <div class='order-mods__description py-3 font-xs font-md-s text-justify'>{{ method.details }}</div>
+                                                        {% endif %}
+
+                                                        {% if method.link_disp %}
+                                                            <a class="order-mods__link my-4" href="{{ method.link_url }}" title="{{ method.link_alt }}" target="{{ method.link_target }}">{{ method.link_text }}</a>
+                                                        {% endif %}
+
+                                                        {% if method.delivery_point_disp %}
+                                                            <div class="order-mods__delivery-point mb-4 page_order_mods_deliverypoint">
+                                                                {{ method.delivery_point_script }}
+                                                                <div class="order-mods__delivery-options">
+                                                                    <div class="row">
+                                                                        <div class="col-12 js-delivery-point-validation">
+                                                                            <div class="order-mods__delivery-point-selects">
+                                                                                <div class="order-mods__delivery-point-select-text mb-2">
+                                                                                    {{ text.select_delivery_point }}
+                                                                                </div>
+                                                                                {% if method.delivery_point_type_multi %}
+                                                                                    <div class="form-group form-select-group delivery_point_1_wrapper" {% if not method.delivery_point_select_1_disp %}style="display:none"{% endif %}><span class="delivery_point_1_outer">{{ method.delivery_point_select_1 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_2_wrapper" {% if not method.delivery_point_select_2_disp %}style="display:none"{% endif %}><span class="delivery_point_2_outer">{{ method.delivery_point_select_2 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_3_wrapper" {% if not method.delivery_point_select_3_disp %}style="display:none"{% endif %}><span class="delivery_point_3_outer">{{ method.delivery_point_select_3 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_4_wrapper" {% if not method.delivery_point_select_4_disp %}style="display:none"{% endif %}><span class="delivery_point_4_outer">{{ method.delivery_point_select_4 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_5_wrapper" {% if not method.delivery_point_select_5_disp %}style="display:none"{% endif %}><span class="delivery_point_5_outer">{{ method.delivery_point_select_5 }}</span></div>
+                                                                                {% else %}
+                                                                                    <div class="delivery_point_outer">
+                                                                                        <div class="form-group form-select-group">
+                                                                                            <select class="form-control delivery_point" onchange="{{ method.delivery_point_single_onchange_value }}">
+                                                                                                <option value="">--- {{ text.please_select }} ---</option>
+                                                                                                {% for option in method.delivery_options %}
+                                                                                                    <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>{{ option.name }}</option>
+                                                                                                {% endfor %}
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                        {% if method.delivery_point_map_disp %}
+                                                                            <div class="col-12">
+                                                                                <div class="order-mods__delivery-map">
+                                                                                    <div>
+                                                                                        <label>{{ text.select_on_map }}:</label>
+                                                                                        <span class="page_order_mods_deliverypoint_widget">
+                                                                                            <a href="#" onclick="{{ method.delivery_point_map_widget_onclick_value }}"></a>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="page_order_mods_deliverypoint_info_outer" {% if method.delivery_point_info != "" %} style='display:block;'{% endif %}>
+                                                                    <div class="page_order_mods_deliverypoint_info font-xs font-md-s text-justify">{{ method.delivery_point_info }}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if primary_type == "billing" %}
+                                {% if point_account_disp %}
+                                    <section class="order-mods-section order-mods__point-account" id="page_order_mods_virtual">
+                                        <div class="row gutters-5 my-3 font-s font-md-m">
+                                            <div class="col">
+                                                <div class="order-mods__virtual-text">{{ text.your_points_on_your_account }}</div>
+                                            </div>
+                                            <div class="col-auto d-flex flex-nowrap">
+                                                <div class="order-mods__virtual-point font-weight-bold text-cn">{{ point_account_value }}</div>
+                                            </div>
+                                            <div class="col-12 form-check">
+                                                <input type="checkbox" name="use_virtual" class="form-check-input" id="use_points" value="1" {% if point_use_checked %}checked="checked"{% endif %}>
+                                                <label class="order-mods__virtual-label form-check-label font-s" for="use_points">{{ text.use_points_on_buy }}</label>
+                                            </div>
+                                        </div>
+                                    </section>
+                                {% endif %}
+                            {% endif %}
+                        </section>
+                    {% else %} <!-- there is no available master method -->
+                        <section class="order-mods-section order-mods-section--has-not-master icon-on-top order-mods__{{ primary_type }}-section border p-3 p-md-5 h-100" id="page_order_mods_{{ primary_type }}">
+                            <div class="d-flex align-items-center justify-content-center py-3">
+                                <h4 class="order-mods__main-title text-uppercase font-weight-bold text-cn font-l">{{ primary_title }}
+                                    <span class="icon--exclamation-2 text-warning"></span>
+                                </h4>
+                            </div>
+
+                            <!-- [master_disp_no_custom_disp] with ! (denial): custom text is not given by admin user in Content / Editable contents menu (Order page, if no selectable...) -->
+                            <div class="order-mods__text-no-master-method-outer {% if custom_content_no_primary_method_disp %}is-custom{% endif %}">
+                            <span class="order-mods__text-no-master-method">
+                                {% if custom_content_no_primary_method_disp %}
+                                    {{ custom_content_no_primary_method }}
+                                {% else %}
+                                   {{ primary_title }}
+                                {% endif %}
+                            </span>
+                            </div>
+                            {% if primary_type == "billing" %}
+                                {% if point_account_disp %}
+                                    <section class="order-mods-section order-mods__point-account" id="page_order_mods_virtual">
+                                        <div class="row gutters-5 my-3 font-s font-md-m">
+                                            <div class="col">
+                                                <div class="order-mods__virtual-text">{{ text.your_points_on_your_account }}</div>
+                                            </div>
+                                            <div class="col-auto d-flex flex-nowrap">
+                                                <div class="order-mods__virtual-point font-weight-bold text-cn">{{ point_account_value }}</div>
+                                            </div>
+                                            <div class="col-12 form-check">
+                                                <input type="checkbox" name="use_virtual" class="form-check-input" id="use_points" value="1" {% if point_use_checked %}checked="checked"{% endif %}>
+                                                <label class="order-mods__virtual-label form-check-label font-s" for="use_points">{{ text.use_points_on_buy }}</label>
+                                            </div>
+                                        </div>
+                                    </section>
+                                {% endif %}
+                            {% endif %}
+                        </section>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-md-6 mt-5 mt-md-0">
+                    {% if secondary_disp %}<!-- this is the slave (2nd) payment/shipping method -->
+                        <section class="order-mods-section order-mods-section--slave icon-on-top order-mods__{{ secondary_type }}-section border p-3 p-md-5 h-100" id="page_order_mods_{{ secondary_type }}">
+                            <div class="d-flex align-items-center justify-content-center py-3">
+                                <h4 class="order-mods__main-title text-uppercase font-weight-bold text-cn font-l">{{ secondary_title }}</h4>
+                            </div>
+                            <div class="order-mods">
+                                {% for method in secondary_methods %}
+                                    <div class="order-mods__item py-3 js-order-mods-item" id="{{ method.outer_id }}">
+                                        <div class="row no-gutters align-items-start">
+                                            <div class="col-auto order-mods__radio-col">
+                                                <div class="order-mods__radio-wrap">
+                                                    {% if secondary_type == "billing" %}
+                                                        <input name="fiz" id="{{ method.radio_id }}" class="fiz_radio" type="radio" value="{{ method.radio_value }}" rel_spec="{{ method.radio_rel_spec }}" rel_connect="{{ method.radio_rel_connect }}" onclick="{{ method.radio_onclick_value }}" {% if method.radio_checked %}checked="checked"{% endif %} rel_type="{{ method.radio_rel_type }}" rel_online="{{ method.radio_rel_online }}" rel_checkout_direct="{{ method.radio_rel_checkout_direct }}" />
+                                                    {% endif %}
+                                                    {% if secondary_type == "shipping" %}
+                                                        <input name="szall" id="{{ method.radio_id }}" class="szall_radio" type="radio" value="{{ method.radio_value }}" rel_spec="{{ method.radio_rel_spec }}" rel_connect="{{ method.radio_rel_connect }}" onclick="{{ method.radio_onclick_value }}" {% if method.radio_checked %}checked="checked"{% endif %} />
+                                                    {% endif %}
+                                                    <label class="order-mods__label p-0" for="{{ method.radio_id }}"></label>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <header class="order-mods__header row gutters-5">
+                                                    {% if secondary_type == "billing" %}<!-- if the slave type is payment -->
+                                                        <label class="col order-mods__label order-mods__name d-flex m-0 pb-2" for="fiz_id_{{ method.id }}">{{ method.name }}</label>
+                                                    {% endif %}
+
+                                                    {% if secondary_type == "shipping" %}<!-- if the slave type is shipping -->
+                                                        <label class="col order-mods__label order-mods__name m-0 pb-2" for="szall_id_{{ method.id }}">{{ method.name }}</label>
+                                                        <div class="col-auto order-mods__shipping-cost-wrap d-flex text-cn font-weight-bold">
+                                                            <div class="order-mods__shipping-cost-text mr-2 d-none">{{ text.shipping_cost }}:</div>
+                                                            <div class="order-mods__shipping-cost text-nowrap">{{ method.shipping_cost }}</div>
+                                                            <span class="order-mods__shipping-cost-hidden">{{ method.shipping_cost_raw }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if method.logo_disp %}
+                                                        <div class="col-12 order-mods__logo-wrap">
+                                                            {% if method.logo_link_disp %}<a href="{{ method.logo_link_url }}" title="{{ method.logo_alt }}" target="{{ method.logo_link_target }}">{% endif %}
+                                                            <img class="order-mods__logo" src="{{ method.logo_img_url }}" alt="{{ method.logo_alt }}" title="{{ method.logo_alt }}" />
+                                                            {% if method.logo_link_disp %}</a>{% endif %}
+                                                        </div>
+                                                    {% endif %}
+                                                </header>
+
+                                                {% if method.details_disp or method.link_disp or method.logo_disp or method.delivery_point_disp %}
+                                                    <div class="order-mods__details js-order-mods-details">
+                                                        {% if method.details_disp %}
+                                                            <div class='order-mods__description py-3 font-xs font-md-s text-justify'>{{ method.details }}</div>
+                                                        {% endif %}
+
+                                                        {% if method.link_disp %}
+                                                            <a class="order-mods__link my-4" href="{{ method.link_url }}" title="{{ method.link_alt }}"
+                                                               target="{{ method.link_target }}">{{ method.link_text }}
+                                                            </a>
+                                                        {% endif %}
+
+                                                        {% if method.delivery_point_disp %}
+                                                            <div class="order-mods__delivery-point mb-4 page_order_mods_deliverypoint">
+                                                                {{ method.delivery_point_script }}
+                                                                <div class="order-mods__delivery-options">
+                                                                    <div class="row">
+                                                                        <div class="col-12 js-delivery-point-validation">
+                                                                            <div class="order-mods__delivery-point-selects">
+                                                                                <div class="order-mods__delivery-point-select-text mb-2">
+                                                                                    {{ text.select_delivery_point }}
+                                                                                </div>
+                                                                                {% if method.delivery_point_type_multi %}
+                                                                                    <div class="form-group form-select-group delivery_point_1_wrapper" {% if not method.delivery_point_select_1_disp %}style="display:none"{% endif %}><span class="delivery_point_1_outer">{{ method.delivery_point_select_1 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_2_wrapper" {% if not method.delivery_point_select_2_disp %}style="display:none"{% endif %}><span class="delivery_point_2_outer">{{ method.delivery_point_select_2 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_3_wrapper" {% if not method.delivery_point_select_3_disp %}style="display:none"{% endif %}><span class="delivery_point_3_outer">{{ method.delivery_point_select_3 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_4_wrapper" {% if not method.delivery_point_select_4_disp %}style="display:none"{% endif %}><span class="delivery_point_4_outer">{{ method.delivery_point_select_4 }}</span></div>
+                                                                                    <div class="form-group form-select-group delivery_point_5_wrapper" {% if not method.delivery_point_select_5_disp %}style="display:none"{% endif %}><span class="delivery_point_5_outer">{{ method.delivery_point_select_5 }}</span></div>
+                                                                                {% else %}
+                                                                                    <div class="delivery_point_outer">
+                                                                                        <div class="form-group form-select-group">
+                                                                                            <select class="form-control delivery_point" onchange="{{ method.delivery_point_single_onchange_value }}">
+                                                                                                <option value="">--- {{ text.please_select }} ---</option>
+                                                                                                {% for option in method.delivery_options %}
+                                                                                                    <option value="{{ option.value }}" {% if option.selected %}selected="selected"{% endif %}>{{ option.name }}</option>
+                                                                                                {% endfor %}
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                        {% if method.delivery_point_map_disp %}
+                                                                            <div class="col-12">
+                                                                                <div class="order-mods__delivery-map">
+                                                                                    <div>
+                                                                                        <label>{{ text.select_on_map }}:</label>
+                                                                                        <span class="page_order_mods_deliverypoint_widget">
+                                                                                            <a href="#" onclick="{{ method.delivery_point_map_widget_onclick_value }}"></a>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="page_order_mods_deliverypoint_info_outer" {% if method.delivery_point_info != "" %} style='display:block;'{% endif %}>
+                                                                    <div class="page_order_mods_deliverypoint_info font-xs font-md-s">{{ method.delivery_point_info }}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if secondary_type == "billing" %}
+                                {% if point_account_disp %}
+                                    <section class="order-mods-section order-mods__point-account" id="page_order_mods_virtual">
+                                        <div class="row gutters-5 my-3 font-s font-md-m">
+                                            <div class="col">
+                                                <div class="order-mods__virtual-text">{{ text.your_points_on_your_account }}</div>
+                                            </div>
+                                            <div class="col-auto d-flex flex-nowrap">
+                                                <div class="order-mods__virtual-point font-weight-bold text-cn">{{ point_account_value }}</div>
+                                            </div>
+                                            <div class="col-12 form-check">
+                                                <input type="checkbox" name="use_virtual" class="form-check-input" id="use_points" value="1" {% if point_use_checked %}checked="checked"{% endif %}>
+                                                <label class="order-mods__virtual-label form-check-label font-s" for="use_points">{{ text.use_points_on_buy }}</label>
+                                            </div>
+                                        </div>
+                                    </section>
+                                {% endif %}
+                            {% endif %}
+                        </section>
+                    {% else %}<!-- there is no available slave method -->
+                        <section class="order-mods-section order-mods-section--has-not-slave icon-on-top order-mods__{{ secondary_type }}-section border p-3 p-md-5 h-100" id="page_order_mods_{{ secondary_type }}">
+                            <div class="d-flex align-items-center justify-content-center py-3">
+                                <h4 class="order-mods__main-title text-uppercase font-weight-bold text-cn font-l">
+                                    {{ secondary_title }}
+                                    <span class="icon--exclamation-2 text-warning"></span>
+                                </h4>
+                            </div>
+                            <!-- [slave_disp_no_custom_disp] with ! (denial): custom text is not given by admin user in Content / Editable contents menu (Order page, if no selectable...) -->
+                            <div class="order-mods__text-no-slave-method-outer {% if custom_content_no_secondary_method_disp %}is-custom{% endif %}">
+                                <span class="order-mods__text-no-slave-method ">
+                                    {% if custom_content_no_secondary_method_disp %}
+                                        {{ custom_content_no_secondary_method }}
+                                    {% else %}
+                                        {{ secondary_title }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% if secondary_type == "billing" %}
+                                {% if point_account_disp %}
+                                    <section class="order-mods-section order-mods__point-account" id="page_order_mods_virtual">
+                                        <div class="row gutters-5 my-3 font-s font-md-m">
+                                            <div class="col">
+                                                <div class="order-mods__virtual-text">{{ text.your_points_on_your_account }}</div>
+                                            </div>
+                                            <div class="col-auto d-flex flex-nowrap">
+                                                <div class="order-mods__virtual-point font-weight-bold text-cn">{{ point_account_value }}</div>
+                                            </div>
+                                            <div class="col-12 form-check">
+                                                <input type="checkbox" name="use_virtual" class="form-check-input" id="use_points" value="1" {% if point_use_checked %}checked="checked"{% endif %}>
+                                                <label class="order-mods__virtual-label form-check-label font-s" for="use_points">{{ text.use_points_on_buy }}</label>
+                                            </div>
+                                        </div>
+                                    </section>
+                                {% endif %}
+                            {% endif %}
+                        </section>
+                    {% endif %}
+                </div>
+            </div>
+
+            {{ mod_script }}
+
+            {% for plus_mod in plus_mods %}
+                {% if plus_mod.content_disp %}
+                    {{ plus_mod.content }}
+                {% else %}
+                    <div class="order-mods__param py-4 px-2 px-md-4 {% if plus_mod.error_disp %}has-fault{% endif %}" id="page_order_mods_{{ plus_mods.id }}">
+                        <div class="row align-items-center">
+                            {% if plus_mod.title_disp %}
+                                <div class="col-md-4">
+                                    <div class="order-mods__param-title mb-2 mb-md-0">
+                                        {{ plus_mod.title }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if plus_mod.input_disp %}
+                                <div class="col-md-8">
+                                    {{ plus_mod.input }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if order_params_disp %}
+                <section class="order-mods-section order-mods__params-section mb-5">
+                    <div class="d-flex align-items-center">
+                        <h4 class="order-mods__params-title text-uppercase text-cn font-weight-bold font-l">
+                            {{ text.other_order_data }}
+                        </h4>
+                    </div>
+                    {% if order_params_disp %}
+                        <section class="order-mods-section order-mods__params-section js-param-validation">
+                            <div class="order-mods__params">
+                                <div class="row gutters-5">
+                                    {% for param in order_params %}
+                                        <div class="col-md-6 my-1 my-md-3 order-mods__param{% if param.error_disp %} has-fault{% endif %}{% if param.required %} js-param-required{% endif %} param-type-{{ param.type }}" id="page_order_mods_param_{{ param.id }}">
+                                            {% if param.type == "radio" %}
+                                                <div class="order-mods__param-value order-mods__param--radios form-group m-0">
+                                                    <div>{{ param.title }}</div>
+                                                    {% for option in param.radio_options %}
+                                                        <div class="order-mods__param--radio form-check form-check-inline">
+                                                            <input id="order_param_{{ param.id }}_{{ option.value }}" name="order_param_{{ param.id }}" class="form-check-input" type="radio" value="{{ option.value }}" {% if option.checked %}checked="checked"{% endif %} onchange="order_mods_params_check(this,true);">
+                                                            <label for="order_param_{{ param.id }}_{{ option.value }}" class="form-check-label">{{ option.text }}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% elseif param.type == "input" %}
+                                                <div class="order-mods__param-value order-mods__param--input form-label-group">
+                                                    <input type="text" name="{{ param.input_name }}" placeholder="{{ param.title }}" id="{{ param.input_name }}" value="{{ param.input_value }}" maxlength="100" class="form-control" onchange="order_mods_params_check(this,true);"/>
+                                                    <label for="{{ param.input_name }}">{{ param.title }}</label>
+                                                </div>
+                                            {% elseif param.type == "file" %}
+                                                <div class="input-group order-mods__param-value order-mods__param--file">
+                                                    <div class="px-0 col form-label-group mb-0">
+                                                        <input readonly type='text' name="{{ param.input_name }}-filename" placeholder="{{ param.title }}" class='cust_input_file-filename form-control bg-white' id='{{ param.input_name }}-filename'>
+                                                        <label for="{{ param.input_name }}-filename" onclick="return false;">{{ param.title }}</label>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <label for="{{ param.input_name }}" class="{{ param.input_name }}-label m-0 btn btn-primary font-xs px-3" data-label="{{ text.select_file }}">{{ text.select_file }}</label>
+                                                    </div>
+                                                </div>
+                                                <input type='file' name="{{ param.input_name }}" size="50" class='cust_input cust_input_file d-none' id='{{ param.input_name }}' onchange="file_input_filname_change(this);order_mods_params_check(this,true);">
+                                            {% endif %}
+                                            {% if param.required %}
+                                                <div class="order-mods__param-fault-text text-danger font-xs">
+                                                    {{ text.error_required }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </section>
+                    {% endif %}
+                    <div class="line-separator"></div>
+                </section>
+            {% endif %}
+
+            <nav class='order-mods__nav-buttons order-mods__nav-buttons-bottom d-flex justify-content-between mb-5'>
+                <button class="order-mods__prev-btn btn btn-outline-primary" name="button_prev" id="button_prev" type="button">
+                    {{ text.button_back }}
+                </button>
+            </nav>
+        </div>
+        <div class="col-xl-3 mods-right-content">
+            <div class="order-mods-summary-wrapper sum-box-wrap js-sum-box-wrap">
+                <div class="order-mods__summary sum-box js-sum-box">
+                    <h3 class="order-mods__summary__title text-center font-weight-bold text-uppercase text-cn mb-4 font-l">{{ text.order_summary }}</h3>
+
+                    {% if price_net_disp %}
+                        <div class="order-mods__summary-row order-mods__summary-netto mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-mods__summary-title font-s">{{ text.total_net }}:</div>
+                                <div class="order-mods__summary-value ml-auto text-cn font-weight-bold">{{ total_price_net }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="order-mods__summary-row order-mods__summary-gross mb-2">
+                        <div class="row no-gutters align-items-center">
+                            <div class="order-mods__summary-title font-s">{{ text.total_gross }}:</div>
+                            <div class="order-mods__summary-value ml-auto text-cn font-weight-bold">{{ total_price_gross }}</div>
+                        </div>
+                    </div>
+
+                    {% if total_save_disp %}
+                        <div class="order-mods__summary-row order-mods__summary-savings mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-mods__summary-title order-mods__summary-savings-title font-s">{{ text.saving }}:</div>
+                                <div class="order-mods__summary-value order-mods__summary-savings-value ml-auto text-cn font-weight-bold">{{ total_save_gross }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if total_discount_percent_disp %}
+                        <div class="order-mods__summary-row order-mods__summary-discount-percent mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-mods__summary-title font-s">
+                                    <span class="order-mods__summary-discount-percent-title-text">{{ text.discount }}</span>
+                                    <span class="order-mods__summary-discount-percent-title-value">({{ total_discount_percent_value }}%):</span>
+                                </div>
+                                <div class="order-mods__summary-value order-mods__summary-discount-percent-value ml-auto text-cn font-weight-bold">{{ total_discount_percent_price }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="order-mods__summary-row order-mods__summary-shipping-cost mb-2">
+                        <div class="row no-gutters align-items-center">
+                            <div class="order-mods__summary-title font-s">{{ text.shipping_cost }}:</div>
+                            <div class="order-mods__summary-value js-shipping-cost ml-auto text-cn font-weight-bold">{{ shipping_cost }}</div>
+                        </div>
+                    </div>
+
+                    {% if total_discount_amount_disp %}
+                        <div class="order-mods__summary-row order-mods__summary-discount-amount mb-2">
+                            <div class="row no-gutters align-items-center">
+                                <div class="order-mods__summary-title order-mods__summary-discount-amount-title font-s">{{ text.discount_amount }}:</div>
+                                <div class="order-mods__summary-value order-mods__summary-discount-amount-value ml-auto text-cn font-weight-bold">{{ total_discount_amount }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="line-separator my-4"></div>
+
+                    <div class="order-mods__summary-row order-mods__summary-price-full-sum row no-gutters font-weight-bold align-items-center mb-2">
+                        <span class="order-mods__total_price_hidden">{{ total_price_raw }}</span>
+                        <div class="order-mods__summary-title font-s">{{ text.total_price }}:</div>
+                        <div class="order-mods__summary-value js-total-price font-l ml-auto text-cn">{{ total_price }}</div>
+                    </div>
+                    <div class="total-box-sticky-wrapper js-total-box-sticky-wrapper">
+                        <div class="row gutters-5 py-2 px-5 align-items-center justify-content-center total-box-sticky bg-white total-box js-total-box-sticky">
+                            <div class="col-auto total-box__text font-weight-bold d-flex align-items-baseline justify-content-between">
+                                <div class="total-box__label mr-3 font-s font-md-m">{{ text.total_price }}:</div>
+                                <div class="total-box__amount js-total-price text-cn font-l font-md-xl">{{ total_price }}</div>
+                            </div>
+                            <div class="col-auto d-flex justify-content-center">
+                                <button type="button" class="total-box__btn-next btn btn-primary orderflow-next-btn" onclick="document.getElementsByClassName('js-btn-next')[0].click();">{{ button_next_text }}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if coupon_disp %}
+                        <div class="order-mods__summary-row cart-summary-coupon icon-on-top px-5 pt-5 pb-4 border position-relative my-5 mx-auto">
+                            <div class="form-label-group js-coupon-group{% if coupon_error_disp %} has-fault coupon-error{% endif %}{% if not coupon_error_disp and coupon_id != '' %} coupon-ok{% endif %}">
+                                <input class="order-mods__coupon-input form-control coupon-input" type="text" id="coupon_id" name="coupon_id" value="{{ coupon_id }}" placeholder="{{ text.coupon_code }}" maxlength="20">
+                                <label for="coupon_id">{{ text.coupon_code }}</label>
+                            </div>
+                            {% if (not coupon_error_disp and coupon_id != '') or coupon_error_disp %}
+                                <button class="order-mods__coupon-del-btn btn btn-link btn-block p-0" type="button" onclick="delCoupon();">{{ text.delete }}</button>
+                            {% endif %}
+                        </div>
+                        <script>
+                            function delCoupon() {
+                                $('#coupon_id').attr('value','').removeClass('placeholder-hide');
+                                $('.order-mods__coupon-del-btn').hide();
+                                $('.order-js-coupon-group-del-btn').removeClass('has-fault');
+                                $('.js-coupon-group').removeClass('coupon-ok coupon-error has-fault');
+                            }
+                        </script>
+                    {% endif %}
+
+                    {% if terms_disp %}
+                        {% if terms_checkbox_disp %}
+                                <div class="order-mods__terms js-terms-validation">
+                                    <div class="form-check mb-5 pl-0">
+                                        <input name="terms" id="order_control_terms" class="form-check-input" type="checkbox" value="1" {% if terms_checked %}checked="checked"{% endif %} onchange="order_mods_terms_change(this);" />
+                                        <label for="order_control_terms" class="font-xs form-check-label">{{ text.accept_terms_and_privacy_policy }} {{ text.accept_have_to_pay }}</label>
+                                    </div>
+                                </div>
+                            {% else %}
+                            <div class="terms_no_checkbox">
+                                {{ text.accept_terms_and_privacy_policy }} {{ text.accept_have_to_pay }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <button class="order-mods__next-btn orderflow-next-btn btn btn-primary mx-auto btn-block js-btn-next js-sum-box-visibility-check" name="button_next" id="button_next" type="button">{{ button_next_text }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if custom_content_bottom_disp %}
+        <div class='page_hr'><hr/></div>
+        <div class='page_txt'>{{ custom_content_bottom }}</div>
+    {% endif %}
+
+    {% if money_hu_disp %}
+        <div id="bankracio_hu_payment_banner">
+            <div data-br-service="banner/br_hitel_responsive_14" data-place="{{ shop_id }}"></div>
+            <script type="text/javascript">
+                (function() {
+                    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+                    script.src = 'https://static.bankracio.hu/assets/js/brhu_insert.js';
+                    document.getElementsByTagName("head")[0].appendChild(script);
+                })();
+            </script>
+        </div>
+    {% endif %}
+    {{ form_end }}
+    <script>
+        $(document).on('changeShippingMethod changePaymentMethod', function(){
+            orderModsChangeShipping("{{ money_type }}");
+
+            if (orderflow_no_mode_selected==1) {
+                if ($(".js-order-mods-item.order-mods--active.js-order-mods--disabled").length>0) {
+                    $(".js-order-mods-item.order-mods--active.js-order-mods--disabled").removeClass("order-mods--active");
+                }
+            }
+        });
+
+        $(document).ready(function() {
+            // Add active class on page load to selected item
+            var checkedRadio = $(".js-order-mods-item input[type=radio]:checked");
+            checkedRadio.closest(".js-order-mods-item").addClass("order-mods--active").find('.js-order-mods-details').slideDown();
+
+            function removeActiveClassFromOrderMods(section) {
+                var $orderModsSection = section.closest('.order-mods-section');
+                $(".js-order-mods-item", $orderModsSection).each(function() {
+                    var $this = $(this);
+                    if ($this.hasClass('order-mods--active')) {
+                        $this.removeClass('order-mods--active').find('.js-order-mods-details').slideUp();
+                    }
+                })
+            }
+
+            $('.js-order-mods-item input[type=radio]').on('change', function() {
+                var $this = $(this);
+                removeActiveClassFromOrderMods($this);
+                $this.closest(".js-order-mods-item").addClass("order-mods--active").find('.js-order-mods-details').slideDown();
+                orderModsChangeShipping("{{ money_type }}");
+            });
+            $('.js-use-virtual-points').on('change', function() {
+                orderModsChangeShipping("{{ money_type }}");
+            });
+        });
+
+        /*** STICKY SUMBOX ***/
+        var $stickySumBox =
+            {
+                top : 115,
+                bottom: 115,
+                stickyBox : $('.js-sum-box'),
+                stickyBoxWrap : $('.js-sum-box-wrap'),
+                stickTo : "is-sticky-top",
+                heightsDiff : 0,
+                offsetDist : 115,
+                offsetDistBottom : 115,
+                get getstickyBoxWrapHeight() {
+                    return this.stickyBoxWrap.height();
+                },
+                get getstickyBoxWrapOffset() {
+                    return this.stickyBoxWrap.offset().top;
+                },
+                get getstickyBoxHeight() {
+                    return this.stickyBox.outerHeight();
+                },
+                get getstickyBoxInnerHeight() {
+                    return this.stickyBox.innerHeight();
+                },
+                get getstickyBoxWrapWidth() {
+                    return this.stickyBoxWrap.width();
+                },
+                get setstickyBoxWidth() {
+                    this.stickyBox.css('width', this.getstickyBoxWrapWidth);
+                },
+                get getwindowHeight() {
+                    return $(window).height();
+                },
+                checkStickyPos : function() {
+
+                    if (this.getstickyBoxWrapOffset + this.heightsDiff - this.offsetDist - $(window).scrollTop() <= 0 ) {
+                        if (!$(this.stickyBox).hasClass(this.stickTo)) {
+                            $(this.stickyBox).addClass(this.stickTo).css('width', this.setstickyBoxWidth);
+                        }
+                    } else { /* offsetDistBottom */
+                        if ($(this.stickyBox).hasClass(this.stickTo)) {
+                            $(this.stickyBox).removeClass(this.stickTo);
+                        }
+                    }
+                },
+                checkReachBottom : function() {
+                    if (this.getstickyBoxWrapHeight - this.getstickyBoxInnerHeight - $(window).scrollTop() + this.getstickyBoxWrapOffset + this.heightsDiff - this.offsetDistBottom < 0)  {
+                        if (!this.stickyBox.hasClass('reached-bottom')) {
+                            this.stickyBox.addClass('reached-bottom');
+                        }
+                    } else {
+                        if (this.stickyBox.hasClass('reached-bottom')) {
+                            this.stickyBox.removeClass('reached-bottom');
+                        }
+                    }
+                },
+                checkHeightsDiff : function() {
+                    if ( this.getstickyBoxHeight >= this.getwindowHeight ) {
+                        this.stickTo = "is-sticky-bottom";
+                        this.heightsDiff = this.getstickyBoxHeight - this.getwindowHeight;
+                        this.offsetDist = this.offsetDistBottom;
+                    }
+                    this.checkStickyPos();
+                }
+            }
+
+        /*** STICKY SUM BOX SIMPLIFIED ***/
+        var $itemVisibilityCheck = $('.js-sum-box-visibility-check');
+        var $sticky = $('.js-total-box-sticky');
+        var $stickyParent = $('.js-total-box-sticky-wrapper');
+
+        $(document).ready(function() {
+            setStickyPosition($stickyParent);
+            $(window).on('load', function(){
+                if ( ($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight ) {
+                    $stickySumBox.checkReachBottom();
+                    $stickySumBox.checkHeightsDiff();
+                }
+                setStickyPosition($stickyParent);
+            });
+            $(window).on('load scroll', function(){
+                if ( ($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight ) {
+                    $stickySumBox.checkStickyPos();
+                }
+            });
+            $(window).on('resize', function(){
+                if ( ($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight ) {
+                    $stickySumBox.setstickyBoxWidth;
+                }
+            });
+            $(window).on('scroll', function(){
+                if ( ($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight ) {
+                    $stickySumBox.checkReachBottom();
+                }
+                setStickyPosition($stickyParent);
+            });
+        });
+    </script>
+</div>

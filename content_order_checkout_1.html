@@ -1,0 +1,181 @@
+<div id='page_order_checkout_content' class='page_content'>
+    {{ orderflow }}
+
+    <div class="row gutters-5 my-5">
+        {% if checkout_change %}
+            <div class="col-md-6 pt-4">
+                <div class='checkout_changepayment_box h-100 border icon-on-top p-5 position-relative'>
+                    {{ payment_method_change_form_start }}
+                    <div class="order-checkout__change-payment order-mods-section">
+                        <h4 class="change-payment__main-title text-uppercase font-l text-center font-weight-bold text-cn py-3">{{ text.change_payment_method }}</h4>
+                        <div class="order-mods">
+                            {% for method in payment_methods %}
+                                <div class="order-mods__item py-3 js-order-mods-item">
+                                    <div class="row no-gutters align-items-start">
+                                        <div class="col-auto order-mods__radio-col">
+                                            <div class="order-mods__radio-wrap">
+                                                <input id="order-mods__radio-{{ method.num }}" name="fiz" type="radio" value="{{ method.radio_value }}" {% if method.checked %}checked="checked"{% endif %}>
+                                                <label class="order-mods__label m-0 p-0" for="order-mods__radio-{{ method.num }}"></label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <header class="order-mods__header row gutters-5">
+                                                <label class="col order-mods__label order-mods__name d-flex m-0" for="order-mods__radio-{{ method.num }}">{{ method.name }}</label>
+                                                <div class="col-12 order-mods__logo-wrap">
+                                                    {% if method.logo_disp %}
+                                                        {% if method.logo_link_disp %}<a href="{{ method.logo_link_url }}" title="{{ method.logo_alt }}" target="{{ method.logo_link_target }}">{% endif %}
+                                                        <img class="order-mods__logo my-4" src="{{ method.logo_img_url }}" alt="{{ method.logo_alt }}" title="{{ method.logo_alt }}" />
+                                                        {% if method.logo_link_disp %}</a>{% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </header>
+                                            <div class="order-mods__details js-order-mods-details">
+                                                {% if method.details_disp %}
+                                                    <div class='order-mods__description my-4'>{{ method.details }}</div>
+                                                {% endif %}
+                                                {% if method.link_disp %}
+                                                    <a class="order-mods__link my-4" href="{{ method.link_url }}" title="{{ method.link_alt }}" target="{{ method.link_target }}">{{ method.link_text }}</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class='d-flex justify-content-center py-3'>
+                            <button class="order-checkout__change-payment-btn btn btn-primary">{{ text.button_modify }}</button>
+                        </div>
+                    </div>
+                    {{ payment_method_change_form_end }}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col{% if not checkout_change %} only{% endif %} pt-4">
+            <div class="order-checkout__payment-{{ checkout_type }} h-100 border icon-on-top p-5 position-relative {% if checkout_type == 'finish' %}border-success{% elseif checkout_type == 'pending' %}border-warning{% elseif checkout_type == 'change' %}border-danger{% endif %}">
+                {% if checkout_type == "finish" %}
+                    <div class='page_titletext payment_finish text-success mb-2'>{{ text.pay_status_finished }}</div>
+                {% endif %}
+
+                {% if checkout_type == "pending" %}
+                    <div class='page_titletext payment_pending text-warning mb-2'>{{ text.pay_status_pending }}</div>
+                    {% if pending_sub_title_disp %}
+                        <div class='page_titletext_info pt-3'>{{ pending_sub_title }}</div>
+                    {% endif %}
+                {% endif %}
+
+                {% if checkout_type == "change" %}
+                    <div class='page_titletext payment_change text-danger mb-2'>{{ error_title }}</div>
+                    {% if error_sub_title_disp %}
+                        <div class='page_titletext_info pt-3'>{{ error_sub_title }}</div>
+                    {% endif %}
+                {% endif %}
+
+                <div class="order-checkout__transaction-datas payment_{{ checkout_type }} mt-5">
+                    <div class="row mb-2">
+                        <div class="col-sm-6 col-lg-4 transaction-title">{{ text.total_price }}</div>
+                        <div class="col-sm-6 col-lg-8 transaction-data">{{ total_price }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-6 col-lg-4 transaction-title">{{ text.transaction_id }}</div>
+                        <div class="col-sm-6 col-lg-8 transaction-data">{{ transaction_id }}</div>
+                    </div>
+                    {% if auth_code_disp %}
+                        <div class="row mb-2">
+                            <div class="col-sm-6 col-lg-4 transaction-title">{{ text.licence_number }}</div>
+                            <div class="col-sm-6 col-lg-8 transaction-data">{{ auth_code }}</div>
+                        </div>
+                    {% endif %}
+                    <div class="row mb-2">
+                        <div class="col-sm-6 col-lg-4 transaction-title">{{ text.transaction_time }}</div>
+                        <div class="col-sm-6 col-lg-8 transaction-data">{{ transaction_time }}</div>
+                    </div>
+                    {% if fault_code_disp %}
+                        <div class="row mb-2">
+                            <div class="col-sm-6 col-lg-4 transaction-title">{{ text.status }}</div>
+                            <div class="col-sm-6 col-lg-8 transaction-data">{{ fault_code }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                {% if checkout_type == "pending" %}
+                    {% if refresh_disp %}
+                        <div class='page_text_common'>{{ text.payment_pending_text }}</div>
+                    {% endif %}
+
+                    {% if continue_disp %}
+                        <div class='my-4 text-center'>
+                            <button class='checkout__btn-pay {% if payment_type == "popup" %}popup-pay-btn{% else %}default-pay-btn{% endif %} btn btn-primary' type="button" id="button_pay" name="next" onclick='{{ button_pay_onclick }}'>{{ button_pay_text }}</button>
+                        </div>
+                    {% endif %}
+
+                    {{ pending_script }}
+                {% endif %}
+
+                {% if checkout_type == "change" %}
+                    <div class='text-danger mt-5'>{{ checkout_change_title }}</div>
+
+                    <div class="line-separator"></div>
+
+                    <div class='checkout_repay_box'>
+                        <h4 class="change-payment__main-title text-uppercase font-l text-center font-weight-bold text-cn">{{ text.button_pay_restart }}</h4>
+                        <div class='checkout_logos py-3 text-center'>
+                            {% if payment_method_logo_link_disp %}<a href="{{ payment_method_logo_link_url }}" title="{{ payment_method_logo_alt }}" target="{{ payment_method_logo_link_target }}">{% endif %}
+                            <img src="{{ payment_method_logo_img_url }}" alt="{{ payment_method_logo_alt }}" title="{{ payment_method_logo_alt }}" />
+                            {% if payment_method_logo_link_disp %}</a>{% endif %}
+                        </div>
+
+                        {% if payment_spec_type == "sponsorem_hu" %}
+                            <div class="col-12 my-2">
+                                <div class="form-label-group">
+                                    <input class="form-control" name="sponsorem_hu_cardid" id="sponsorem_hu_cardid" placeholder="{{ text.sponsorem_card_number }}" type="text" value="{{ payment_spec_sponsorem_input_value }}" />
+                                    <label for="sponsorem_hu_cardid">{{ text.sponsorem_card_number }}</label>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class='d-flex justify-content-center py-3'>
+                            <button class="checkout__btn-pay btn btn-primary" type="button" id="button_pay" name="next" onclick='{{ button_pay_onclick }}'>{{ button_pay_text }}</button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if custom_content_bottom_disp %}
+        <div class='page_hr'><hr/></div>
+        <div class='page_txt' id="page_txt_checkout_bottom">{{ custom_content_bottom }}</div>
+    {% endif %}
+
+    {% if loveallhelpall_disp %}
+        <div id='page_order_send_loveallhelpall' class='my-4 text-center'>
+            {{ loveallhelpall_content }}
+        </div>
+    {% endif %}
+
+    <script>
+        $(document).ready(function() {
+            // Add active class on page load to selected item
+            var checkedRadio = $(".js-order-mods-item input[type=radio]:checked");
+            checkedRadio.closest(".js-order-mods-item").addClass("order-mods--active").find('.js-order-mods-details').slideDown();
+
+            function removeActiveClassFromOrderMods(section) {
+                var $orderModsSection = section.closest('.order-mods-section');
+                $(".js-order-mods-item", $orderModsSection).each(function() {
+                    var $this = $(this);
+                    if ($this.hasClass('order-mods--active')) {
+                        $this.removeClass('order-mods--active').find('.js-order-mods-details').slideUp();
+                    }
+                })
+            }
+
+            $('.js-order-mods-item input[type=radio]').on('change', function() {
+                var $this = $(this);
+                removeActiveClassFromOrderMods($this);
+                $this.closest(".js-order-mods-item").addClass("order-mods--active").find('.js-order-mods-details').slideDown();
+            });
+        });
+    </script>
+</div>

@@ -1,0 +1,31 @@
+<div id='page_start_content' class='page_content'>
+    [[ element|name:start_custom_title;layout:html_title;class:container custom-title;  ]]
+
+    {% if custom_content_top_disp %}
+        <div class='page_txt py-4 start-custom-text container text-justify font-s font-md-m'>
+            <div class='page_shop_txt' id="page_start_txt_top">{{ custom_content_top }}</div>
+        </div>
+    {% endif %}
+
+    [[ element|name:banner_start_small;layout:start_banners;width:300; ]]
+
+    [[ element|name:start_item_2;width:1920;layout:bg_paralax ]]
+
+    {% if ref_disp %}
+        [[ element|name:start_artref_title;layout:html_title;class:container custom-title; ]]
+        <div class='page_product_list_ref container mb-5'>
+            {{ ref_product_list }}
+        </div>
+    {% endif %}
+
+    {% if retargeting_div_home_disp %}
+        {{ retargeting_div_home }}
+    {% endif %}
+
+    {% if custom_content_bottom_disp %}
+        <div class='page_hr'><hr/></div>
+        <div class='page_txt py-4 start-custom-text container text-justify font-s font-md-m'>
+            <div class='page_shop_txt' id="page_start_txt_bottom">{{ custom_content_bottom }}</div>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,34 @@
+<div class="popup_title" id="question_title">
+    <div class="js-animate-title-dots w-auto d-inline-block font-xxl">{{ text.question_about_product }}</div>
+</div>
+{{ question_script }}
+<div class="bg-white" id="page_question_content">
+    {{ form_start }}
+    <div class="question-form-inner px-3 px-md-5 font-xl">
+        <div class="row question-form-block mb-2 mx-0 recommend_label_input form-label-group">
+            <input type="text" name="question_name" placeholder="{{ text.name }}" id="question_name" class="form-control" value="{{ question_sender_name }}" />
+            <label for="question_name">{{ text.name }}</label>
+        </div>
+        <div class="row question-form-block mb-2 mx-0 recommend_label_input form-label-group">
+            <input type="text" name="question_email" placeholder="{{ text.email }}" id="question_email" class="form-control" value="{{ question_sender_email }}" />
+            <label for="question_email">{{ text.email }}</label>
+        </div>
+        <div class="row question-form-block mb-2 mx-0 recommend_label_input form-label-group">
+            <input type="text" name="question_phone" placeholder="{{ text.phone_number }}" id="question_phone" class="form-control" value="{{ question_sender_phone }}" />
+            <label for="question_phone">{{ text.phone_number }}</label>
+        </div>
+        <div class="row question-form-block mb-2 mx-0 recommend_label_input form-label-group">
+            <textarea name="question_message" rows="4" placeholder="{{ text.question }}" id="question_message" class="form-control"></textarea>
+            <label for="question_message">{{ text.question }}</label>
+        </div>
+        <div class="question_label_input question-form-block mb-2 recommend_label_input form-check px-0 py-2">
+            <input name="question_privacy_policy" class="form-check-input" id="question_privacy_policy" type="checkbox" value="1" />
+            <label class="question_label font-xs form-check-label" for="question_privacy_policy">{{ text.accept_privacy_policy }}</label>
+        </div>
+        <div class="question__status p-3 font-s font-sm-m text-success text-center" id="recommend_error_msg" style="display: none;">{{ text.mail_sent }}</div>
+        <div class="question__send-btn-wrap text-center">
+            <button type="button" class="question__send-btn btn btn-primary" id="question_send_button" title="{{ text.button_send }}">{{ text.button_send }}</button>
+        </div>
+    </div>
+    {{ form_end }}
+</div>

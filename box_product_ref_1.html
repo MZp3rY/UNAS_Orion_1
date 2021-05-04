@@ -1,0 +1,48 @@
+{{ backvar(img_maxwidth,90) }}
+{{ backvar(img_maxheight,90) }}
+
+{% if products_disp %}
+    <div class="box__arts">
+        <div class="row gutters-5">
+            {% for product in products %}
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4 mb-xl-0 box__art-col">
+                    <div class="box__art h-100 p-3">
+                        <div class="row gutters-5">
+                            <div class="col-auto">
+                                <div class="box__art-img-wrap">
+                                    <a class="box__art-img-link product_link_promo" data-sku="{{ product.sku }}" href="{{ product.url }}" title="{{ product.img_alt }}">
+                                        <img class="box__art-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" />
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="box__art-body">
+                                    {% if product.sale_disp or product.new_disp %}
+                                        <div class="box__art-badges badges font-xs">
+                                            {% if product.sale_disp %}
+                                                <div class="box__art-sale badge badge--sale">-{{ product.sale_percent }}%</div>
+                                            {% endif %}
+                                            {% if product.new_disp %}
+                                                <div class="box__art-new badge badge--new">{{ text.status_new }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <a class="box__art-name line-clamp--3-12 my-3 font-s product_link_promo" data-sku="{{ product.sku }}" href="{{ product.url }}">{{ product.name }}</a>
+                                    {% if product.price_disp %}
+                                        <div class="box__art-price font-s text-cn{% if product.price_sale_disp %} discounted font-weight-bold{% endif %}">
+                                            {% if product.price_sale_disp %}
+                                                {{ product.price_sale }}
+                                            {% else %}
+                                                {{ product.price }}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

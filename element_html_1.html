@@ -1,0 +1,10 @@
+{{ backvar(slide_max_count,10) }}
+{{ backvar(enable,html) }}
+
+{% if element_disp %}
+    <div class="{{ name }} {{ class }}">
+        {% for slide in slides %}
+            {{ slide.html }}
+        {% endfor %}
+    </div>
+{% endif %}

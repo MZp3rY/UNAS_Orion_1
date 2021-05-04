@@ -1,0 +1,66 @@
+<div id='page_news_content' class='page_content'>
+    {% if news_list_disp %}
+        {% if paging_disp %}
+            <nav class="news-paging paging--top d-flex align-items-center justify-content-center py-3 border-bottom" aria-label="pagination">
+                {{ paging_content }}
+            </nav>
+        {% endif %}
+        {% for news_item in news %}
+            <div class='page_calendar_head border-bottom p-3'>
+                <div class="row no-gutters align-items-baseline">
+                    <div class="col-sm-8">
+                        <a class="page_calendar_name font-weight-bold" href="{{ news_item.url }}">{{ news_item.title }}</a>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class='page_calendar_date-and-time d-flex justify-content-end font-s'>
+                            <div class="page_calendar_date">{{ news_item.date }}</div>
+                            {% if news_item.time_disp %}
+                                <div class="page_calendar_time">
+                                    &nbsp;-&nbsp;{{ news_item.time }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if news_item.img_exists %}
+                        <div class="page_news_intro_pic">
+                            <a href="{{ news_item.url }}">
+                                <img src="{{ news_item.img_url }}" alt="{{ news_item.title }}">
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        {% if paging_disp %}
+            <nav class="news-paging paging--bottom d-flex align-items-center justify-content-center py-3 border-bottom" aria-label="pagination">
+                {{ paging_content }}
+            </nav>
+        {% endif %}
+    {% endif %}
+    {% if news_item__disp %}
+        <div class="page_news_item">
+            <div class="page_news_header bg-8 p-3 font-xl text-uppercase">
+                <div class="row no-gutters align-items-baseline">
+                    <div class="col-sm-8">
+                        <div class='page_news_title font-weight-bold'>{{ news_item__title }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class='page_calendar_date-and-time d-flex justify-content-end font-s'>
+                            {{ news_item__date }}
+                            {% if news_item__time_disp %} {{ news_item__time }}{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='page_news_content p-3 clearfix'>
+                {% if news_item__img_exists %}
+                    <div class="page_news_intro_pic_wrap mr-3 mb-3 float-left">
+                        <img class="page_news_intro_pic" src="{{ news_item__img_url }}" alt="{{ news_item__title }}">
+                    </div>
+                {% endif %}
+                {{ news_item__content }}
+            </div>
+            <button class="page-news__btn-back btn btn-primary" onclick="location.href='[unas_shop_url]/shop_news.php'">{{ text.button_back }}</button>
+        </div>
+    {% endif %}
+</div>

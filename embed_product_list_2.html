@@ -1,0 +1,519 @@
+{{ backvar(main_img_maxwidth,300) }}
+{{ backvar(main_img_maxheight,300) }}
+{{ backvar(main_img_thumbnail_maxwidth,50) }}
+{{ backvar(main_img_thumbnail_maxheight,50) }}
+{{ backvar(enable_alt_images,1) }}
+{{ backvar(alt_img_maxwidth,300) }}
+{{ backvar(alt_img_maxheight,300) }}
+{{ backvar(alt_img_thumbnail_maxwidth,50) }}
+{{ backvar(alt_img_thumbnail_maxheight,50) }}
+{{ backvar(enable_reviews,1) }}
+
+{{ start_script }}
+    
+{% if products_disp %}
+    {% if not ajax_filter_reload_disp %}
+        <div class="my-3 position-relative">
+        {% if product_ordering_top or view_select_top %}<div class="viewing-sorting-filter-top"><div class="viewing-sorting-filter-top__inner row gutters-5 px-2 align-items-center">{% endif %}
+            {% if view_select_top %}
+                <div class="view--top col-auto order-3 order-md-2 order-xl-3 d-inline-flex justify-content-start justify-content-md-end align-items-center ml-md-auto pr-2 my-1 my-sm-2">
+                    <button title="{{ text.view }} 1" type="button" class="view__btn btn btn--square view__btn--1 {% if design_1_selected %}is-selected text-primary{% endif %}" {% if not design_1_selected %}onclick="location.href=location_href_with_get('change_page_design=1')"{% endif %}></button>
+                    <button title="{{ text.view }} 2" type="button" class="view__btn btn btn--square view__btn--2 {% if design_2_selected %}is-selected text-primary{% endif %}" {% if not design_2_selected %}onclick="location.href=location_href_with_get('change_page_design=2')"{% endif %}></button>
+                </div>
+            {% endif %}
+            {% if product_ordering_top %}
+                <div class='order--top col-auto order-4 order-md-3 order-xl-4 d-inline-flex justify-content-end align-items-center ml-auto ml-md-0 pl-0 my-1 my-sm-2'>
+                    {{ product_ordering_top_form_start }}
+                    <div class='order__wrap d-flex align-items-center'>
+                        <div class="order__select-outer form-label-group form-select-group m-0" title="{{ text.order_by }}">
+                            <select name="new_art_order" onchange="document.form_art_order1.submit();" class="rounded form-control" id="new_art_order_top">
+                                {% for product_ordering_type in product_ordering_types %}
+                                    <option value="{{ product_ordering_type.value }}" {% if product_ordering_type.selected %}selected="selected"{% endif %}>{{ product_ordering_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="new_art_order_top" class="font-weight-bold">{{ text.order_by }}</label>
+                        </div>
+                    </div>
+                    {{ product_ordering_top_form_end }}
+                </div>
+            {% endif %}
+            {% if (product_list_type not in ['product_list_cat','product_list_ref']) and not infinite_scroll_disp %}[[ box|name:shop_filter ]]{% endif %}
+        {% if product_ordering_top or view_select_top %}</div></div>{% endif %}
+        </div>
+    {% endif %}
+
+    {% if not infinite_scroll_disp and not ajax_filter_reload_disp %}<div id='page_artlist_content' class="page_content artlist--type-2">{% endif %}
+
+    {% if not infinite_scroll_disp and not ajax_filter_reload_disp %}
+        <div class='artlist__products products page_artlist_list row no-gutters product-list-wrapper' {% if login_needed %}id='list_no_price'{% endif %}>
+    {% endif %}
+
+    {% if paging_disp %}
+        <div class="paging--top my-2 my-sm-3 col-12 page_artlist_page">
+            <nav class="paging__nav d-flex align-items-center justify-content-center h-100" aria-label="pagination">
+                {{ paging_content }}
+            </nav>
+        </div>
+    {% endif %}
+
+    {% for product in products %}
+        <article class='col-12 artlist__product-col artlist-col--2 my-3 py-4 border-bottom {{ product.class }}{% if product.alt_img_1_disp %} has-alt-image js-on-hover-alt-img{% endif %} js-product{% if product.variants_disp %} js-has-variant has-unselected-variant{% endif %}' id='page_artlist_{{ product.id }}'>
+            <div class="row no-gutters">
+                <div class="col-sm-6 pr-sm-3 col-md-custom-30 text-center position-relative">
+                    {% if product.sale_disp or product.new_disp or product.stock_disp or product.status_1_disp or product.status_2_disp or product.status_3_disp %}
+                        <div class="badges position-absolute ml-1">
+                            {% if product.sale_disp %}
+                                <div class="artlist__sale badge badge--sale">-<span id='price_save_{{ product.id }}'>{{ product.sale_percent }}%</span></div>
+                            {% endif %}
+
+                            {% if product.new_disp %}
+                                <div class="artlist__new badge badge--new">{{ text.status_new }}</div>
+                            {% endif %}
+
+                            {% if product.stock_disp %}
+                                <div class="artlist__stock badge position-relative{% if not product.sale_disp and not product.new_disp %} only_stock_status{% endif %} has-tooltip badge--stock{% if product.stock_available %} stock-available{% else %}{% if product.no_stock_but_buyable_disp %} stock-can-order{% else %} no-stock{% endif %}{% endif %}">
+                                    <div class="artlist__stock-text product-stock-text">
+                                        {% if product.stock_available %}
+                                            <div class="stock__icon icon--check"></div>
+                                            <div class="tooltip-text">{% if not product.stock_interval_text_exists %}{{ text.status_on_stock }}{% endif %}{% if not product.stock_text_only %}{% if not product.stock_interval_text_exists %}:{% endif %} {{ product.stock_qty }}&nbsp;{% if not product.stock_interval_text_exists %}{{ product.unit }}{% endif %}{% endif %}</div>
+                                        {% else %}
+                                            {% if product.cart_disp %}
+                                                <div class="stock__icon icon--exclamation-2 text-center"></div>
+                                                <div class="tooltip-text">{{ text.status_orderable }}</div>
+                                            {% else %}
+                                                <div class="stock__icon icon--close"></div>
+                                                <div class="tooltip-text">{{ text.status_no_stock }}</div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class='artlist__img-outer d-none d-sm-block position-relative text-center mb-3 mb-sm-0'>
+                        <a class="artlist__img-link d-block artlist__img-wrapper product_link_normal" data-sku="{{ product.sku }}" href="{{ product.url }}">
+                            <img class="artlist__img product-img js-main-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}" data-src-orig="{{ product.img_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}" data-srcset-orig="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" id="{{ product.img_id }}"/>
+                            <div class="loading-spinner"></div>
+                        </a>
+                    </div>
+                    <div class="artlist__img-outer {% if product.alt_img_1_disp %} js-mobile-img-wrap{% endif %} mb-3 d-block d-sm-none align-items-center">
+                        <a href="{{ product.url }}" class="d-block product-img-wrapper artlist__img-link product_link_normal">
+                            <img class="artlist__img product-img lazyload{% if product.alt_img_1_disp %} js-mobile-main-img{% endif %}" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}" data-src-orig="{{ product.img_thumbnail_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %}{% if product.img_thumbnail_retina_exists %} data-srcset-orig="{{ product.img_thumbnail_retina_url }} {{ product.img_thumbnail_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" id="{{ product.img_id }}"/>
+                            <div class="loading-spinner"></div>
+                        </a>
+                        <div class="artlist__alt-imgs row gutters-5 mt-3">
+                            {% if product.alt_img_1_disp %}
+                                <div class="col-3">
+                                    <img class="artlist__alt-img lazyload js-mobile-alt-img" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_1_thumbnail_url }}" data-src-orig="{{ product.alt_img_1_url }}"{% if product.alt_img_1_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_1_thumbnail_retina_url }} {{ product.alt_img_1_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_1_retina_exists %} data-srcset-orig="{{ product.alt_img_1_retina_url }} {{ product.alt_img_1_retina_size }}"{% endif %} alt="{{ product.alt_img_1_alt }}"/>
+                                </div>
+                                {% if product.alt_img_2_disp %}
+                                    <div class="col-3">
+                                        <img class="artlist__alt-img lazyload js-mobile-alt-img" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_2_thumbnail_url }}" data-src-orig="{{ product.alt_img_2_url }}"{% if product.alt_img_2_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_2_thumbnail_retina_url }} {{ product.alt_img_2_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_2_retina_exists %} data-srcset-orig="{{ product.alt_img_2_retina_url }} {{ product.alt_img_2_retina_size }}"{% endif %} alt="{{ product.alt_img_2_alt }}"/>
+                                    </div>
+                                {% endif %}
+                                {% if product.alt_img_3_disp %}
+                                    <div class="col-3">
+                                        <img class="artlist__alt-img lazyload js-mobile-alt-img" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_3_thumbnail_url }}" data-src-orig="{{ product.alt_img_3_url }}"{% if product.alt_img_3_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_3_thumbnail_retina_url }} {{ product.alt_img_3_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_3_retina_exists %} data-srcset-orig="{{ product.alt_img_3_retina_url }} {{ product.alt_img_3_retina_size }}"{% endif %} alt="{{ product.alt_img_3_alt }}"/>
+                                    </div>
+                                {% endif %}
+                                {% if product.alt_img_4_disp %}
+                                    <div class="col-3">
+                                        <img class="artlist__alt-img lazyload js-mobile-alt-img" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_4_thumbnail_url }}" data-src-orig="{{ product.alt_img_4_url }}"{% if product.alt_img_4_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_4_thumbnail_retina_url }} {{ product.alt_img_4_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_4_retina_exists %} data-srcset-orig="{{ product.alt_img_4_retina_url }} {{ product.alt_img_4_retina_size }}"{% endif %} alt="{{ product.alt_img_4_alt }}"/>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 pl-sm-3 col-md artlist__datas-col">
+                    <div class="row no-gutters flex-sm-column flex-lg-row h-100 artlist__datas">
+                        <div class="pr-lg-4 flex-grow-1 artlist__datas-inner pb-sm-4 pb-lg-0">
+                            <div class="d-sm-flex flex-column h-100">
+                                {% if product.review_percent != "" %}
+                                    <div class="artlist__rating-wrap d-flex">
+                                        <div class="artlist__rating rating-stars text-primary my-auto mr-4" title="{{ product.review_avg }}">
+                                            <div class="artlist__rating-stars-back rating-stars__back">
+                                                <div class="artlist__rating-stars-front rating-stars__front" style="width:{{ product.review_percent }}%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <div class='artlist__name-wrap'>
+                                    <a class="artlist__name product_link_normal text-uppercase" data-sku="{{ product.sku }}" href="{{ product.url }}"><h2 class="font-m font-md-xl line-clamp--2-14 font-weight-bold">{{ product.name }}</h2></a>
+                                </div>
+
+                                {% if product.sku_disp %}
+                                    <div class="artlist__sku font-xs mb-2 mt-1">{{ product.sku }}</div>
+                                {% endif %}
+
+                                {% if product.short_desc_disp %}
+                                    <div class="artlist__description-short overflow-hidden read-more-container my-2" data-max-height="200">
+                                        <div class="read-more-content overflow-hidden text-justify font-s">
+                                            {{ product.short_desc }}
+                                        </div>
+                                    </div>
+                                    <div class="artlist__description-short-btn read-more-btn font-s font-weight-bold pt-2 pb-4">{{ text.button_next }}</div>
+                                {% endif %}
+
+                                {% if product.params_disp %}
+                                    <div class="artlist__params font-xs font-sm-s my-2">
+                                        {% for param in product.params %}
+                                            <div class="artlist__param row align-items-center">
+                                                {% if param.disp %}
+                                                    <div class="artlist__param-title col-6 col-md-3">{{ param.title }}</div>
+                                                    <div class="artlist__param-value col-6 col-md-auto{% if param.type in ['color','color_text'] %}d-inline-flex align-items-center{% endif %}">
+                                                        {% if param.type in ['color','color_text'] %}
+                                                            <div class="artlist__param-type--color-wrap" {% if param.type=='color_text' %} title="{{ param.value2 }}" {% endif %}>
+                                                                <div class="artlist__param-type--color d-inline-block" style="background-color: {{ param.value }};"></div>
+                                                            </div>
+                                                        {% else %}
+                                                            {{ param.value }}
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if product.alt_img_1_disp %}
+                                    <div class="artlist__alt-images d-none d-sm-flex justify-content-start my-3">
+                                        <div class="artlist__alt-images-inner js-alt-images row gutters-5">
+                                            <div class="artlist__alt-img-wrap js-alt-img-wrap col-auto">
+                                                <img class="artlist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_1_thumbnail_url }}" data-src-orig="{{ product.alt_img_1_url }}"{% if product.alt_img_1_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_1_thumbnail_retina_url }} {{ product.alt_img_1_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_1_retina_exists %} data-srcset-orig="{{ product.alt_img_1_retina_url }} {{ product.alt_img_1_retina_size }}"{% endif %} alt="{{ product.alt_img_1_alt }}"/>
+                                            </div>
+
+                                            {% if product.alt_img_2_disp %}
+                                                <div class="artlist__alt-img-wrap js-alt-img-wrap col-auto">
+                                                    <img class="artlist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_2_thumbnail_url }}" data-src-orig="{{ product.alt_img_2_url }}"{% if product.alt_img_2_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_2_thumbnail_retina_url }} {{ product.alt_img_2_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_2_retina_exists %} data-srcset-orig="{{ product.alt_img_2_retina_url }} {{ product.alt_img_2_retina_size }}"{% endif %} alt="{{ product.alt_img_2_alt }}"/>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if product.alt_img_3_disp %}
+                                                <div class="artlist__alt-img-wrap js-alt-img-wrap col-auto">
+                                                    <img class="artlist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_3_thumbnail_url }}" data-src-orig="{{ product.alt_img_3_url }}"{% if product.alt_img_3_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_3_thumbnail_retina_url }} {{ product.alt_img_3_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_3_retina_exists %} data-srcset-orig="{{ product.alt_img_3_retina_url }} {{ product.alt_img_3_retina_size }}"{% endif %} alt="{{ product.alt_img_3_alt }}"/>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if product.alt_img_4_disp %}
+                                                <div class="artlist__alt-img-wrap js-alt-img-wrap col-auto">
+                                                    <img class="artlist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_4_thumbnail_url }}" data-src-orig="{{ product.alt_img_4_url }}"{% if product.alt_img_4_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_4_thumbnail_retina_url }} {{ product.alt_img_4_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_4_retina_exists %} data-srcset-orig="{{ product.alt_img_4_retina_url }} {{ product.alt_img_4_retina_size }}"{% endif %} alt="{{ product.alt_img_4_alt }}"/>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                {% if product.status_1_disp or product.status_2_disp or product.status_3_disp %}
+                                    <div class="artlist__custom-statuses my-3">
+										{% if product.status_1_disp %}
+                                            {% if status_1_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=3" aria-label="{{ product.status_1 }}">{% endif %}
+                                                <div class="artlist__custom-status badge badge--custom-1 px-3">{{ product.status_1 }}</div>
+                                            {% if status_1_link_disp %}</a>{% endif %}
+										{% endif %}
+
+										{% if product.status_2_disp %}
+                                            {% if status_2_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=4" aria-label="{{ product.status_2 }}">{% endif %}
+                                                <div class="artlist__custom-status badge badge--custom-2 px-3">{{ product.status_2 }}</div>
+                                            {% if status_2_link_disp %}</a>{% endif %}
+										{% endif %}
+
+										{% if product.status_3_disp %}
+                                            {% if status_3_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=5" aria-label="{{ product.status_3 }}">{% endif %}
+                                                <div class="artlist__custom-status badge badge--custom-3 px-3">{{ product.status_3 }}</div>
+                                            {% if status_3_link_disp %}</a>{% endif %}
+										{% endif %}
+                                    </div>
+                                {% endif %}
+                                <div class='artlist__prices row no-gutters align-items-baseline {% if product.price_sale_disp %}has-sale-price{% endif %}'>
+
+                                    {% if product.price_sale_disp %}
+                                        <div class='artlist__price-sale product-price--sale text-cn font-weight-bold pr-3'>
+                                            {{ product.price_sale }}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if product.price_disp %}
+                                        <div class='artlist__price-base {% if product.price_line_through %}text-line-through{% endif %} {% if product.price_sale_disp %}text-cn{% else %}text-cn font-weight-bold{%endif %} product-price--base mt-1'>
+                                            {{ product.price }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% if price_unit_enabled and price_unit_exists %}
+                                    <div class="artlist__price-unit-wrap">
+                                        {% if product.price_unit_disp %}
+                                            <div class="artlist__price-unit product-price--unit">{{ text.unit_price }}: {{ product.price_unit }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                <div class="artlist__price-texts font-s font-md-m line-height-12">
+                                    {% if product.sale_text_disp %}
+                                        <div class="artlist__price-sale-duration product-price--sale-duration font-weight-bold">
+                                            <strong>{{ text.start }}: </strong>{{ product.sale_start }}
+                                            {% if product.sale_have_end %}
+                                                <strong>{{ text.end }}: </strong>{{ product.sale_end }}
+                                            {% else %}
+                                                {{ text.while_stock_lasts }}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if product.qty_discount_disp %}
+                                        <div class="artlist__price-quantitative-sale product-price--quantitative-sale">
+                                            <a href="{{ product.url }}" class="product_link_normal" data-sku="{{ product.sku }}">
+                                               {{ product.qty_discount_title }}
+                                               <span class="d-inline-block ml-2 font-weight-bold">{{ product.qty_discount_amount }}{% if product.qty_discount_type == "percent" %}%{% endif %}</span>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if product.login_needed %}
+                                        <button class='artlist__price-login-btn btn btn-link font-s text-left px-0' type='button' onclick='overlay_login()' aria-label="click to login">
+                                            {{ text.need_login_to_prices }}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                {% if not product.redirect_to_details %}
+                                    {% if product.variants_disp %}
+                                        <div class='artlist__variants row gutters-5 mt-4'>
+                                            {% if product.variant_1_disp %}
+                                                <div class="artlist__variant-wrap js-variant-wrap col-md-auto">
+                                                    <div class="artlist__variant form-label-group form-select-group">
+                                                        {{ product.variant_1_hidden }}
+                                                        <select name="egyeb_list1_{{ product.id }}" id="egyeb_list1_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                            {% for option in product.variant_1_options %}
+                                                                <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled"{% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="egyeb_list1_{{ product.id }}" class="font-weight-bold">{{ product.variant_1_title }}</label>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if product.variant_2_disp %}
+                                                <div class="artlist__variant-wrap js-variant-wrap col-md-auto">
+                                                    <div class="artlist__variant form-label-group form-select-group">
+                                                        {{ product.variant_2_hidden }}
+                                                        <select name="egyeb_list2_{{ product.id }}" id="egyeb_list2_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                            {% for option in product.variant_2_options %}
+                                                                <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled"{% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="egyeb_list2_{{ product.id }}" class="font-weight-bold">{{ product.variant_2_title }}</label>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if product.variant_3_disp %}
+                                                <div class="artlist__variant-wrap js-variant-wrap col-md-auto">
+                                                    <div class="artlist__variant form-label-group form-select-group">
+                                                        {{ product.variant_3_hidden }}
+                                                        <select name="egyeb_list3_{{ product.id }}" id="egyeb_list3_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                            {% for option in product.variant_3_options %}
+                                                                <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled"{% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="egyeb_list3_{{ product.id }}" class="font-weight-bold">{{ product.variant_3_title }}</label>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+
+                                {{ variants_hidden }}
+
+                                <div class="artlist__cart-and-functions row gutters-5 align-items-center mt-2 usn">
+                                    <div class="col col-md-auto d-flex justify-content-center artlist__cart-wrap mb-2 flex-nowrap{% if product.inquire_disp or product.redirect_to_details %} pr-0{% endif %}">
+                                        {% if product.cart_disp %}<!-- van kosar -->
+                                            <div class="artlist__cart row no-gutters flex-nowrap justify-content-center align-items-center w-100">
+                                                {% if product.redirect_to_details %}
+                                                    <div class="col col-md-auto">
+                                                        <button onclick="{{ product.cart_onclick_value }}" type="button" class="artlist__details-btn btn btn-primary btn-block py-2 px-0 px-md-5 font-s">{{ text.button_details }}</button>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col-auto border rounded has-tooltip">
+                                                        <div class="page_qty_input_outer">
+                                                            <div class="artlist__buttons d-flex justify-content-center">
+                                                                <button type='button' class='qtyminus qtyminus_common qty_disable icon--minus btn--square-sm btn btn-link' aria-label="quantity minus"></button>
+                                                                <div class="artlist__cart-input-wrap page_qty_input_wrap d-flex position-relative">
+                                                                    <input name="{{ product.cart_input_name }}" id="{{ product.cart_input_id }}" type="number" value="{{ product.cart_input_value_number }}" maxlength="7" class="page_qty_input text-cn font-weight-bold font-l text-center" step="{{ product.cart_input_data_step }}" data-min="{{ product.cart_input_data_min }}" data-max="{{ product.cart_input_data_max }}" data-step="{{ product.cart_input_data_step }}" aria-label="quantity input">
+                                                                    {% if cart_unit_disp %}
+                                                                        <div class='artlist__cart-unit text-center usn tooltip-text'>{{ product.unit }}</div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <button type='button' class='qtyplus qtyplus_common icon--plus btn--square-sm btn btn-link' aria-label="quantity plus"></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col col-md-auto">
+                                                        {% if product.variants_disp %}
+                                                            <button class="artlist__cart-btn btn btn-primary btn-block ml-2 font-s py-2 px-0 px-md-5" type="button" onclick="openVariantsOverlay(this)" data-cartadd="{{ product.cart_onclick_value }}" aria-label="{{ text.button_to_cart }}">{{ text.button_to_cart }}</button>
+                                                        {% else %}
+                                                            <button class="artlist__cart-btn btn btn-primary btn-block ml-2 font-s py-2 px-0 px-md-5" type="button" onclick="{{ product.cart_onclick_value }}" aria-label="{{ text.button_to_cart }}">{{ text.button_to_cart }}</button>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% else %}<!-- nincs kosar -->
+                                            {% if product.inquire_disp %}
+                                                <button type="button" class="artlist__inquire-btn btn btn-block btn-outline-primary font-s py-2 px-0 px-md-5" onclick="{{ product.inquire_onclick }}">{{ text.button_inquire }}</button>
+                                            {% else %}
+                                                {% if product.no_stock_disp%}
+                                                    <div class="no-stock">
+                                                        <div class="no-stock__text text-uppercase">{{ text.status_no_stock }}</div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="not-buyable">
+                                                        <div class="not-buyable__text text-uppercase">{{ text.status_not_buyable }}</div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-auto d-flex justify-content-center artlist__functions mb-2">
+                                        {% if product.compare_disp %}<!-- osszehasonlitas -->
+                                            <div class="function-btn-outer d-flex compare__btn-outer">
+                                                <div onclick='{{ product.compare_onclick }}' class='function-btn has-tooltip border rounded compare__btn page_art_func_compare{% if product.compare_checked %} page_art_func_compare_checked{% endif %}'>
+                                                    <div class="function__icon compare__icon font-s font-md-l function-icon icon--compare"></div>
+                                                    <div class="function__text compare__text tooltip-text page_artdet_func_compare_text_{{ product.sku_id }}" data-text-add="{{ text.comparison }}" data-text-delete="{{ text.delete_from_compare }}">{% if product.compare_checked %}{{ text.delete_from_compare }}{% else %}{{ text.comparison }}{% endif %}</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <div class="function-btn-outer d-none d-md-inline-flex tooltip__btn-outer col-auto px-0">
+                                            <div class="function-btn tooltip__btn border rounded js-product-tooltip-click has-tooltip" data-sku="{{ product.sku_id }}">
+                                                <div class="function__icon function-icon font-s font-md-l icon--details"></div>
+                                                <div class="function__text details__text tooltip-text {% if not product.cart_disp and product.no_stock_disp %}no_cart{% endif %}">{{ text.preview }}</div>
+                                            </div>
+                                        </div>
+                                        {% if product.favourites_disp %}
+                                            {% if favourites_page %}
+                                                <div class='function-btn-outer remove-favourites__btn-outer'>
+                                                    <div class="function-btn has-tooltip artlist__button-remove-from-favourites favourites_item_del" onclick="{{ product.favourite_del_onclick }}">
+                                                        <div class="function__icon favourites__icon font-s font-md-l function-icon icon--close"></div>
+                                                        <div class="function__text favourites__text tooltip-text">{{ product.favourite_text }}</div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class='function-btn-outer d-flex favourites__btn-outer page_artdet_func_favourites_outer_{{ product.sku_id }}{% if product.favourites_checked %} added{% endif %}' id='page_artlist_func_favourites_outer_{{ product.sku_id }}'>
+                                                    <div onclick='{{ product.favourite_onclick }}' class='function-btn has-tooltip border rounded favourites__btn page_artdet_func_favourites_{{ product.sku_id }} {% if product.favourites_checked %} remove_favourites{% endif %}' id='page_artlist_func_favourites_{{ product.sku_id }}'>
+                                                        <div class="function__icon favourites__icon font-s font-md-l function-icon icon--favo"></div>
+                                                        <div class="function__text favourites__text tooltip-text page_artdet_func_favourites_text_{{ product.sku_id }}">{{ product.favourite_text }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article><!--product-->
+    {% endfor %}
+
+    {% if paging_disp %}
+        <div class="paging--bottom my-2 my-sm-3 col-12 {% if infinite_scroll_enabled %}is-invisible {% endif %} page_artlist_page">
+            <nav class="paging__nav d-flex align-items-center justify-content-center h-100" aria-label="pagination">
+                {{ paging_content }}
+            </nav>
+        </div>
+    {% endif %}
+
+    {{ infinite_scroll }}
+    {{ infinite_scroll_loading }}
+
+    {% if not infinite_scroll_disp and not ajax_filter_reload_disp %}</div><!--products-->{% endif %}
+
+    {% if not infinite_scroll_disp and not ajax_filter_reload_disp %}</div><!--page_artlist_content-->{% endif %}
+
+    {% if infinite_scroll_button_disp and ajax_filter_reload_disp %}
+        <script>
+            $('.page_artlist_load_more_content').show();
+        </script>
+    {% endif %}
+    {% if not infinite_scroll_button_disp and ajax_filter_reload_disp %}
+        <script>
+            $('.page_artlist_load_more_content').hide();
+        </script>
+    {% endif %}
+
+    {% if infinite_scroll_button_enabled and not ajax_filter_reload_disp and not infinite_scroll_disp %}
+    <div class="artlist-load-more-items d-flex justify-content-center">
+        <button class="page_artlist_load_more_content btn btn-primary" {% if not infinite_scroll_button_disp %}style="display:none;"{% endif %} type="button">{{ text.more_products }}</button>
+    </div>
+    {% endif %}
+
+    {% if not ajax_filter_reload_disp %}
+        {% if view_select_bottom or product_ordering_bottom %}
+            <div class="viewing-sorting-bottom border my-3">
+                <div class="viewing-sorting-bottom__inner row gutters-5 px-2">
+                    {% if view_select_bottom %}
+                        <div class="view--bottom col d-inline-flex justify-content-start justify-content-md-end align-items-center mr-auto pr-2 my-1 my-sm-2">
+                            <button title="{{ text.view }} 1" type="button" class="view__btn btn btn--square view__btn--1 {% if design_1_selected %}is-selected text-primary{% endif %}" {% if not design_1_selected %}onclick="location.href=location_href_with_get('change_page_design=1')"{% endif %}></button>
+                            <button title="{{ text.view }} 2" type="button" class="view__btn btn btn--square view__btn--2 {% if design_2_selected %}is-selected text-primary{% endif %}" {% if not design_2_selected %}onclick="location.href=location_href_with_get('change_page_design=2')"{% endif %}></button>
+                        </div>
+                    {% endif %}
+
+                    {% if product_ordering_bottom %}
+                        <div class='order--bottom col-auto d-inline-flex align-items-center ml-auto pl-0 my-1 my-sm-2'>
+                            {{ product_ordering_bottom_form_start }}
+                            <div class='order__wrap d-flex align-items-center'>
+                                <div class="order__select-outer form-label-group form-select-group m-0" title="{{ text.order_by }}">
+                                    <select name="new_art_order" onchange="document.form_art_order2.submit();" class="rounded form-control" id="new_art_order_bottom">
+                                        {% for product_ordering_type in product_ordering_types %}
+                                            <option value="{{ product_ordering_type.value }}" {% if product_ordering_type.selected %}selected="selected"{% endif %}>{{ product_ordering_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="new_art_order_bottom" class="font-weight-bold">{{ text.order_by }}</label>
+                                </div>
+                            </div>
+                            {{ product_ordering_bottom_form_end }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% if not products_disp and artlist_type_product_list_cat_disp %}
+<div class="product-list-wrapper row gutters-10">
+    <div id='page_art_head_box' class='col-12 no_art py-4 text-uppercase font-l'>{{ text.no_product }}</div>
+</div>
+{% endif %}
+
+{% if not infinite_scroll_disp %}
+    <script>
+    $(document).ready(function() {
+        /* Get all elements that have alt imgs */
+        var productsWithAltPic = $(".js-on-hover-alt-img");
+
+        /* Call the altPicHover fn (see above) on all elements with alt imgs */
+        productsWithAltPic.each(altPicHover);
+
+        /*** Mobile alt pic changer ***/
+        var productsWithAltPicMobile = $(".js-mobile-alt-img:not(.is-processed)");
+        productsWithAltPicMobile.each(altPicChangeOnClick);
+
+        /*** Short desc opener ***/
+        $('.read-more-container:not(.is-processed)').each(readMoreOpener);
+    });
+
+    {% if infinite_scroll_enabled %}
+        $(document).ajaxStop(function() {
+            productsWithAltPic = $(".js-on-hover-alt-img");
+            productsWithAltPic.each(altPicHover);
+
+            /*** Mobile alt pic changer ***/
+            productsWithAltPicMobile = $(".js-mobile-alt-img:not(.is-processed)");
+            productsWithAltPicMobile.each(altPicChangeOnClick);
+
+            /*** Short desc opener ***/
+            $('.read-more-container:not(.is-processed)').each(readMoreOpener);
+        });
+    {% endif %}
+</script>
+{% endif %}

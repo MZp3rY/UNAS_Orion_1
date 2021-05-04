@@ -1,0 +1,20 @@
+<div class="js-tags row gutters-5 mt-4">
+    {% for tag in tags %}
+        <div class="js-filter-by-tag tags__col col-auto mb-2" data-filter="js-filterable-{{ tag.id }}">
+            <div class="tag-filter__inner px-3 py-1 border rounded">{{ tag.name }}</div>
+        </div>
+    {% endfor %}
+    <div class="js-clear-tag-filter d-none tags__col col-auto mb-2" data-filter="clear-all">
+        <div class="tag-filter__inner px-3 py-1 border rounded">{{ text.delete_filter }}</div>
+    </div>
+</div>
+<script>
+    var tagFilter = new filterByTag({type:"{{ tag_include_type }}"});
+
+    {% if tag_include_type =="category" %}
+        tagFilter.filterInit();
+    {% else %}
+        tagFilter.filterInitAJAX();
+    {% endif %}
+        tagFilter.clearFilterInit();
+</script>

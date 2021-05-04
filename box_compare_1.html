@@ -1,0 +1,31 @@
+<div id='box_compare_content'>
+    {% if compare_disp %}
+        {% if compare_box_disp %}
+            {% for product in products %}
+                <div class='box_compare_element'>
+                    <div class='box_compare_delete'><a href='javascript:{{ product.delete_onclick_value }}'></a></div>
+                    {% if product.img_allowed %}
+                        <div class='box_compare_pic'>
+                            <span class='page_PopupTrigger' data-sku='{{ product.sku }}'>
+                                <a href='{{ product.url }}' title='{{ product.title }}'>
+                                    <img src='{{ product.img_url }}'{% if product.img_retina_exists%} srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt='{{ product.img_alt }}' />
+                                </a>
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class='box_compare_name'>
+                        <a href="{{ product.url }}">{{ product.name }}</a>
+                    </div>
+                    <div class='clear_fix'></div>
+                </div>
+            {% endfor %}
+            <div class='box_compare_button'>
+                <button name="button" type="button" onclick="popup_compare_dialog(''); return false;" class="btn btn-primary">{{ text.comparison }}</button>
+            </div>
+            <div class='box_compare_header_menu'><a href="javascript:popup_compare_dialog('');">{{ text.comparison }}</a></div>
+            <div class='box_compare_button_num'><a href="javascript:popup_compare_dialog('');">{{ product_count }}</a></div>
+        {% else %}
+            {{ script }}
+        {% endif %}
+    {% endif %}
+</div>

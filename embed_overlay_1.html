@@ -1,0 +1,149 @@
+{% if button_close_disp %}
+    <div class="overlay_close">
+        <a href='javascript:overlay_close("overlay_{{ id }}");'><img src="{{ url_main }}/main_pic/space.gif" width="32" height="32" alt="close" /></a>
+    </div>
+{% endif %}
+
+<div class="overlay_title {% if button_close_disp %}has-btn-close{% endif %}">{{ title }}</div>
+
+{% if text_disp %}
+    <div class="overlay_text">{{ text_content }}</div>
+{% endif %}
+
+{% if texts_disp %}
+    <div class="overlay_text">
+        {% for text in texts %}
+            <div>
+                {% if text.title_disp %}{{ text.title }}:{% endif %}
+                {{ text.value }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if id == "remind" %}
+    {{ form_start }}
+        <div class="overlay_text">
+            <div class="overlay_login_input form-label-group">
+                <input name="shop_user_login" id="shop_user_login" placeholder="{{ login_name }}" class="form-control" type="text" />
+                <label for="shop_user_login">{{ login_name }}</label>
+            </div>
+        </div>
+    {{ form_end }}
+{% endif %}
+
+{% if id == "newsletter" %}
+    {{ form_start }}
+    <div class="overlay_text">
+        {% if name_disp %}
+            <div class="overlay_login_input form-label-group">
+                <input name="news_name" class="form-control" id="news_name" placeholder="{{ text.name }}" type="text"  maxlength="200" />
+                <label for="news_name">{{ text.name }}</label>
+            </div>
+        {% endif %}
+        <div class="overlay_login_input form-label-group">
+            <input name="news_emai" class="form-control" id="news_emai" placeholder="{{ text.email }}" type="text"  maxlength="200" />
+            <label for="news_emai">{{ text.email }}</label>
+        </div>
+        {% if address_disp %}
+            <div class="overlay_login_input form-label-group">
+                <input name="news_addr" class="form-control" id="news_addr" placeholder="{{ text.address }}" type="text"  maxlength="200" />
+                <label for="news_addr">{{ text.address }}</label>
+            </div>
+        {% endif %}
+        <div class='overlay_login_input overlay_privacy_policy form-check px-0'>
+            <input class="form-check-input" name="news_privacy_policy" id="news_privacy_policy_popup" type="checkbox" value="1" />
+            <label class="form-check-label" for="news_privacy_policy_popup">{{ text.accept_privacy_policy }}</label>
+        </div>
+    </div>
+    {{ form_end }}
+{% endif %}
+
+{% if id == "penalty" %}
+    <div class="overlay_text">
+        <div id="page_penalty_money"><strong>{{ text.error_unpaid_order }}:</strong> {{ amount }}</div>
+        <div id="page_penalty_wait">{{ wait }}</div>
+    </div>
+{% endif %}
+
+{% if id == "product_subscription" %}
+    <div id="overlay_product_subscription_subscribe" class="subscribe_text px-4 mt-3" style="display: none;">
+        <form class="subscribe_without_login" onsubmit="return false">
+            {% if name_disp %}
+                <div class="overlay_row mb-2 form-label-group">
+                    <input class="overlay_input form-control" id="subscribe_name" type="text" name="name" placeholder="{{ text.name }}">
+                    <label for="subscribe_name">{{ text.name }}</label>
+                </div>
+            {% endif %}
+            <div class="overlay_row mb-2 form-label-group">
+                <input class="overlay_input form-control text-lowercase" id="subscribe_email" type="email" name="email" placeholder="{{ text.email }}">
+                <label for="subscribe_email">{{ text.email }}</label>
+            </div>
+            {% if address_disp %}
+                <div class="overlay_row mb-2 form-label-group">
+                    <input class='overlay_input form-control' id="subscribe_address" type="text" name="address" placeholder="{{ text.address }}">
+                    <label for="subscribe_address">{{ text.address }}</label>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+    <div id="overlay_product_subscription_agree" class="subscribe_text px-4" style="display: none;">
+        <div class="overlay_privacy_policy mt-3 px-0 form-check">
+            <input name="privacy_policy" id="product_subscribe_privacy_policy" class="form-check-input" type="checkbox" value="1" />
+            <label for="product_subscribe_privacy_policy" class="text-left font-xs form-check-label">{{ text.accept_privacy_policy }}</label>
+        </div>
+        <div class="subscribe_validation_error text-left text-danger font-xs my-3" style="display: none;"></div>
+        <button class="overlay_subscribe_button btn btn-primary"></button>
+    </div>
+    <div id="overlay_product_subscribe_no_login" class="subscribe_text px-4" style="display: none;">
+        {% if name_disp %}
+        <div class="overlay_row mb-2 form-label-group">
+            <input class="overlay_input form-control" id="subscribe_no_login_name" type="text" name="name" placeholder="{{ text.name }}">
+            <label for="subscribe_no_login_name">{{ text.name }}</label>
+        </div>
+        {% endif %}
+
+        <div class="overlay_row mb-2 form-label-group">
+            <input class="overlay_input form-control text-lowercase" id="subscribe_no_login_email" type="text" name="email" placeholder="{{ text.email }}">
+            <label for="subscribe_no_login_email">{{ text.email }}</label>
+        </div>
+
+        {% if address_disp %}
+        <div class="overlay_row mb-2 form-label-group">
+            <input class='overlay_input form-control' id="subscribe_no_login_address" type="text" name="address" placeholder="{{ text.address }}">
+            <label for="subscribe_no_login_address">{{ text.address }}</label>
+        </div>
+        {% endif %}
+
+        <div class="overlay_privacy_policy mt-3 px-0 form-check">
+            <input name="privacy_policy_2" id="product_subscribe_no_login_privacy_policy" class="form-check-input" type="checkbox" value="1" />
+            <label for="product_subscribe_no_login_privacy_policy" class="text-left font-xs form-check-label">{{ text.accept_privacy_policy }}</label>
+        </div>
+        <div class="subscribe_validation_error text-left text-danger font-xs my-3" style="display: none;">
+            <div id="privacy">{{ text.error_privacy_policy }}</div>
+            <div id="email">{{ text.error_email_required }}</div>
+            <div id="not_valid_email">{{ text.error_email_format }}</div>
+        </div>
+        <button class="overlay_subscribe_button btn btn-primary">{{ text.button_subscribe }}</button>
+        <input type="hidden" class='overlay_title_hidden' value="{{ text.error_email_required }}">
+    </div>
+{% endif %}
+
+{% if id == "save_filter" %}
+    <div class="form-label-group">
+        <input type='text' id="filter_name" name='filter_name' maxlength="150" class='overlay_input mt-3 filter_name form-control' placeholder="{{ text.filter_name }}">
+        <label for="filter_name">{{ text.filter_name }}</label>
+    </div>
+    <div class="errors text-left d-none text-danger font-s" id="filter_save_errors">
+        <div class="error error_empty_input d-none">{{ text.error_name_required }}</div>
+        <div class="error error_filter_exists d-none">{{ text.error_filter_already_exists }}</div>
+        <div class="error error_name_exists d-none">{{ text.error_filter_name_already_exists }}</div>
+    </div>
+    <input type="hidden" name="filter_page_id" id="filter_page_id">
+{% endif %}
+
+<div class="overlay-buttons row no-gutters justify-content-center flex-row-reverse {% if key == 'explicit' %} overlay-btns--explicit{% endif %}">
+    {% for button in buttons %}
+        <button type="button" class="close btn btn-primary overlay-button overlay_button_{{ button.num }} {{ button.class }} mx-2" onclick="{{ button.onclick }}">{{ button.text }}</button>
+    {% endfor %}
+</div>

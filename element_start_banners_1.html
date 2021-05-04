@@ -1,0 +1,62 @@
+{{ backvar(slide_max_count,100) }}
+{{ backvar(enable,maintitle,img,img_link,html,icon) }}
+
+{% if element_disp %}
+    <script> var icon_selectors = '';</script>
+    <div class="start-banners py-sm-4">
+        <div class="start-banners__container container">
+            {% if main_title_disp %}
+                <div class="start-banners__main-title text-center">
+                    <h2 class="js-animate-title-dots">{{ main_title }}</h2>
+                </div>
+            {% endif %}
+            <div class="line-separator d-none d-md-block"></div>
+            <div class="start-banners__elements py-4 py-md-0">
+                <div class="row gutters-10">
+                    {% for slide in slides %}
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="start-banner__element-{{ slide.num }} start-banner__element my-2 my-lg-0 px-3 px-sm-0">
+                                <div class="row gutters-10">
+                                    {% if slide.img_default_disp or slide.icon_1 != '' %}
+                                        <div class="start-banner__element-img-wrap col-2 text-center fs-0 m-auto">
+                                            {% if slide.icon_1 != '' and not slide.img_default_disp %}
+                                                <script> icon_selectors += ".start-banner__element-{{ slide.num }} .start-banner__element-img-wrap::before{content: '\\{{ slide.icon_1 }}';}"</script>
+                                            {% endif %}
+                                            {% if slide.img_default_disp %}
+                                                {% if slide.img_link_disp %}
+                                                    <a href="{{ slide.img_link_url }}"{% if slide.target_blank %} target="_blank"{% endif %}>
+                                                {% endif %}
+                                                <picture>
+                                                    {% if slide.img_small_disp %}
+                                                        <source media="(max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_small_url }} 1x{% if slide.img_small_retina_disp %}, {{ slide.img_small_retina_url }} 2x{% endif %}" />
+                                                    {% endif %}
+                                                    {% if slide.img_medium_disp %}
+                                                        <source media="(max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_medium_url }} 1x{% if slide.img_medium_retina_disp %}, {{ slide.img_medium_retina_url }} 2x{% endif %}" />
+                                                    {% endif %}
+                                                    {% if slide.img_large_disp %}
+                                                        <source media="(max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_large_url }} 1x{% if slide.img_large_retina_disp %}, {{ slide.img_large_retina_url }} 2x{% endif %}" />
+                                                    {% endif %}
+                                                    <source srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" />
+                                                    <img class="element__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ slide.img_default_url }}" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" alt="{% if slide.alt_disp %}{{ slide.alt }}{% else %}{{ service_name }}{% endif %}"/>
+                                                </picture>
+                                                {% if slide.img_link_disp %}
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="start-banner__element-html-wrap col m-auto">
+                                        <div class="start-banner__element-title font-weight-bold text-uppercase font-m">{{ slide.title }}</div>
+                                        <div class="start-banner__element-text font-s">{{ slide.html }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="line-separator d-none d-md-block"></div>
+        </div>
+    </div>
+    <script> $('body').prepend('<style>'+icon_selectors+'</style>'); </script>
+{% endif %}

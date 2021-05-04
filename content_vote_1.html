@@ -1,0 +1,48 @@
+<div id='page_vote_content' class='page_content mb-4'>
+    {% for vote in votes %}
+        <div class="page_vote_title p-3 mb-4 text-uppercase text-center ">{{ vote.title }}</div>
+        <div class="page_vote_item p-3 mb-5">
+            {% if vote.already_voted %}
+                <div class="page_vote_item_row1 icon--b-info text-primary mb-3">{{ text.already_voted }}</div>
+            {% endif %}
+            {{ vote.form_start }}
+                {% for vote_option in vote.vote_options %}
+                    <div class="page_vote_item_row2 py-2 {% if not vote.limit_disp %}page_vote_item_bar_no{% endif %}{% if vote.limit_disp %}page_vote_item_bar_yes{% endif %}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% if vote.can_vote %}
+                                    <div class="page-vote-radio-wrap d-flex align-items-center">
+                                        <input class="vote_radio_{{ vote.id }}" id="vote_radio_{{ vote.id }}_{{ vote_option.num }}" name="vote" type="radio" onclick="vote_disable('{{ vote.id }}');" value="{{ vote_option.value }}">
+                                        <label for="vote_radio_{{ vote.id }}_{{ vote_option.num }}">{{ vote_option.value }}</label>
+                                    </div>
+                                {% else %}
+                                    <div class="vote_{{ vote.id }}_{{ vote_option.num }} d-flex align-items-center">{{ vote_option.value }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                {% if vote.limit_disp %}
+                                    <div class="page_vote_item_bar d-flex align-items-center h-100">
+                                        <div class="page_vote_item_bar_left w-100 position-relative">
+                                            <div class="page_vote_item_bar_left_center bg-primary" style="width:{{ vote_option.percent }}%" rel="{{ vote_option.width }}"></div>
+                                            <div class="page_vote_item_bar_right">
+                                                {{ vote_option.percent }}%&nbsp;&nbsp;({{ vote_option.count }})
+                                            </div>
+                                        </div>
+                                     </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if vote.can_vote %}
+                    <div class="page_vote_item_row3 page_vote_privacy_policy mt-5 mb-3 p-0 font-s form-check">
+                        <input name="vote_privacy_policy" id="vote_privacy_policy_{{ vote.id }}" class="form-check-input" type="checkbox" onclick="vote_disable('{{ vote.id }}');" value="1">
+                        <label for="vote_privacy_policy_{{ vote.id }}" class="form-check-label">{{ text.accept_privacy_policy }}</label>
+                    </div>
+                    <button class="page-vote__btn-vote btn btn-primary mt-3" name="submit_button" id="vote_button_{{ vote.id }}" disabled="disabled">{{ text.button_vote }}</button>
+                {% endif %}
+            {{ vote.form_end }}
+            <div class="page_vote_item_row1 my-3">{{ text.vote_count }}: {{ vote.count }}&nbsp;{{ text.pcs }}</div>
+        </div>
+    {% endfor %}
+</div>

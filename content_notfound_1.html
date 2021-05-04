@@ -1,0 +1,15 @@
+<div id='page_notfound_content' class='page_content'>
+    <div id='page_notfound_title' class="text-danger border-bottom text-uppercase mb-5 pb-3 font-xl">{{ text.not_found }}</div>
+    {% if custom_content_top_disp %}
+        <div class='page_txt'><div class='page_shop_txt'>{{ custom_content_top }}</div></div>
+        <div class='page_space'></div>
+    {% endif %}
+    {% if retargeting_div_notfound_disp %}
+        {{ retargeting_div_notfound }}
+    {% endif %}
+    {% if ref_disp %}{{ ref_product_list }}{% endif %}
+    {% if custom_content_bottom_disp %}
+        <div class='page_space'></div>
+        <div class='page_txt'><div class='page_shop_txt'>{{ custom_content_bottom }}</div></div>
+    {% endif %}
+</div>

@@ -1,0 +1,38 @@
+<div id='page_forum_content' class='page-forum page_content' >
+    {% if forum_disp %}
+        <div class="page-forum-topic-wrap mb-5">
+            <div class="forum-topcis__title bg-8 p-3 text-center font-xl text-uppercase">{{ text.forum_topics }}</div>
+            {% if paging_disp %}
+                <nav class="forum-paging d-flex align-items-center justify-content-center my-4 py-3 border-top" aria-label="pagination">
+                    {{ paging_content }}
+                </nav>
+            {% endif %}
+            <div class="forum-topics">
+                {% for topic in topics %}
+                    <div class="forum-topic p-3 border-bottom">
+                        <a href="{{ topic.url }}">{{ topic.title }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="page_forum_topic">
+            <div class="page_forum_topic_head">
+                <div class="page_forum_topic_no">{{ text.no_topics }}</div>
+            </div>
+        </div>
+    {% endif %}
+    {% if new_topic_disp %}
+        {{ new_topic_form_start }}
+        <div class="page-forum__create-topic bg-8 container-max-sm mx-auto p-4 mb-4">
+            <div class="create-topic__input form-label-group mb-3">
+                <input id="create_topic" placeholder="{{ text.topic_title }}" name="title" type="text" value="" class="form-control" maxlength="100" />
+                <label for="create_topic">{{ text.topic_title }}</label>
+            </div>
+            <div class="create-topic__btn-wrap text-center">
+                <button name="Submit" class="btn btn-primary">{{ text.button_create_new_topic }}</button>
+            </div>
+        </div>
+        {{ new_topic_form_end }}
+    {% endif %}
+</div>

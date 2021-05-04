@@ -1,0 +1,44 @@
+{% if recommend_disp %}
+    <div class="popup_title p-0" id="recommend_title">
+        <div class="js-animate-title-dots w-auto d-inline-block font-xxl">{{ text.recommend_to_someone }}</div>
+    </div>
+    <div class="bg-white" id="page_recommend_content">
+        {{ recaptcha_script }}
+        <div class="recommend__text py-2 px-3 px-md-5 font-s font-sm-m">{{ text.recommend_text }}</div>
+        {{ form_start }}
+        {{ recaptcha_div }}
+        <div class="recommend-form-inner px-3 px-md-5 font-s font-sm-m">
+            <div class="row recommend-form-block mb-3 mx-0 recommend_label_input form-label-group">
+                <input type="text" name="recommend_friends_email" placeholder="{{ text.recipient_email }}" class="form-control" id="recommend_friends_email" />
+                <label for="recommend_friends_email">{{ text.recipient_email }}</label>
+            </div>
+            <div class="row recommend-form-block mb-3 mx-0 recommend_label_input form-label-group">
+                <input type="text" name="recommend_my_name" placeholder="{{ text.name }}" class="form-control" id="recommend_my_name" value="{{ recommend_sender_name }}" />
+                <label for="recommend_my_name">{{ text.name }}</label>
+            </div>
+            <div class="row recommend-form-block mb-3 mx-0 recommend_label_input form-label-group">
+                <input type="text" name="recommend_my_email" placeholder="{{ text.email }}" class="form-control" id="recommend_my_email" value="{{ recommend_sender_email }}" />
+                <label for="recommend_my_email">{{ text.email }}</label>
+            </div>
+            <div class="row recommend-form-block mb-3 mx-0 recommend_label_input form-label-group">
+                <textarea name="recommend_comment" rows="4" placeholder="{{ text.message }}" class="form-control" id="recommend_comment"></textarea>
+                <label for="recommend_comment">{{ text.message }}</label>
+            </div>
+            <div class="recommend_label_input recommend-form-block mb-3 recommend_label_input form-check px-0 py-2" id="recommend_label_privacy_policy">
+                <input name="recommend_privacy_policy" id="recommend_privacy_policy" type="checkbox" value="1" class="form-check-input" />
+                <label class="recommend_label font-xs form-check-label" for="recommend_privacy_policy">{{ text.accept_privacy_policy }}</label>
+            </div>
+            <div class="recommend__status p-3 font-s font-sm-m text-success icon--b-info" id="recommend_error_msg" style="display: none;">{{ text.mail_sent }}</div>
+            <div class="recommend__send-btn-wrap mb-3 text-center">
+                <button class="recommend__send-btn btn btn-primary" id="recommend_send_button" title="{{ text.button_send_recommend }}">{{ text.button_send_recommend }}</button>
+            </div>
+        </div>
+        {{ form_end }}
+        <div class="page_recommend_content_div pb-3">
+            <div class='recommend__items slick-list-outer slick-has-counter slick-arrow--small mb-md-5'>
+                {{ product_list }}
+                <div class="slick-counter"></div>
+            </div>
+        </div>
+    </div>
+{% endif %}

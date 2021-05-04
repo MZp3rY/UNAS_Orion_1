@@ -1,0 +1,63 @@
+<div id='page_reg_ok_content' class='page_content text-center'>
+    <!-- TABS -->
+    {% if tabs_disp %}
+        <div id="page_tabs_outer" class="page_tabs position-relative text-center d-none d-lg-flex justify-content-around clearfix usn">
+            {% if tab_orders_disp %}
+                <div id="tab_orders" rel="orders" class="page_tab" onclick="location.href='{{ tab_orders_url }}'">{{ text.orders }}</div>
+            {% endif %}
+            {% if tab_discount_disp %}
+                <div id="tab_discount" rel="discount" class="page_tab" onclick="location.href='{{ tab_discount_url }}'">{{ text.discounts }}</div>
+            {% endif %}
+            {% if tab_favourites_disp %}
+                <div id="tab_favourites" rel="favourites" class="page_tab" onclick="location.href='{{ tab_favourites_url }}'">{{ text.favourites }}</div>
+            {% endif %}
+            {% if tab_saved_filters_disp %}
+                <div id="tab_saved_filters" rel="saved_filters" class="page_tab" onclick="location.href='{{ tab_saved_filters_url }}'">{{ text.saved_filters }}</div>
+            {% endif %}
+            {% if tab_modify_disp %}
+                <div id="tab_reg" rel="reg" class="page_tab page_tab_active" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+            {% endif %}
+            <div class="page_tab" id="tab_logout" rel="logout" onclick="location.href='[unas_shop_url]/shop_logout.php'">{{ text.logout }}</div>
+        </div>
+        {% if tab_orders_disp %}
+            <div id="tab2_orders" rel="orders" class="page_tab2" onclick="location.href='{{ tab_orders_url }}'">{{ text.orders }}</div>
+        {% endif %}
+        {% if tab_discount_disp %}
+            <div id="tab2_discount" rel="discount" class="page_tab2" onclick="location.href='{{ tab_discount_url }}'">{{ text.discounts }}</div>
+        {% endif %}
+        {% if tab_favourites_disp %}
+            <div id="tab2_favourites" rel="favourites" class="page_tab2" onclick="location.href='{{ tab_favourites_url }}'">{{ text.favourites }}</div>
+        {% endif %}
+        {% if tab_saved_filters_disp %}
+            <div id="tab2_saved_filters" rel="saved_filters" class="page_tab2" onclick="location.href='{{ tab_saved_filters_url }}'">{{ text.saved_filters }}</div>
+        {% endif %}
+        {% if tab_modify_disp %}
+            <div id="tab2_reg" rel="reg" class="page_tab2 page_tab2_active" onclick="location.href='{{ tab_modify_url }}'">{{ text.data_modify }}</div>
+        {% endif %}
+        <div class="page_tab2" id="tab2_logout" rel="logout" onclick="location.href='[unas_shop_url]/shop_logout.php'">{{ text.logout }}</div>
+    {% endif %}
+    {% if custom_content_top_disp %}
+        <div id='page_txt_reg_top'>{{ custom_content_top }}</div>
+        <div class="line-separator"></div>
+    {% endif %}
+    <div class='py-4 text-uppercase font-l'>{{ title }}</div>
+    <div class='text-primary text-center text-uppercase font-weight-bold font-l my-3'>{{ info_text }}</div>
+    {% if need_admin_accept %}
+    	<div class="reg-ok__control-admin mb-3">{{ text.registration_need_activation }}</div>
+    {% endif %}
+    {% if loggedin_disp %}
+    	<div class="reg-ok__logged-in mb-3">{{ text.auto_login_after_registration }}</div>
+    {% endif %}
+    {% if cart_disp %}
+    	<div class="reg-ok__cart mb-3">
+            <div align="center">
+                <strong>{{ text.order_not_sent }}</strong>
+            </div>
+        </div>
+    {% endif %}
+    <div class="reg-ok__quest mb-3">{{ text.contact_admin_on_problem }}</div>
+    {% if custom_content_bottom_disp %}
+        <div class='line-separator'></div>
+        <div class='page_txt' id="page_txt_reg_bottom">{{ custom_content_bottom }}</div>
+    {% endif %}
+</div>

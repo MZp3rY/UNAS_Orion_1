@@ -1,0 +1,34 @@
+{{ backvar(slide_max_count,1) }}
+{{ backvar(enable,img_default,img_small,img_medium,img_large,img_default_retina,img_small_retina,img_medium_retina,img_large_retina) }}
+
+{% if element_disp %}
+    {% for slide in slides %}
+        {% if slide.img_small_disp or slide.img_small_retina_disp %}
+            {% set need_pipe = true %}
+            {% if slide.img_small_disp %}{{ slide.img_small_url }}{% endif %}
+            {% if slide.img_small_disp and slide.img_small_retina_disp %}1x , {% endif %}
+            {% if slide.img_small_retina_disp %}{{ slide.img_small_retina_url }} 2x{% endif %} {% if slide.img_medium_disp or slide.img_medium_retina_disp or slide.img_large_disp or slide.img_large_retina_disp or slide.img_default_disp or slide.img_default_retina_disp %}[(max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px)] {% endif %}
+        {% endif %}
+        {% if slide.img_medium_disp or slide.img_medium_retina_disp %}
+            {% if need_pipe == true %}| {% endif %}
+            {% set need_pipe = true %}
+            {% if slide.img_medium_disp %}{{ slide.img_medium_url }}{% endif %}
+            {% if slide.img_medium_disp and slide.img_medium_retina_disp %}1x , {% endif %}
+            {% if slide.img_medium_retina_disp %}{{ slide.img_medium_retina_url }} 2x{% endif %} {% if slide.img_large_disp or slide.img_large_retina_disp or slide.img_default_disp or slide.img_default_retina_disp %}[(max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px)] {% endif %}
+        {% endif %}
+        {% if slide.img_large_disp or slide.img_large_retina_disp %}
+            {% if need_pipe == true %}| {% endif %}
+            {% set need_pipe = true %}
+            {% if slide.img_large_disp %}{{ slide.img_large_url }}{% endif %}
+            {% if slide.img_large_disp and slide.img_large_retina_disp %}1x , {% endif %}
+            {% if slide.img_large_retina_disp %}{{ slide.img_large_retina_url }} 2x{% endif %} {% if slide.img_default_disp or slide.img_default_retina_disp %}[(max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px)] {% endif %}
+        {% endif %}
+        {% if slide.img_default_disp or slide.img_default_retina_disp %}
+            {% if need_pipe == true %}| {% endif %}
+            {% set need_pipe = true %}
+            {% if slide.img_default_disp %}{{ slide.img_default_url }}{% endif %}
+            {% if slide.img_default_disp and slide.img_default_retina_disp %}1x , {% endif %}
+            {% if slide.img_default_retina_disp %}{{ slide.img_default_retina_url }} 2x{% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}

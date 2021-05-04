@@ -1,0 +1,61 @@
+<div class="overlay-sign-in absolute-full d-flex justify-content-center align-items-center">
+    <div class="overlay-sign-inner bg-white drop-shadow position-relative">
+        <button class="overlay-sign-in__btn-close btn btn-link btn-close btn--square icon--close" onclick="overlay_close('overlay_login_outer');"></button>
+        <div class="row no-gutters">
+            <div class="col-sm-6">
+                <div class="overlay-login h-100 px-4 px-sm-5 pt-5 pb-4 pt-sm-4" id="overlay_login1">
+                    <h4 class="overlay-title text-uppercase py-2 font-xl mb-3">{{ text.is_returning_customer }}</h4>
+                    {{ form_start }}
+                        <div class="overlay-login-email-wrap form-label-group">
+                            <input name="shop_user_login" id="shop_user_login_popup" type="text" class="page_login_input form-control" placeholder="{{ username_title }}"/>
+                            <label for="shop_user_login_popup">{{ username_title }}</label>
+                        </div>
+                        <div class="overlay-login-psw-wrap form-label-group">
+                            <input name="shop_pass_login" id="shop_pass_login_popup" type="password" class="page_login_input form-control" placeholder="{{ text.password }}"/>
+                            <label for="shop_pass_login_popup">{{ text.password }}</label>
+                        </div>
+                        <div class="overlay-btns">
+                            <button type="button" class="overlay-login__remind-btn btn btn-link px-0 py-1 text-primary" onclick="overlay_login_remind();">{{ text.forgot_my_password }}</button>
+                            <button class="btn btn-primary btn-block">{{ text.button_login }}</button>
+                        </div>
+                    {{ form_end }}
+                    {% if facebook_disp or google_disp %}
+                        <div class="login-with-third-parties d-flex align-items-center text-center mt-3">
+                            {% if facebook_disp %}
+                                <div class="facebook-login-outer btn btn-block btn-outline-primary position-relative mr-3">
+                                    Facebook
+                                    <iframe class="facebook_login position-absolute w-100 h-100" scrolling="no" src="{{ facebook_url }}"></iframe>
+                                </div>
+                            {% endif %}
+                            {% if google_disp %}
+                                <div class="google-login-outer btn btn-block btn-outline-primary position-relative mt-0">
+                                    Google
+                                    <iframe class="google_login position-absolute w-100 h-100" scrolling="no" src="{{ google_url }}"></iframe>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="overlay-reg h-100 px-4 px-sm-5 pt-5 pb-4 pt-sm-4" id="overlay_login2">
+                    <h4 class="overlay-title text-uppercase py-2 font-xl mb-3">{{ text.is_new_customer }}</h4>
+                    <h5 class="overlay-text">{{ text.registration_advantages }}</h5>
+                    <ul class="overlay-reg__adv">
+                        <li>{{ text.registration_promo_text_1 }}</li>
+                        <li>{{ text.registration_promo_text_2 }}</li>
+                        <li>{{ text.registration_promo_text_3 }}</li>
+                    </ul>
+                    <div class="overlay-btns">
+                        <button class="overlay-reg__btn-reg btn btn-primary btn-block mb-3" onclick="location.href='{{ reg_url }}'">{{ text.registration }}</button>
+                        {% if noreg_disp %}
+                            <button class="overlay-reg__btn-no-reg btn btn-primary btn-block" onclick="location.href='{{ noreg_url }}'">
+                                {{ text.button_continue_without_registration }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

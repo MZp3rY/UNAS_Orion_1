@@ -1,0 +1,30 @@
+<div class="cookie-alert {% if close %}cookie_alert_close{% endif %} {% if allow %}cookie_alert_allow{% endif %} cookie_alert_2" id="cookie_alert">
+    <div class="cookie-alert__inner bg-8 p-4 border-top" id="cookie_alert_open">
+        <div class="container">
+            <div class="row align-items-md-end">
+                <div class="col-md-6 col-lg-7 mb-2 mb-md-0">
+                    <div class="cookie-alert__title font-weight-bold">{{ text.cookie_consent_settings }}</div>
+                    <div class="cookie-alert__text font-s text-justify">{{ text.cookie_consent_text_1 }}</div>
+                </div>
+                <div class="col-md-6 col-lg-5">
+                    <div class="row no-gutters justify-content-center align-items-end">
+                        <div class="col">
+                            <div class="cookie-alert__checkboxes form-check px-0">
+                                <input class="form-check-input" type='checkbox' id='cookie_alert_checkbox_working' checked='checked' disabled='disabled' />
+                                <label for="cookie_alert_checkbox_working" class="my-1 form-check-label">{{ text.functional_cookies }}</label>
+                                <input class="form-check-input" type='checkbox' id='cookie_alert_checkbox_plus'{% if checkbox_marketing_checked %} checked="checked"{% endif %} value='1' />
+                                <label for="cookie_alert_checkbox_plus" class="my-1 form-check-label">{{ text.marketing_cookies }}</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-auto text-center">
+                            <div class="cookie-alert__btn-set-wrap">
+                                <button class='cookie-alert__btn-set btn btn-sm btn-primary mt-3' type='button' onclick='cookie_alert_action(1,(($("#cookie_alert_checkbox_plus").prop("checked")==true)?1:0));'>{{ text.button_set }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="cookie-alert__btn-close btn btn-link" id="cookie_alert_close" onclick='cookie_alert_action(0,-1)'>{{ text.cookie_consent_settings }}</button>
+</div>

@@ -1,0 +1,40 @@
+<div id='box_vote_content' class='box_content'>
+    {% if vote_disp %}
+        {{ form_start }}
+            <div class='box_vote_list'>
+                <div class="box_vote_item_title">{{ vote_title }}</div>
+                {% if already_voted %}
+                    {% for option in vote_options %}
+                        <div class="box_vote_item">
+                            <div class="box_vote_item_name">{{ option.name }}</div>
+                            <div class="box_vote_item_row">
+                                <div class="box_vote_item_bar" style="width:{{ option.percent }}%;">
+                                    <div class="box_vote_item_bar_percent">{{ option.percent }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {% for option in vote_options %}
+                        <div class="box_vote_item mb-1 form-check px-0">
+                            <input name="vote" type="radio" id="vote_box_radio{{ option.value }}" class="vote_box_radio form-check-input" onclick="vote_disable('');" value="{{ option.value }}">
+                            <label for="vote_box_radio{{ option.value }}" class="form-check-label">{{ option.name }}</label>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% if not already_voted %}
+                <div class="form-check px-0">
+                    <input name="vote_privacy_policy" class="form-check-input" id="vote_box_privacy_policy" type="checkbox" onclick="vote_disable('');" value="1"/>
+                    <label for="vote_box_privacy_policy" class="form-check-label font-s my-3">{{ text.accept_privacy_policy }}</label>
+                </div>
+                <div class="vote-box__btn-wrap">
+                    <button name="submit_button" class="vote-box__btn btn btn-primary" id="vote_box_button" disabled="disabled">{{ text.button_vote }}</button>
+                </div>
+            {% endif %}
+        {{ form_end }}
+    {% else %}
+        <div class='box_common_nocontent_outer'><div class='box_common_nocontent'>{{ text.no_open_vote }}</div></div>
+    {% endif %}
+    <a href="{{ vote_url }}" class="box_vote_link d-inline-block mt-2 font-weight-bold">{{ text.more_votes }}</a>
+</div>

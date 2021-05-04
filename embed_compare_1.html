@@ -1,0 +1,97 @@
+{{ backvar(img_maxwidth,70) }}
+{{ backvar(img_maxheight,70) }}
+
+{% if compare_disp %}
+    <div class="popup_title" id="compare_title">
+        <div class="js-animate-title-dots w-auto d-inline-block font-xxl p-0">{{ text.comparison }}</div>
+    </div>
+    <div id="page_compare_content">
+        <div class='popup_compare_content'>
+		    <table cellpadding="0" cellspacing="0" class="compare_list_table">
+                <thead>
+                    {% for line in lines %}
+                        {% if line.type in ['name','sku','pic','price'] %}
+                            <tr>
+                                <th class="compare_list_label type_{{ line.type }}"><div class="compare_list_label_wrap"><div class="compare_list_label_wrap_inner">{{ line.title }}</div></div></th>
+                                {% for cell in line.cells %}
+                                    <th class="compare_list_value type_{{ line.type }} {% if line.type == 'price' %}text-cn font-weight-bold{% endif %} page_compare_cikk col_{{ cell.sku_id }}"><div class="compare_list_value_wrap"><div class="compare_list_value_wrap_inner"><div class="compare_list_value_wrap_inner_cell">
+                                        {% if line.type in ['name','pic'] %}<a class="text-uppercase font-weight-bold" href="{{ cell.url }}">{% endif %}
+                                        {% if line.type != 'pic' %}
+                                            {{ cell.value }}
+                                        {% else %}
+                                            {% if cell.img_exists %}
+                                                <img src="{{ cell.img_url }}"{% if cell.img_retina_exists %} srcset="{{ cell.img_retina_url }} {{ cell.img_retina_size }}"{% endif %} alt="{{ cell.img_alt }}" />
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if line.type in ['name','pic'] %}</a>{% endif %}
+                                    </div></div></div></th>
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </thead>
+                <tbody>
+                    {% for line in lines %}
+                        {% if line.type not in ['name','sku','pic','price','tocart'] %}
+                            <tr>
+                                <td><div class="compare_list_label_wrap"><div class="compare_list_label_wrap_inner">{{ line.title }}</div></div></td>
+                                {% for cell in line.cells %}
+                                    <td class="col_{{ cell.sku_id }}{% if line.same %} compare_list_value_same{% endif %}"><div class="compare_list_value_wrap"><div class="compare_list_value_wrap_inner"><div class="compare_list_value_wrap_inner_cell">{{ cell.value }}</div></div></div></td>
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+                        {% if line.type == 'tocart' %}
+                            <tr class="compare_list_cart_line">
+                                <td><div class="compare_list_label_wrap"></div></td>
+                                {% for cell in line.cells %}
+                                    <td class="compare_list_footer col_{{ cell.sku_id }}">
+                                        <div class="compare_list_value_wrap font-l row gutters-5 align-items-center justify-content-center m-auto">
+                                            {% if cell.tocart_disp %}
+                                                <div class="page_compare_cart col-auto">
+                                                    <a class="page_compare_cart_link icon--cart btn btn-primary p-0 text-white" href="{{ cell.cart_url }}"></a>
+                                                </div>
+                                            {% endif %}
+                                            <div class="page_compare_details col-auto">
+                                                <a href="{{ cell.url }}" class="icon--details btn btn-link p-0 border"></a>
+                                            </div>
+                                            <div class="page_compare_delete col-auto">
+                                                <a href="#" class="icon--close btn btn-link p-0 border" onclick="{{ cell.delete_onclick_value }};return false;"></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.compare_list_table tbody').scroll(function(e) {
+                        $('.compare_list_table thead').css("left", -$(".compare_list_table tbody").scrollLeft());
+                        $('.compare_list_table thead th:nth-child(1)').css("left", $(".compare_list_table tbody").scrollLeft());
+                        $('.compare_list_table tbody td:nth-child(1)').css("left", $(".compare_list_table tbody").scrollLeft());
+                    });
+
+                    $(window).on("load resize",function(){
+                        $('table.compare_list_table tbody').width($('.shop_popup_compare').width());
+                    });
+                });
+            </script>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#box_compare_content").load(unas_shop_url+'/shop_ajax/ajax_box_compare.php?get_ajax=1&lang_master='+actual_lang+'&unas_design='+unas_design_code);
+                $("#box_container_shop_compare").css("display","block");
+                $("#compare_button").click(function () { $.shop_popup("close"); });
+            });
+        </script>
+    </div>
+{% else %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.shop_popup("close");
+        });
+    </script>
+{% endif %}

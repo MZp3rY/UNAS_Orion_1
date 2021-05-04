@@ -1,0 +1,148 @@
+{{ backvar(img_size,1) }}
+
+{% if element_disp %}
+    {% if style_disp %}
+        {% for slide in slides %}
+            {% if slide.img_default_disp %}
+                <style>
+                    .{{ name }}-wrapper:not(.inited) > .slider-pro {position:absolute;top:0;left:50%;transform:translateX(-50%);}
+                    .{{ name }}-wrapper:not(.inited) {padding-top: calc({{ (slide.img_default_height / slide.img_default_width * 100) }}% + 40px);}
+                    {% if slide.img_large_disp %} @media (max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px){ .{{ name }}-wrapper:not(.inited) { padding-top: calc({{ (slide.img_large_height / slide.img_large_width * 100) }}% + 40px);}} {% endif %}
+                    {% if slide.img_medium_disp %} @media (max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px){ .{{ name }}-wrapper:not(.inited) { padding-top: calc({{ (slide.img_medium_height / slide.img_medium_width * 100) }}% + 40px);}} {% endif %}
+                    {% if slide.img_small_disp %} @media (max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px){ .{{ name }}-wrapper:not(.inited) { padding-top: calc({{ (slide.img_small_height / slide.img_small_width * 100) }}% + 40px);}} {% endif %}
+                    @media (min-width: 1921px){ .{{ name }}-wrapper:not(.inited) > .slider-pro { position: static;transform:none;top:unset;left:unset; } .{{ name }}-wrapper:not(.inited) { padding-top:0;} }
+                </style>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <script type="text/javascript">
+            /** add js-header--fixed class to header, when slideshow element is using */
+            $('html').addClass('has-big-slideshow');
+
+            {% if slide_count != 1 %}
+                function nextSlide() {
+                    $( '#{{ name }}_slider-pro' ).sliderPro( 'nextSlide' );
+                }
+                function prevSlide() {
+                    $( '#{{ name }}_slider-pro' ).sliderPro( 'previousSlide' );
+                }
+            {% endif %}
+
+            $(document).ready(function() {
+                $('#{{ name }}_slider-pro').sliderPro({
+                    {% if width_disp %}width: {{ width }},{% endif %}
+                    {% if height_disp %}height: {{ height }},{% endif %}
+                    arrows: false,
+                    buttons: false,
+                    slideDistance: 0,
+                    autoHeight: true,
+                    responsive: true,
+                    waitForLayers: true,
+                    keyboardOnlyOnFocus: true,
+                    autoScaleLayers: false,
+                    centerImage: true,
+                    autoplayOnHover: 'none',
+                    allowScaleUp: 'false',
+                    {% if common_vars.grid_breakpoints.sm > 0 %}
+                        smallSize: {{ common_vars.grid_breakpoints.sm }},
+                    {% endif %}
+                    {% if common_vars.grid_breakpoints.md > 0 %}
+                        mediumSize: {{ common_vars.grid_breakpoints.md }},
+                    {% endif %}
+                    {% if common_vars.grid_breakpoints.lg > 0 %}
+                        largeSize: {{ common_vars.grid_breakpoints.lg }},
+                    {% endif %}
+                    {% if slide_count == 1 %}
+                        loop: false,
+                        touchSwipe: false,
+                        autoplay: false
+                    {% else %}
+                        {% if autoplay_enabled %}
+                            autoplay: true,
+                            autoplayDelay: {{ delay }}
+                        {% else %}
+                            autoplay: false
+                        {% endif %}
+                    {% endif %}
+                    {% if slide_count == 2 %},loop: false{% endif %}
+                });
+
+                {% if slide_count != 1 %}
+                    var slider = $('#{{ name }}_slider-pro').data( 'sliderPro' );
+                    $('.js-sp-nav__counter').prepend('<span class="js-sp-nav__current">'+(parseInt(slider.getSelectedSlide()) + 1) +'</span>/'+slider.getTotalSlides()+'</div>');
+                    slider.on( 'gotoSlide', function( event ) {
+                        jQuery(this).closest('.{{ name }}-wrapper').addClass('inited');
+                        jQuery(this).closest('.{{ name }}-wrapper').find('.js-sp-nav__current').text(event.index + 1);
+                    });
+                {% endif %}
+            });
+        </script>
+        <div class="{{ name }}-wrapper position-relative">
+            <div id="{{ name }}_slider-pro" class="slider-pro has-paging {{ class }}">
+                <div class="sp-slides">
+                    {% for slide in slides %}
+                        <div class="sp-slide">
+                            {% if slide.img_default_disp %}
+                                {% if slide.img_link_disp %}<a class="sp-image-link" href="{{ slide.img_link_url }}"{% if slide.target_blank %} target="_blank"{% endif %}>{% endif %}
+                                <img class="sp-image" alt="{% if slide.alt_disp %}{{ slide.alt }}{% else %}{{ service_name }}{% endif %}" src="[unas_shop_url]/main_pic/space.gif"
+                                     {% if slide.img_default_disp %}data-src="{{ slide.img_default_url }}"{% endif %}
+                                     {% if slide.img_small_disp %}data-small="{{ slide.img_small_url }}"{% endif %}
+                                     {% if slide.img_medium_disp %}data-medium="{{ slide.img_medium_url }}"{% endif %}
+                                     {% if slide.img_large_disp %}data-large="{{ slide.img_large_url }}"{% endif %}
+                                     {% if slide.img_default_retina_disp %}data-retina="{{ slide.img_default_retina_url }}"{% endif %}
+                                     {% if slide.img_small_retina_disp %}data-retinasmall="{{ slide.img_small_retina_url }}"{% endif %}
+                                     {% if slide.img_medium_retina_disp %}data-retinamedium="{{ slide.img_medium_retina_url }}"{% endif %}
+                                     {% if slide.img_large_retina_disp %}data-retinalarge="{{ slide.img_large_retina_url }}"{% endif %} />
+                                {% if slide.img_link_disp %}</a>{% endif %}
+                            {% endif %}
+
+                            {% for text in slide.texts %}
+                                <style>
+                                    #{{ text.id }} {
+                                    {% if text.font_color_disp %}color:{{ text.font_color }};{% endif %}
+                                    {% if text.bg_color_disp %}background-color:{{ text.bg_color }}; background:{{ text.bg_color }};{% endif %}
+                                    {% if text.border_color_disp %}border-color:{{ text.border_color }};{% endif %}
+                                    {% if text.border_style_disp %}border-style:{{ text.border_style }};{% endif %}
+                                    {% if text.border_width_disp %}border-width:{{ text.border_width }};{% endif %}
+                                    }
+
+                                    {% if text.hover_disp %}
+                                        #{{ text.id }}:hover {
+                                            {% if text.bg_color_hover_disp %}
+                                                background-color:{{ text.bg_color_hover }};
+                                                background:{{ text.bg_color_hover }};
+                                            {% endif %}
+                                            {% if text.font_color_hover_disp %}
+                                                color:{{ text.font_color_hover }};
+                                            {% endif %}
+                                        }
+                                    {% endif %}
+                                </style>
+                                <p class="sp-layer sp-layer-{{ text.num }}{% if not text.link_disp %} sp-padding{% endif %} sp-{{ text.font_size }}"
+                                   data-position="centerCenter"
+                                   data-horizontal="{{ text.horizontal }}" data-vertical="{{ text.vertical }}"
+                                   data-show-transition="{{ text.animation_show }}" data-show-delay="{{ text.animation_show_delay }}"
+                                   data-hide-transition="{{ text.animation_hide }}" data-hide-delay="{{ text.animation_hide_delay }}"
+                                   {% if text.link_disp %}{% if not text.target_blank %}onclick="location.href='{{ text.url }}'"{% endif %}{% endif %}
+                                   id="{{ text.id }}">
+                                    {% if text.link_disp %}<a class="sp-layer-link" href="{{ text.url }}"{% if text.target_blank %} target="_blank"{% endif %} style="{% if text.font_color_disp %}color:{{ text.font_color }};{% endif %}">{% endif %}
+                                        {{ text.value }}
+                                    {% if text.link_disp %}</a>{% endif %}
+                                </p>
+                            {% endfor %}
+
+                            {{ slide.html }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% if slide_count != 1 %}
+                <div class="sp-nav d-flex align-items-center p-lg-2">
+                    <a class="sp-nav__prev sp-nav-btn icon--arrow-left" onclick="prevSlide();"></a>
+                    <div class="sp-nav__counter js-sp-nav__counter text-center usn mx-5 mx-lg-3 font-s"></div>
+                    <a class="sp-nav__next sp-nav-btn icon--arrow-right" onclick="nextSlide();"></a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}

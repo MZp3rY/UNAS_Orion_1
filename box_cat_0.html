@@ -1,0 +1,17 @@
+{% for cat in cat_list %}
+    <li class='cat-menu{% if cat.spec %} is-spec-item{% endif %}{% if cat.cat_sub_disp %} has-child{% endif %} js-cat-menu-{{ cat.id }}' data-level="{{ level }}" data-id="{{ cat.id }}">
+		<a class='cat-menu__name' href='{{ cat.url }}' {% if cat.target_blank %} target="_blank"{% endif %}>
+			{{ cat.name }}
+		</a>
+        {% if cat.cat_sub_disp %}
+            <div class="cat-menu__dropdown {% if cat.banner_disp %}has-banner{% endif %}">
+				<ul class="cat-menus-level-1 row gutters-5">
+					{{ cat.cat_sub_list }}
+				</ul>
+				{% if cat.banner_disp %}
+					<div class="cat-banner d-flex align-items-end justify-content-end">{{ cat.banner_content }}</div>
+				{% endif %}
+            </div>
+        {% endif %}
+    </li>
+{% endfor %}

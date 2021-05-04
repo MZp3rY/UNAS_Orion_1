@@ -1,0 +1,130 @@
+<div id='page_searchcomplex_include_content' class='page_content'>
+    {{ start_form }}
+    {{ start_script }}
+    {{ main_form_start }}
+    <div id="page_searchcomplex_word" class="page_searchcomplex_section mb-3 mb-md-5">
+        <div class="form-label-group">
+            <input name="search" id="searchcomplex_input" placeholder="{{ text.search_expression }}" type="text" class="form-control" value="{{ search_word_value }}" maxlength="255" />
+            <label for="searchcomplex_input">{{ text.search_expression }}</label>
+        </div>
+    </div>
+
+    <div id="page_searchcomplex_type" class="page_searchcomplex_section mb-3 mb-md-5">
+        <div class="searchcomplex-title font-weight-bold mb-2">{{ text.search_type }}</div>
+        <div class="form-group">
+            <div class="form-check form-check-inline">
+                <input name="type" id="searchcomplex__type-and" class="form-check-input" type="radio" value="2" {% if search_type_value == 2 %}checked='checked'{% endif %} />
+                <label for="searchcomplex__type-and" class="form-check-label">{{ text.search_type_and }}</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input name="type" id="searchcomplex__type-or" class="form-check-input" type="radio" value="1" {% if search_type_value == 1 %}checked='checked'{% endif %} />
+                <label for="searchcomplex__type-or" class="form-check-label">{{ text.search_type_or }}</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="page_searchcomplex_in" class="page_searchcomplex_section mb-3 mb-md-5">
+        <div class="searchcomplex-title font-weight-bold mb-2">{{ text.search_in_what }}</div>
+        <div class="form-group">
+            <div class="form-check form-check-inline">
+                <input name="w_nev" id="w_nev" class="form-check-input" type="checkbox" value="1" {% if name_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                <label for="w_nev" class="form-check-label">{{ text.search_in_name }}</label>
+            </div>
+            {% if search_in_sku %}
+                <div class="form-check form-check-inline">
+                    <input name="w_cikk" id="w_cikk" class="form-check-input" type="checkbox" value="1" {% if sku_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                    <label for="w_cikk" class="form-check-label">{{ text.search_in_sku }}</label>
+                </div>
+            {% endif %}
+            <div class="form-check form-check-inline">
+                <input name="w_rovleir" id="w_rovleir" class="form-check-input" type="checkbox" value="1" {% if short_desc_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                <label for="w_rovleir" class="form-check-label">{{ text.search_in_short_description }}</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input name="w_tulaj" id="w_tulaj" class="form-check-input" type="checkbox" value="1" {% if long_desc_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                <label for="w_tulaj" class="form-check-label">{{ text.search_product_details }}</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input name="w_link" id="w_link" class="form-check-input" type="checkbox" value="1" {% if link_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                <label for="w_link" class="form-check-label">{{ text.search_in_link }}</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input name="w_egyeb" id="w_egyeb" class="form-check-input" type="checkbox" value="1" {% if variants_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                <label for="w_egyeb" class="form-check-label">{{ text.search_in_variants }}</label>
+            </div>
+            {% if search_in_plus_data %}
+                <div class="form-check form-check-inline">
+                    <input name="w_artdata" id="w_artdata" class="form-check-input" type="checkbox" value="1" {% if plus_data_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                    <label for="w_artdata" class="form-check-label">{{ text.search_in_other_product_data }}</label>
+                </div>
+            {% endif %}
+            {% if search_in_params %}
+                <div class="form-check form-check-inline">
+                    <input name="w_param" id="w_param" class="form-check-input" type="checkbox" value="1" {% if params_checked %}checked='checked'{% endif %} onclick="func_in_what();" />
+                    <label for="w_param" class="form-check-label">{{ text.search_product_parameters }}</label>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="page_searchcomplex_cat" class="page_searchcomplex_section mb-3 mb-md-5">
+        <div class="form-group">
+            <label class="font-weight-bold font-m">
+            {% if not cat_sub_selected %}
+                {{ text.search_all_categories }}
+            {% else %}
+                <a href="javascript:func_cat_select(0);">{{ text.main_category }}</a>
+            {% endif %}
+            {% for cat_sub in cat_sub_list %}
+                {% if cat_sub.selected %}
+                    <span class='searchcomplex_cat_item fs-0'></span>{{ cat_sub.name }}
+                {% else %}
+                    <span class='searchcomplex_cat_item fs-0'></span><a href="javascript:func_cat_select({{ cat_sub.id }});">{{ cat_sub.name }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if cat_sub_exists %}
+                {% if cat_sub_selected %}
+                    <span class='searchcomplex_cat_item fs-0'></span>
+                {% endif %}
+            </label>
+            <div class="select-wrap position-relative form-select-group">
+                <select name="cat_select_menu" id="cat_select_menu" class="form-control" onchange="func_cat_select(document.form_searchcomplex.cat_select_menu.value);">
+                    <option value="" style="display:none;" selected="selected" disabled="disabled">{{ text.please_select }}</option>
+                    {% for option in cat_select_options %}
+                        <option value="{{ option.value }}">{{ option.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="page_searchcomplex_price_min" class="price-min page_searchcomplex_section mb-3 mb-md-5">
+        <div class="searchcomplex-value d-flex d-sm-block align-items-center">
+            <div class="form-label-group input-group">
+                <input name="min_price" placeholder="{{ text.search_minimum_price }}" id="min_price" type="number" class="form-control" value="{{ search_min_price }}" />
+                <label for="min_price">{{ text.search_minimum_price }}</label>
+                <div class="input-group-append">
+                    <span class="input-group-text">{{ money_type }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page_searchcomplex_price_max" class="price-max page_searchcomplex_section mb-3 mb-md-5">
+        <div class="searchcomplex-value d-flex d-sm-block align-items-center">
+            <div class="form-label-group input-group">
+                <input name="max_price" placeholder="{{ text.search_maximum_price }}" id="max_price" type="number" class="form-control" value="{{ search_max_price }}" />
+                <label for="max_price">{{ text.search_maximum_price }}</label>
+                <div class="input-group-append">
+                    <span class="input-group-text">{{ money_type }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ main_form_end }}
+    <div class='page-sarchcomplex__search-btn-wrap my-4 text-center'>
+        <button type="button" class="page-sarchcomplex__search-btn btn btn-primary" onclick="search_submit();">{{ text.button_search }}</button>
+    </div>
+</div>

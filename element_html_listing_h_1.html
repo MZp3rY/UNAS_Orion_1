@@ -1,0 +1,20 @@
+{{ backvar(slide_max_count,10) }}
+{{ backvar(enable,maintitle,html) }}
+
+{% if element_disp %}
+    <div class="{{ name }}">
+        {% if main_title_disp %}
+            <header class="footer__header">
+                <h6>{{ main_title }}</h6>
+            </header>
+        {% endif %}
+        <nav>
+            <ul class="footer__list d-flex list--horizontal">
+                {% for slide in slides %}
+                    <li class="font-weight-normal">{{ slide.html }}</li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+{% endif %}
+

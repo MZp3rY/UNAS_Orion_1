@@ -1,0 +1,254 @@
+{{ backvar(main_img_maxwidth,255) }}
+{{ backvar(main_img_maxheight,255) }}
+{{ backvar(enable_alt_images,1) }}
+{{ backvar(alt_img_maxwidth,255) }}
+{{ backvar(alt_img_maxheight,255) }}
+{{ backvar(alt_img_thumbnail_maxwidth,50) }}
+{{ backvar(alt_img_thumbnail_maxheight,50) }}
+
+<div class="top_products_title custom-title">
+    <div class="js-animate-title-dots">{{ text.top_products }}</div>
+</div>
+
+{% if products_disp %}
+    <div class="top-products-list slick-list-until-md-outer slick-arrow--middle slick-arrow--small slick-gap slick-has-counter">
+        <div class='pagelist__items slick-list-until-md-inner' {% if login_needed %}id="list_no_price"{% endif %}>
+            {% for product in products %}
+                <article class='pagelist_item position-relative js-product page_pagelist_item{% if product_list_type == "gift_page" %} gift__item{% endif %}{% if product_list_type == "bundle_products" %} bundle-product__item col-6 col-sm-4 col-md-3 col-lg-4 mb-3 px-2{% endif %}{% if product.alt_img_1_disp %} has-alt-image js-on-hover-alt-img{% endif %}{% if product.variants_disp %} js-has-variant has-unselected-variant{% endif %} {{ product.class }}' id='page_pagelist_{{ product.id }}'>
+                    <div class='pagelist_item__inner h-100 position-relative'>
+                        <div class="pagelist_item__inner-abs d-flex flex-column">
+                            <div class="pagelist__statuses position-absolute badges">
+                                {% if product.sale_disp %}
+                                    <div class="pagelist__sale badge badge--sale">-{{ product.sale_percent }}%</div>
+                                {% endif %}
+                                {% if product.new_disp %}
+                                    <div class="pagelist__new badge badge--new">{{ text.status_new }}</div>
+                                {% endif %}
+                                {% if product.stock_disp %}
+                                    <div class="pagelist__stock badge badge--stock has-tooltip{% if not product.sale_disp and not product.new_disp %} only_stock_status{% endif %} {% if product.stock_available %} stock-available{% else %}{% if product.no_stock_but_buyable_disp %} stock-can-order{% else %} no-stock{% endif %}{% endif %}">
+                                        <div class="pagelist__stock-text product-stock-text">
+                                            {% if product.stock_available %}
+                                                <div class="pagelist__stock-title icon--check"></div>
+                                                <div class="pagelist__stock-content tooltip-text">{% if not product.stock_interval_text_exists %}{{ text.status_on_stock }}{% endif %}{% if not stock_text_only %}{% if not product.stock_interval_text_exists %}: {% endif %}{{ product.stock_qty }}{% if not product.stock_interval_text_exists %}&nbsp;{{ product.unit }}{% endif %}{% endif %}</div>
+                                            {% else %}
+                                                {% if product.cart_disp %}
+                                                    <div class="pagelist__stock-title icon--exclamation-2"></div>
+                                                    <div class="pagelist__stock-content tooltip-text">{{ text.status_orderable }}</div>
+                                                {% else %}
+                                                    <div class="pagelist__stock-title icon--close"></div>
+                                                    <div class="pagelist__stock-content tooltip-text">{{ text.status_no_stock }}</div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+								{% if product.status_1_disp %}
+                                    {% if status_1_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=3" aria-label="{{ product.status_1 }}">{% endif %}
+                                        <div class="pagelist__custom-status badge bg-white px-3 badge--custom-1">{{ product.status_1 }}</div>
+                                    {% if status_1_link_disp %}</a>{% endif %}
+								{% endif %}
+
+								{% if product.status_2_disp %}
+                                    {% if status_2_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=4" aria-label="{{ product.status_2 }}">{% endif %}
+                                        <div class="pagelist__custom-status badge bg-white px-3 badge--custom-2">{{ product.status_2 }}</div>
+                                    {% if status_2_link_disp %}</a>{% endif %}
+								{% endif %}
+
+								{% if product.status_3_disp %}
+                                    {% if status_3_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=5" aria-label="{{ product.status_3 }}">{% endif %}
+                                        <div class="pagelist__custom-status badge bg-white px-3 badge--custom-3">{{ product.status_3 }}</div>
+                                    {% if status_3_link_disp %}</a>{% endif %}
+								{% endif %}
+                            </div>
+                            <div class='pagelist__img-wrapper product-img-wrapper position-relative text-center'>
+                                <a class="pagelist__img-link product_link_normal" data-sku="{{ product.sku }}" href="{{ product.url }}">
+                                    <img class="pagelist__img js-main-img product-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}" data-src-orig="{{ product.img_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}" data-srcset-orig="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" id="{{ product.img_id }}"/>
+                                    <div class="loading-spinner"></div>
+                                </a>
+                            </div>
+                            {% if product.alt_img_1_disp %}
+                                <div class="pagelist__alt-images d-none d-lg-flex justify-content-center js-alt-images">
+                                    <div class="pagelist__alt-img-wrap d-flex align-items-center justify-content-center js-alt-img-wrap">
+                                        <img class="pagelist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_1_small_url }}" data-src-orig="{{ product.alt_img_1_url }}"{% if product.alt_img_1_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_1_thumbnail_retina_url }} {{ product.alt_img_1_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_1_retina_exists %} data-srcset-orig="{{ product.alt_img_1_retina_url }} {{ product.alt_img_1_retina_size }}"{% endif %} alt="{{ product.alt_img_1_alt }}"/>
+                                    </div>
+
+                                    {% if product.alt_img_2_disp %}
+                                        <div class="pagelist__alt-img-wrap d-flex align-items-center justify-content-center js-alt-img-wrap">
+                                            <img class="pagelist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_2_small_url }}" data-src-orig="{{ product.alt_img_2_url }}"{% if product.alt_img_2_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_2_thumbnail_retina_url }} {{ product.alt_img_2_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_2_retina_exists %} data-srcset-orig="{{ product.alt_img_2_retina_url }} {{ product.alt_img_2_retina_size }}"{% endif %} alt="{{ product.alt_img_2_alt }}"/>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if product.alt_img_3_disp %}
+                                        <div class="pagelist__alt-img-wrap d-flex align-items-center justify-content-center js-alt-img-wrap">
+                                            <img class="pagelist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_3_small_url }}" data-src-orig="{{ product.alt_img_3_url }}"{% if product.alt_img_3_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_3_thumbnail_retina_url }} {{ product.alt_img_3_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_3_retina_exists %} data-srcset-orig="{{ product.alt_img_3_retina_url }} {{ product.alt_img_3_retina_size }}"{% endif %} alt="{{ product.alt_img_3_alt }}"/>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if product.alt_img_4_disp %}
+                                        <div class="pagelist__alt-img-wrap d-flex align-items-center justify-content-center js-alt-img-wrap">
+                                            <img class="pagelist__alt-img js-alt-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.alt_img_4_small_url }}" data-src-orig="{{ product.alt_img_4_url }}"{% if product.alt_img_4_thumbnail_retina_exists %} data-srcset="{{ product.alt_img_4_thumbnail_retina_url }} {{ product.alt_img_4_thumbnail_retina_size }}"{% endif %}{% if product.alt_img_4_retina_exists %} data-srcset-orig="{{ product.alt_img_4_retina_url }} {{ product.alt_img_4_retina_size }}"{% endif %} alt="{{ product.alt_img_4_alt }}"/>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            <div class='pagelist__name-wrap mb-1 mt-2'>
+                                <a class="pagelist__name text-uppercase" href="{{ product.url }}"><h2 class="font-s {% if product_list_type != "bundle_products" %} font-md-m{% endif %} line-clamp--2-14 font-weight-bold">{{ product.name }}</h2></a>
+                            </div>
+
+                            {% if product_list_type != "gift_page" %}
+                                <div class='pagelist__prices row no-gutters align-items-baseline {% if product.price_sale_disp %}has-sale-price{% endif %}'>
+                                    {% if product.price_sale_disp %}
+                                        <div class='pagelist__price-sale col-auto product-price--sale mr-2 text-cn font-weight-bold'>
+                                            {{ product.price_sale }}
+                                        </div>
+                                    {% endif %}
+                                    {% if product.price_disp %}
+                                        <div class='pagelist__price-base col-auto product-price--base text-cn{% if not product.price_sale_disp %} font-weight-bold{% endif %}{% if product.price_line_through %} text-line-through{% endif %}'>
+                                            {{ product.price }}
+                                        </div>
+                                    {% endif %}
+                                    {% if price_unit_enabled and price_unit_exists %}
+                                        <div class="pagelist__price-unit col-12 product-price--unit order-3 font-xs font-md-s">{% if product.price_unit_disp %}{{ text.unit_price }}: {{ product.price_unit }}{% endif %}</div>
+                                    {% endif %}
+                                    {% if product.qty_discount_disp %}
+                                        <div class="pagelist__price-quantitative-sale product-price--quantitative-sale d-none">
+                                            <a href="{{ product.url }}" class="product_link_normal" data-sku="{{ product.sku }}">
+                                                {{ product.qty_discount_title }}
+                                                <strong>{{ product.qty_discount_amount }}{% if product.qty_discount_type == "percent" %}%{% endif %}</strong>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                    {% if product.login_needed %}
+                                        <button class='pagelist__price-login-btn btn btn-link w-100 font-xs' type='button' onclick='overlay_login()'>
+                                            {{ text.need_login_to_prices }}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            {{ product.variants_hidden }}
+                            <div class="pagelist__functions row no-gutters position-relative pt-2">
+                                {% if product.cart_disp %}
+                                    {% if product.redirect_to_details %}
+                                        <div class="function-btn-outer artlist__cart-btn-outer col">
+                                            <button onclick="{{ product.cart_onclick }}" type="button" class="artlist__details-btn btn btn-primary btn-block py-2">{{ text.button_details }}</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="function-btn-outer artlist__cart-btn-outer col">
+                                            {% if product.variants_disp %}
+                                                <button onclick="openVariantsOverlay(this)" data-cartadd="{{ product.cart_onclick }}" type="button" class="artlist__cart-btn btn btn-primary btn-block py-2">{{ text.button_to_cart }}</button>
+                                                <input name="{{ product.cart_input_name }}" id="{{ product.cart_input_id }}" type="text" value="{{ product.cart_input_value_number }}" maxlength="7" class="page_qty_input artlist__qty-input d-none" data-min="{{ product.cart_input_data_min }}" data-max="{{ product.cart_input_data_max }}" data-step="{{ product.cart_input_data_step }}"/>
+                                            {% else %}
+                                                <button onclick="{{ product.cart_onclick }}" type="button" class="artlist__cart-btn btn btn-primary btn-block py-2">{{ text.button_to_cart }}</button>
+                                                <input name="{{ product.cart_input_name }}" id="{{ product.cart_input_id }}" type="text" value="{{ product.cart_input_value_number }}" maxlength="7" class="page_qty_input artlist__qty-input d-none" data-min="{{ product.cart_input_data_min }}" data-max="{{ product.cart_input_data_max }}" data-step="{{ product.cart_input_data_step }}"/>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            {% if not product.redirect_to_details and product.variants_disp and product.cart_disp %}
+                                <div class='pagelist__variants js-variants'>
+                                    <div class='pagelist__variants-wrap border-top position-relative mt-5'>
+                                        <button class="pagelist__variants-close-btn js-variants-close-btn btn btn-link py-2 px-3 icon--close font-l" type="button" title="{{ text.button_close }}" onclick="closeVariantsOverlay(this);"></button>
+                                        <div class='pagelist__variants-inner px-3 pt-5'>
+                                            {% if product.variant_1_disp %}
+                                                <div class='pagelist__variant js-variant-wrap form-label-group form-select-group'>
+                                                    {{ product.variant_1_hidden }}
+                                                    <select name="egyeb_list1_{{ product.id }}" id="egyeb_list1_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                        {% for option in product.variant_1_options %}
+                                                            <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled" {% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="egyeb_list1_{{ product.id }}" class="font-weight-bold">{{ product.variant_1_title }}</label>
+                                                </div>
+                                            {% endif %}
+                                            {% if product.variant_2_disp %}
+                                                <div class='pagelist__variant js-variant-wrap form-label-group form-select-group'>
+                                                    {{ product.variant_2_hidden }}
+                                                    <select name="egyeb_list2_{{ product.id }}" id="egyeb_list2_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                        {% for option in product.variant_2_options %}
+                                                            <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled" {% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="egyeb_list2_{{ product.id }}" class="font-weight-bold">{{ product.variant_2_title }}</label>
+                                                </div>
+                                            {% endif %}
+                                            {% if product.variant_3_disp %}
+                                                <div class='pagelist__variant js-variant-wrap form-label-group form-select-group'>
+                                                    {{ product.variant_3_hidden }}
+                                                    <select name="egyeb_list3_{{ product.id }}" id="egyeb_list3_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                        {% for option in product.variant_3_options %}
+                                                            <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled" {% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <label for="egyeb_list3_{{ product.id }}" class="font-weight-bold">{{ product.variant_3_title }}</label>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        <div class="slick-counter"></div>
+    </div>
+{% endif %}
+
+<script>
+    function topProductsSlick($elem){
+        $(window).on('orientationchange', function() {
+            $($elem).slick('resize');
+        });
+        $($elem).on('init reInit afterChange', function(event, slick){
+            $($elem+' ~ .slick-counter').html((Math.ceil(slick.currentSlide/slick.slickGetOption('slidesToShow'))+1)+' / '+ Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow')));
+            if(Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow'))===1){
+                $($elem+' ~ .slick-counter').html('');
+            }
+        });
+        $($elem).not('.slick-initialized').slick({
+            waitForAnimate: true,
+            autoplay: false,
+            dots: false,
+            arrows: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            useTransform: true,
+            adaptiveHeight: false,
+            touchThreshold: 10,
+            mobileFirst: true,
+            lazyLoad: 'ondemand',
+            responsive: [
+                {
+                    breakpoint: 575,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3
+                    }
+                },
+                {
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 4,
+                        draggable: false
+                    }
+                }
+
+            ]
+        });
+    }
+
+    $(document).ready(function() {
+        topProductsSlick('.pagelist__items');
+
+        /* Get all elements that have alt imgs */
+        var productsWithAltPic = $(".js-on-hover-alt-img");
+
+        /* Call the altPicHover fn (see above) on all elements with alt imgs */
+        productsWithAltPic.each(altPicHover);
+    });
+</script>

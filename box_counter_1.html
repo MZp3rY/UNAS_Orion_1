@@ -1,0 +1,11 @@
+<div id='box_counter_content' class='box_content'>
+    <div class='box_counter_main text-center my-0 mx-auto'>
+        {% for number in numbers %}
+            <div class='box_counter_element_outer d-inline-block'>
+                <div class='box_counter_element p-2'>
+                    <strong>{{ number.value }}</strong>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

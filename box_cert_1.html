@@ -1,0 +1,11 @@
+<div class='certificate__box d-inline-flex flex-wrap align-items-center justify-content-center my-3'>
+    {% for cert in certs %}
+        <div class='certificate__item m-2'>
+            {% if cert.ssl_disp %}
+                <img class="box-cert-ssl lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ cert.ssl_img_url }}" alt="SSL Certificate" title="SSL Certificate test">
+            {% else %}
+                {{ cert.content }}
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>

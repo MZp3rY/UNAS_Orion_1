@@ -1,0 +1,12 @@
+{{ form_start }}
+    <div class="currency-item font-s">
+        <input class="currency__radio" id="-1" type="radio" name="session_money_select" value="-1" {% if not base_currency_selected %}onclick="{{ on_change }}" {% endif %} {% if base_currency_selected %}checked{% endif %}>
+        <label class="currency__label" for="-1">{{ base_currency_name }}</label>
+    </div>
+    {% for currency in currencies %}
+        <div class="currency-item font-s">
+            <input class="currency__radio" id="{{ currency.value }}" {% if not currency.selected %}onclick="{{ on_change }}"{% endif %} type="radio" name="session_money_select" value="{{ currency.value }}" {% if currency.selected %} checked {% endif %}>
+            <label class="currency__label" for="{{ currency.value }}">{{ currency.name }}</label>
+        </div>
+    {% endfor %}
+{{ form_end }}

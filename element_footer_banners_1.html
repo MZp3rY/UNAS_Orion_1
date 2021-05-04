@@ -1,0 +1,51 @@
+{{ backvar(slide_max_count,100) }}
+{{ backvar(enable,maintitle,img,img_link,html,icon) }}
+
+{% if element_disp %}
+    <div class="footer-banners__elements">
+        <div class="row gutters-10 align-items-center">
+            <script> var icon_selectors = '';</script>
+            {% for slide in slides %}
+                <div class="footer-banner__element footer-banner__element-{{ slide.num }} col-md-6 col-lg-4 px-4 px-lg-3 my-3">
+                    <div class="footer-banner__element-wrap row no-gutters">
+                        {% if slide.img_default_disp or slide.icon_1 != ''%}
+                            <div class="footer-banner__element-left col-3 col-sm-2 col-lg-2 text-center m-auto">
+                                {% if slide.icon_1 != '' and not slide.img_default_disp %}
+                                    <script> icon_selectors += ".footer-banner__element-{{ slide.num }} .footer-banner__element-left::before{content: '\\{{ slide.icon_1 }}';}"</script>
+                                {% endif %}
+                                {% if slide.img_default_disp %}
+                                    {% if slide.img_link_disp %}
+                                        <a href="{{ slide.img_link_url }}" {% if slide.target_blank %} target="_blank"{% endif %}>
+                                    {% endif %}
+                                    <picture>
+                                        {% if slide.img_small_disp %}
+                                            <source media="(max-width: {{ common_vars.grid_breakpoints.sm - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_small_url }} 1x{% if slide.img_small_retina_disp %}, {{ slide.img_small_retina_url }} 2x{% endif %}" />
+                                        {% endif %}
+
+                                        {% if slide.img_medium_disp %}
+                                            <source media="(max-width: {{ common_vars.grid_breakpoints.md - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_medium_url }} 1x{% if slide.img_medium_retina_disp %}, {{ slide.img_medium_retina_url }} 2x{% endif %}" />
+                                        {% endif %}
+
+                                        {% if slide.img_large_disp %}
+                                            <source media="(max-width: {{ common_vars.grid_breakpoints.lg - 0.02 }}px)" srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_large_url }} 1x{% if slide.img_large_retina_disp %}, {{ slide.img_large_retina_url }} 2x{% endif %}" />
+                                        {% endif %}
+                                        <source srcset="[unas_shop_url]/main_pic/space.gif" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" />
+                                        <img class="element__img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ slide.img_default_url }}" data-srcset="{{ slide.img_default_url }} 1x{% if slide.img_default_retina_disp %}, {{ slide.img_default_retina_url }} 2x{% endif %}" alt="{% if slide.alt_disp %}{{ slide.alt }}{% else %}{{ service_name }}{% endif %}"/>
+                                    </picture>
+                                    {% if slide.img_link_disp %}
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="footer-banner__element-right col m-auto">
+                            <div class="footer-banner__element-title font-weight-bold text-primary font-m font-md-xl">{{ slide.title }}</div>
+                            <div class="footer-banner__element-text font-s">{{ slide.html }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script> $('body').prepend('<style>'+icon_selectors+'</style>'); </script>
+{% endif %}

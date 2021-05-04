@@ -1,0 +1,447 @@
+{% if head_disp %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="Robots" content="NO" />
+    <link rel="shortcut icon" href="main_pic/favicon.ico">
+    <title>{{ service_name }}</title>
+    <style type="text/css">
+        html, body {
+            padding:0;
+            margin:0;
+        }
+        .break_befor {
+            page-break-before: always;
+            font-size:0px;
+        }
+        .break_after {
+            page-break-after: always;
+            font-size:0px;
+        }
+        .page {
+            page-break-inside:avoid;
+            width:720px;
+            height:1049px;
+            margin:0 auto;
+            position:relative;
+        }
+        .page_main {
+            width:720px;
+            height:1049px;
+            position:absolute;
+            z-index:1;
+        }
+        .head_main {
+            border-bottom:1px #000000 solid;
+            padding:18px 10px 5px 0;
+            vertical-align:bottom;
+            font-size: 18px;
+            font-family: Arial;
+            font-weight: bolder;
+        }
+        .head_fizetve {
+            font-size: 17px;
+            font-family: Arial;
+            color: #999999;
+            border: 1px solid #999999;
+            padding-left:5px;
+            padding-right:5px;
+            padding-top:2px;
+            padding-bottom:2px;
+            margin-right:10px;
+            font-weight:normal;
+        }
+        .head_sorszam {
+            border-bottom:1px #000000 solid;
+            padding:18px 0 5px 10px;
+            vertical-align:bottom;
+            width:300px;
+            font-size: 15px;
+            font-family: Arial;
+        }
+        #page_cust_cart .head_sorszam {
+            width:400px;
+        }
+        .head_barcode {
+            border-bottom:1px #000000 solid;
+            padding:18px 0 5px 10px;
+            vertical-align:bottom;
+            width:100px;
+            font-size: 15px;
+            font-family: Arial;
+        }
+        #page_cust_cart .head_barcode {
+            width:0px;
+        }
+
+        .head_type {
+            font-size: 13px;
+            font-family: Arial;
+            font-weight: bolder;
+        }
+        .address_head_space {
+            height:10px;
+        }
+        .address_head {
+            font-size: 14px;
+            font-family:Arial;
+            font-weight: bolder;
+        }
+        .address_body {
+            padding-left:10px;
+            font-size: 13px;
+            font-family: Arial;
+        }
+        .data_row_title {
+            font-size: 10px;
+            font-family: Arial;
+            font-weight: bolder;
+        }
+        .data_row_value {
+            font-size: 13px;
+            font-family: Arial;
+            font-weight: normal;
+        }
+        .item_head {
+            font-size: 11px;
+            font-family: Arial;
+            font-weight: bolder;
+            border-bottom: 1px solid #000000;
+            padding-top:8px;
+            padding-bottom:2px;
+            text-align:right;
+            vertical-align:middle;
+        }
+        .item_body {
+            font-size: 11px;
+            font-family: Arial;
+        {% if row_separator_disp %}
+        border-bottom: 1px solid #000000;
+        {% endif %}
+        padding-top:2px;
+        padding-bottom:2px;
+        text-align:right;
+        vertical-align:middle;
+        }
+        .item_body2 {
+            font-size: 11px;
+            font-family: Arial;
+            padding-top:2px;
+            padding-bottom:2px;
+            text-align:right;
+            vertical-align:middle;
+        }
+        .item_body3 {
+            font-size: 12px;
+            font-family: Arial;
+            padding-top:2px;
+            padding-bottom:2px;
+            text-align:right;
+            vertical-align:middle;
+        }
+        .total_price {
+            background-color:#e0e0e0;
+            padding:2px 5px;
+            font-size:15px;
+        }
+        .footer {
+            font-size: 11px;
+            font-family: Arial;
+            padding:8px 30px 25px 30px;
+            text-align:center;
+            vertical-align:bottom;
+            border-top:1px #000000 solid;
+        }
+        @media print {}
+    </style>
+</head>
+
+<body id="page_{{ document_type }}">
+{% endif %}
+{% for page in pages %}
+<div align="center">
+    <div class="page" style="margin-top:0px;">
+        <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" style="border:0px;">
+            <tr>
+                <td height="30">
+                    <table width="100%" height="30" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="left" class="head_sorszam">{{ page.head_num }}</td>
+                            {% if page.order_barcode_disp %}<td align="left" class="head_barcode"><img src="{{ page.order_barcode }}"></td>{% endif %}
+                            <td align="right" class="head_main">{% if page.account_disp %}<strong class="head_fizetve">{{ page.account }}</strong>{% endif %}<span>{{ page_title }}</span></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% if page.first %}
+            <tr><td height="8" style="font-size:1px;"></td></tr>
+            <tr>
+                <td style="vertical-align:top; height:250px;">
+                    <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td align="left" valign="top" style="border-right:1px #000000 solid; padding-left:10px; vertical-align:top; height:250px; width:300px;"><div style="height:250px;overflow:hidden;">
+                                <div class="address_head">{{ company_data_section_title }}:</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ name_title }}:</em> {{ company_name }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ address_title }}:</em> {{ company_address }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ vat_title }}:</em> {{ company_vat }}</div>
+                                {% if company_iban_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ company_iban_title }}:</em> {{ company_iban }}</div>{% endif %}
+                                <div class="address_head_space"> </div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ company_phone_title }}:</em> {{ company_phone }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ company_email_title }}:</em> {{ company_email }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ shop_name_title }}:</em> {{ shop_name }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ shop_domain_title }}:</em> {{ domain_name }}</div>
+                                {% if company_bankaccountnum_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ company_bankaccount_title }}:</em> {{ company_bankaccountnum }}</div>{% endif %}
+                            </div></td>
+                            {% if page.no_customer %}
+                                <td align="center" valign="middle" style="height:250px;">
+                                    <span style="font-family:Verdana, Geneva, sans-serif; font-size:200px; color:#f4f4f4;">X</span>
+                                </td>
+                            {% else %}
+                            <td align="left" valign="top" style="padding-left:10px; vertical-align:top; height:250px;"><div style="height:250px;overflow:hidden;">
+                                {% if page.contact_disp %}
+                                <div class="address_head">{{ customer_data_section_title }}:</div>
+                                {% if page.contact_name_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ customer_name_title }}:</em> {{ page.contact_name }}<?php echo $kap_nev;?></div>{% endif %}
+                                {% if page.contact_username_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ customer_username_title }}:</em> {{ page.contact_username }}</div>{% endif %}
+                                {% if page.contact_phone_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ customer_phone_title }}:</em> {{ page.contact_phone }}</div>{% endif %}
+                                {% if page.contact_mobile_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ customer_mobile_title }}:</em> {{ page.contact_mobile }}</div>{% endif %}
+                                <div class="address_head_space"> </div>
+                                {% endif %}
+
+                                <div class="address_head">{{ payment_section_title }}:</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ name_title }}:</em> {{ page.billing_name }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ address_title }}:</em> {{ page.billing_address }}</div>
+                                {% if page.billing_vat_number_disp %}<div class="address_body" style="padding-top:2px;"><em>{{ vat_title }}:</em> {{ page.billing_vat_number }}</div>{% endif %}
+                                <div class="address_head_space"> </div>
+
+                                <div class="address_head">{{ shipping_section_title }}:</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ name_title }}:</em> {{ page.shipping_name }}</div>
+                                <div class="address_body" style="padding-top:2px;"><em>{{ address_title }}:</em> {{ page.shipping_address }}</div>
+                            </div></td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td height="8" style="font-size:1px; color:#FFFFFF; border-bottom:2px #000000 solid;"> - </td></tr>
+            {% endif %}
+            {% if document_type == "admin_order" or document_type == "admin_ship" or document_type == "cust_order" %}
+            <tr><td height="3" style="font-size:1px;"></td></tr>
+            <tr>
+                <td height="30">
+                    <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td style="text-align:center; vertical-align:middle; width:270px;"><div style="height:30px; overflow:hidden;"><strong class="data_row_title">{{ payment_method_title }}</strong><br /><span class="data_row_value">{{ page.payment_method_name }}</span></div></td>
+                            <td style="text-align:center; vertical-align:middle; width:120px;"><div style="height:30px; overflow:hidden;"><strong class="data_row_title">{{ order_date_title }}</strong><br /><span class="data_row_value">{{ page.order_date }}</span></div></td>
+                            <td style="text-align:center; vertical-align:middle; width:270px;"><div style="height:30px; overflow:hidden;"><strong class="data_row_title">{{ shipping_method_title }}</strong><br /><span class="data_row_value">{{ page.shipping_method_name }}</span></div></td>
+                            <td style="text-align:center; vertical-align:middle; width:60px;"><div style="height:30px; overflow:hidden;"><strong class="data_row_title">{{ page_counter_title }}</strong><br /><span class="data_row_value">{{ page.num }}/{{ page_count }}</span></div></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td height="5" style="font-size:1px; color:#FFFFFF; border-bottom:2px #000000 solid;"> - </td></tr>
+            {% endif %}
+            {% if page.product_disp %}
+            <tr>
+                <td height="30">
+                    <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            {% if img_disp %}<td class="item_head" width="60" style="text-align:left;"></td>{% endif %}
+                            <td class="item_head" style="text-align:left;">{{ product_name_title }}</td>
+                            {% if price_disp %}
+                            {% if price_net_disp %}<td class="item_head" width="70">{{ price_net_title }}</td>{% endif %}
+                            <td class="item_head" width="70">{{ price_gross_title }}</td>
+                            {% endif %}
+                            <td class="item_head" width="70">{{ qty_title }}</td>
+                            {% if price_disp %}
+                            {% if price_net_disp %}<td class="item_head" width="70">{{ total_price_net_title }}</td>{% endif %}
+                                <td class="item_head" width="70">{{ total_price_gross_title }}</td>
+                            {% endif %}
+                        </tr>
+                        {% for product in page.products %}
+                        <tr>
+                            {% if img_disp %}<td class="item_body" style="text-align:left;{{ product.style }}">{% if product.img_exists %}<img src="{{ product.img_url }}" border="0" />{% endif %}</td>{% endif %}
+                            <td class="item_body" style="text-align:left;{{ product.style }}">
+                                <div style="overflow:hidden;{{ product.style_name }}">
+                                    {% if product.sku_disp %}<strong>[{{ product.sku }}]</strong>{% endif %}
+                                    {{ product.name }}
+                                    {% if product.variant_1_disp %}[<em>{{ product.variant_1_title }}</em>: {{ product.variant_1_value }}]{% endif %}
+                                    {% if product.variant_2_disp %}[<em>{{ product.variant_2_title }}</em>: {{ product.variant_2_value }}]{% endif %}
+                                    {% if product.variant_3_disp %}[<em>{{ product.variant_3_title }}</em>: {{ product.variant_3_value }}]{% endif %}
+                                    {% if product.item_statuses_disp %}
+                                    {% for item_status in product.item_statuses %}
+                                    {% if item_status.additional %} {{ item_status.title }}:{% endif %}
+                                    {{ item_status.value }}
+                                    {% endfor %}
+                                    {% endif %}
+                                    {% if product.params_disp %}
+                                    {% for param in product.params %}
+                                    {{ param.title }}: {{ param.value }}
+                                    {% endfor %}
+                                    {% endif %}
+                                    {% if product.stock_disp %}
+                                    {{ product.stock_qty }} {{ product.unit }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            {% if price_disp %}
+                            {% if price_net_disp %}<td class="item_body">{{ product.price_net }}</td>{% endif %}
+                            <td class="item_body">{{ product.price_gross }}</td>
+                            {% endif %}
+                            <td class="item_body">{{ product.qty }}</td>
+                            {% if price_disp %}
+                            {% if price_net_disp %}<td class="item_body">{{ product.total_price_net }}</td>{% endif %}
+                            <td class="item_body">{{ product.total_price_gross }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            {% endif %}
+            {% if page.last %}
+            {% if price_disp %}
+            <tr>
+                <td style="border-top:1px solid #000000; padding-top:8px;">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="item_body3" style="text-align:right;"><strong>{{ sum_title }}:</strong></td>
+                            {% if price_net_disp %}<td class="item_body3" width="100">{{ page.total_price_net }}</td>{% endif %}
+                            <td class="item_body3" width="100">{{ page.total_price_gross }}</td>
+                        </tr>
+                        {% if page.total_discount_percent_disp %}
+                        <tr>
+                            <td class="item_body3" style="text-align:right;"><strong>{{ total_discount_percent_title }} ({{ page.total_discount_percent_value }}%):</strong></td>
+                            <td class="item_body3" width="200" {% if price_net_disp %}colspan="2"{% endif %}>{{ page.total_discount_percent_price }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.shipping_cost_disp %}
+                        <tr>
+                            <td class="item_body3" style="text-align:right;"><strong>{{ shipping_cost_title }}:</strong></td>
+                            <td class="item_body3" width="200" {% if price_net_disp %}colspan="2"{% endif %}>{{ page.shipping_cost }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.total_discount_amount_disp %}
+                        <tr>
+                            <td class="item_body3" style="text-align:right;"><strong>{{ total_discount_amount_title }}:</strong></td>
+                            <td class="item_body3" width="200" {% if price_net_disp %}colspan="2"{% endif %}>{{ page.total_discount_amount }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.handling_price_disp %}
+                        <tr>
+                            <td class="item_body3" style="text-align:right;"><strong>{{ handling_price_title }}:</strong></td>
+                            <td class="item_body3" width="200" {% if price_net_disp %}colspan="2"{% endif %}>{{ page.handling_price }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="item_body3" style="text-align:right;"><strong style="font-size:13px;">{{ total_price_title }}:</strong></td>
+                            <td class="item_body3" width="200" {% if price_net_disp %}colspan="2"{% endif %}>
+                                <strong class="total_price">{{ page.total_price }}</strong>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td style="height:20px;"></td></tr>
+            {% endif %}
+            {% if page.email_error_disp %}
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:5px;margin-bottom:5px;">
+                        <tr>
+                            <td class="item_body2" colspan="2" style="text-align:center;font-size:17px;background-color:#000000;color:#FFFFFF;"><strong>{{ page.email_error_text }}</strong></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% endif %}
+            {% if page.plus_data_disp %}
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="item_body" style="text-align:left;" colspan="2"><span class="head_type">{{ other_data_section_title }}</span></td>
+                        </tr>
+                        {% if page.recipient_name_disp %}
+                        <tr>
+                            <td class="item_body2 recipent_name" width="230" style="text-align:left;"><strong>{{ recipient_name_title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ page.recipient_name }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.order_params_disp %}
+                        {% for param in page.order_params %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ param.title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ param.value }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        {% if page.customer_params_disp %}
+                        {% for param in page.customer_params %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ param.title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ param.value }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        {% if page.coupon_disp %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ coupon_title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ page.coupon_id }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.weight_disp %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ weight_title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ page.weight }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.refer_disp %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ refer_title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ page.refer }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.comment_disp %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ comment_title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ page.comment }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if page.shipping_comment_disp %}
+                        <tr>
+                            <td class="item_body2" width="230" style="text-align:left;"><strong>{{ shipping_comment_title }}</strong></td>
+                            <td class="item_body2" style="text-align:justify;">{{ page.shipping_comment }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </td>
+            </tr>
+            {% endif %}
+            {% endif %}
+            <tr><td height="100%" style="font-size:1px; color:#FFFFFF;"></td></tr>
+            {% if page.print_comment_disp %}
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="padding-bottom:2px;">
+                        <tr>
+                            <td class="item_body" style="text-align:left;" colspan="2"><span class="head_type">&nbsp;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="item_body2" colspan="2" style="text-align:justify;">{{ page.print_comment }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% endif %}
+            {% if page.provider_disp %}
+            <tr><td class="footer">{{ provider_title }}: <strong>{{ provider }}</strong></td></tr>
+            {% endif %}
+        </table>
+    </div>
+</div>
+{% if page.break %}<div class="break_before"></div>{% endif %}
+{% endfor %}
+</body>
+</html>

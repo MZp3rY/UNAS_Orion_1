@@ -1,0 +1,11 @@
+<div class='checkout__box d-inline-flex flex-wrap align-items-center justify-content-center my-3 text-align-center' >
+    {% for payment_method in payment_methods %}
+        <div class='checkout__item m-2'>
+            {% if payment_method.link_disp %}
+                <a href='{{ payment_method.url }}' {% if payment_method.blank %}target='_blank'{% endif %} class="checkout__link" rel="nofollow noopener">
+            {% endif %}
+            <img class='checkout__img lazyload' src="[unas_shop_url]/main_pic/space.gif" data-src='[unas_shop_url]/!common_design/base/001500/image/logo_checkout_{{ payment_method.id }}_box.png' title='{{ payment_method.title }}' alt='{{ payment_method.alt }}' />
+            {% if payment_method.link_disp %}</a>{% endif %}
+        </div>
+    {% endfor %}
+</div>

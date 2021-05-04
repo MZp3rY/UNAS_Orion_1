@@ -1,0 +1,25 @@
+<div class='page_content wholesale-login p-5 my-3' id='page_login_wholesale_content'>
+    {% if custom_content_top_disp %}
+        <div class='page_txt'>{{ custom_content_top }}</div>
+        <div class="line-separator"></div>
+    {% endif %}
+    {{ form_start }}
+        <div class="form-group form-label-group wholesale-login__user-wrap">
+            <input name="shop_user_login" id="wholesale-login__user" placeholder="{{ username_title }}" type="text" class="wholesale-login__input form-control"/>
+            <label for="wholesale-login__user">{{ username_title }}</label>
+        </div>
+        <div class="form-group form-label-group wholesale-login__pass-wrap">
+            <input name="shop_pass_login" id="wholesale-login__pass" placeholder="{{ text.password }}" type="password" class="wholesale-login__input form-control"/>
+            <label for="wholesale-login__pass">{{ text.password }}</label>
+        </div>
+        <button type="button" class="wholesale-login__remind-btn btn btn-link btn-block text-primary text-left p-0 mb-4" onclick="overlay_login_remind();">{{ text.forgot_my_password }}</button>
+        <button class="wholesale-login__login-btn btn btn-primary btn-block">{{ text.button_login }}</button>
+        {% if wholesale_reg %}
+            <button class="wholesale-login__reg-btn btn btn-primary btn-block" type="button" onclick="location.href='{{ reg_url }}'">{{ text.registration }}</button>
+        {% endif %}
+    {{ form_end }}
+    {% if custom_content_bottom_disp %}
+        <div class="line-separator"></div>
+        <div class='page_txt'>{{ custom_content_bottom }}</div>
+    {% endif %}
+</div>

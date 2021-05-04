@@ -1,0 +1,608 @@
+{{ backvar(product_img_maxwidth,70) }}
+{{ backvar(product_img_maxheight,70) }}
+
+<div id='page_cart_content' class='page_content'>
+
+    {% if custom_content_top_disp %}
+        <div class='page_txt'><div class='page_shop_txt'>{{ custom_content_top }}</div></div>
+        <div class='page_hr'><hr/></div>
+    {% endif %}
+
+    {{ start_script }}
+
+    {% if cart_disp %}
+        <div id="page_cart_main" class="mt-md-4 mb-5">
+            <div class="row">
+                <div class="col-xl-9 cart-left-content">
+                    {% if (shipping_free_alert_box_disp and shipping_not_free_disp) or discount_value_calc_alert_box_disp %}
+                        <div class="row gutters-5 mb-4 mt-5 mt-md-0">
+                            {% if shipping_not_free_disp %}
+                                <div class="cart-shipping-info col-12 col-md-6 d-flex align-items-center">
+                                    <div class="cart-shipping-info_text border d-flex h-100 w-100 align-items-center icon-on-top px-5 pb-4 pt-5 font-s">
+                                        <div class="cart-shopping-info__text-inner">{{ shipping_free_text }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if discount_value_calc_alert_box_disp %}
+                                <div class="cart-discount-info col-12 col-md-6 d-flex align-items-center{% if shipping_free_alert_box_disp %} mt-5 mt-md-0{% endif %}">
+                                    <div class="cart-discount-info_text border d-flex h-100 w-100 align-items-center icon-on-top px-5 pb-4 pt-5 font-s">
+                                        <div class="cart-discount-info__text-inner">{{ discount_value_calc_value }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if stock_alert_disp %}
+                        <div class="cart-stock-alert p-3 mb-0 mb-md-4 font-xs font-md-s font-lg-m">
+                            <span class="cart-stock-alert__icon">*</span>
+                            <span class="cart-stock-alert__text">{{ text.stock_alert }}</span>
+                        </div>
+                    {% endif %}
+
+                    {{ form_start }}
+                    <div class="cart-header d-none d-md-block font-s text-center border-top border-bottom py-1">
+                        <div class="row no-gutters">
+                            <div class="col">
+                                <div class="cart-header__name">{{ text.product_name }}</div>
+                            </div>
+                            <div class="col-1 text-center">
+                                <div class="cart-header__price">{{ text.price }}</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="cart-header__qty">{{ text.quantity }}</div>
+                            </div>
+                            <div class="col-2">
+                                <div class="cart-header__sum">{{ text.total_amount }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-items pb-3">
+                        {% for product in products %}
+                            {% if product.plus_item %}
+                                <div class="cart-item cart-plus-item row no-gutters align-items-center bg-8 py-3 mb-2">
+                                    <div class="col col-md-7 cart-plus-item__details-col">
+                                        {% if product.type == "service_plus" %}
+                                            <div class="cart-plus-item__plus-service d-flex">
+                                                <div class="col-plus-item-icon d-flex justify-content-center align-items-center">
+                                                    <div class="cart-plus-item__plus-service-icon icon--plus font-xl font-md-xxl"></div>
+                                                </div>
+                                                <div class="col pl-1 px-md-3">
+                                                    <div class="cart-plus-item__plus-service-text font-s font-md-m">{{ text.plus_service }}</div>
+                                                    <div class="cart-plus-item__plus-service-name-and-qty-wrap mt-1 font-s">
+                                                        {% if product.no_stock_disp %}
+                                                            <span class="cart-item__not-on-stock">*</span>
+                                                        {% endif %}
+                                                        <span class="cart-plus-item__plus-service-name">{{ product.name }}</span>
+                                                        <span class="cart-item-plus__qty-and-unit font-xs">
+                                                            (<span class="cart-item-plus__qty">{{ product.qty }}</span>
+                                                            <span class="cart-item-plus__unit">{{ product.unit }}</span>)
+                                                        </span>
+                                                    </div>
+                                                 </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="cart-plus-item__plus-discount d-flex">
+                                                <div class="col-plus-item-icon d-flex justify-content-center align-items-center">
+                                                    <div class="control-plus-item__discount-icon font-xl font-md-xxl {% if product.type == 'gift' %}icon--gift{% else %}icon--percent{% endif %}"></div>
+                                                </div>
+                                                <div class="col pl-1 px-md-3">
+                                                    {% if product.variant_1_disp %}
+                                                        <div class="cart-plus-item__name font-s font-md-m">{{ product.name }}</div>
+                                                        <div class='cart-plus-item__discount align-items-center font-xs font-md-s'>
+                                                            {% if product.type == "gift" %}
+                                                                <span class="cart-plus-item__discount-type pr-1">{{ product.variant_1_title }}:</span>
+                                                                <span class="cart-plus-item__discount-for-sku">{{ product.variant_1_value }}</span>
+                                                            {% else %}
+                                                                <span class="cart-plus-item__discount-value">
+                                                                    <span class="plus-item-coupon-text pr-1">{{ text.coupon_code }}:</span>
+                                                                    <span class="plus-item-coupon-value">{{ product.variant_1_value }}</span>
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="cart-item-plus__qty-and-unit font-xs">
+                                                            (<span class="cart-item-plus__qty">{{ product.qty }}</span>
+                                                            <span class="cart-item-plus__unit">{{ product.unit }}</span>)
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-auto col-md-4 cart-plus-item__prices-col text-right ml-auto">
+                                        <div class="cart-plus-item__prices-wrap d-flex justify-content-end align-items-center">
+                                            <div class='cart-item-plus-prices{% if product.type == "service_plus" %} cart-item-plus__service{% else %} cart-item-plus__discount{% endif %}'>
+                                                {% if price_net_disp %}
+                                                    <div class="cart-item-plus__price-net-wrap text-right text-cn">
+                                                        <span class="cart-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                        <span class="cart-item-plus__service-price-net pl-2 font-md-l">{{ product.total_price_net }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="cart-item-plus__service-price-gross-wrap text-right text-cn font-weight-bold">
+                                                    <span class="cart-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                    <span class="cart-item-plus__service-price-gross pl-2 font-md-l">{{ product.total_price_gross }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-fix-30 col-md-auto cart-item__delete-btn-col mx-md-2">
+                                        <div class="cart-item__delete-btn-wrap">
+                                            {% if product.button_delete_disp %}
+                                                <button class="page_icon page_cart_icon_delete btn btn-link btn--square-sm icon--close" onclick="{{ product.button_delete_onclick_value }}" type="button"></button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}<!--this is product -->
+                                <div class="cart-item border-top pb-3 pb-md-4 pt-3 pt-md-5 mt-1 mt-md-4 row no-gutters align-items-center position-relative">
+                                    <div class="col cart-item__name-variant-param pl-5 px-md-3 mb-3 mb-md-0 order-2">
+                                        <div class="cart-item__name-wrap line-clamp--3-12">
+                                            {% if product.no_stock_disp %}
+                                                <span class="cart-item__not-on-stock">*</span>
+                                            {% endif %}
+                                            <a class="cart-item__name-link font-s font-md-m" href="{{ product.url }}">{{ product.name }}</a>
+                                            <span class="cart-item__sku" hidden>({{ product.sku }})</span>
+                                        </div>
+
+                                        {% if product.variant_1_disp or product.variant_2_disp or product.variant_3_disp %}<!--it has variant(s)-->
+                                            <div class='cart-item__variants mt-2 font-xs font-md-s'>
+                                                {% if product.variant_1_disp %}
+                                                    <div class='cart-item__variant row no-gutters align-items-center cart-item__variant-1'>
+                                                        <div class="cart-item__variant-title col-auto pr-2">{{ product.variant_1_title }}:</div>
+                                                        <div class="cart-item__variant-value col">{{ product.variant_1_value }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.variant_2_disp %}
+                                                    <div class='cart-item__variant row no-gutters align-items-center cart-item__variant-2'>
+                                                        <div class="cart-item__variant-title col-auto pr-2">{{ product.variant_2_title }}:</div>
+                                                        <div class="cart-item__variant-value col">{{ product.variant_2_value }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if product.variant_3_disp %}
+                                                    <div class='cart-item__variant row no-gutters align-items-center cart-item__variant-3'>
+                                                        <div class="cart-item__variant-title col-auto pr-2">{{ product.variant_3_title }}:</div>
+                                                        <div class="cart-item__variant-value col">{{ product.variant_3_value }}</div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                        {% if product.params_disp %} <!--it has product param -->
+                                            <div class="cart-item__params mt-2 font-xs font-md-s">
+                                                {% for param in product.params %}
+                                                    <div class='cart-item__param row no-gutters cart-item__param-{{ param.id }}'>
+                                                        <span class="cart-item__param-name col-auto pr-2">{{ param.title }}:</span>
+                                                        <span class="cart-item__param-value col">{{ param.value }}</span>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-fix-30 col-md-auto cart-item__delete-btn-col order-3 order-md-10 mx-md-2">
+                                        <div class="cart-item__delete-btn-wrap text-right">
+                                            {% if product.button_delete_disp %}
+                                                <button class="page_icon page_cart_icon_delete btn btn-link btn--square-sm icon--close" onclick="{{ product.button_delete_onclick_value }}" type="button"></button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="break-row d-md-none"></div> <!-- break -->
+
+                                    <div class="col-3 col-md-1 cart-item__pic-col order-1">
+                                        <div class="cart-item__pic-outer product-img-wrapper">
+                                            <a class="cart-item__pic-url" href="{{ product.url }}">
+                                                <img class="cart-item__pic product-img lazyload" src="[unas_shop_url]/main_pic/space.gif" data-src="{{ product.img_url }}"{% if product.img_retina_exists %} data-srcset="{{ product.img_retina_url }} {{ product.img_retina_size }}"{% endif %} alt="{{ product.img_alt }}" title="{{ product.img_alt }}" />
+                                                <div class="loading-spinner"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-2 cart-item__qty-col my-2 my-md-0 order-5 order-md-4">
+                                        <div class="row no-gutters align-items-center flex-md-column">
+                                            <div class="col-auto font-s d-md-none">{{ text.quantity }}</div>
+                                            <div class="page_cart_menny page_qty_input_outer row no-gutters justify-content-end justify-content-md-center ml-auto ml-md-0 pr-xs-4 pr-md-0">
+                                                <div class="cart-item__input-wrap d-flex justify-content-center border pt-md-3 position-relative">
+                                                    <button type='button' class='qtyminus qtyminus_common icon--minus btn--square-sm btn btn-link qty_disable'></button>
+                                                    <div class="page_qty_input_wrap d-flex align-items-center justify-content-center position-relative {% if unit_disp %}has-tooltip{% endif %}">
+                                                        <input name="db[]" type="number" step="{{ product.cart_input_data_step }}" class="cart-item__input text-cn font-weight-bold{% if unit_disp %} text-right text-md-center{% else %} text-center{% endif %} page_qty_input page_cart_db_input{% if product.cart_input_error_disp %} has-warning{% endif %}" value="{{ product.qty }}" data-min="{{ product.cart_input_data_min }}" data-max="{{ product.cart_input_data_max }}" data-step="{{ product.cart_input_data_step }}">
+                                                        {% if unit_disp %}
+                                                            <span class="d-inline-block d-md-none pl-2">{{ product.unit }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <button type='button' class='qtyplus qtyplus_common icon--plus btn--square-sm btn btn-link'></button>
+                                                    <button class="cart-item__qty-refresh-btn btn--square-sm btn btn-outline-primary icon--refresh position-absolute" onclick="modify();"></button>
+                                                </div>
+                                            </div>
+                                            {% if unit_disp %}
+                                                <div class="cart-item__unit text-center usn d-none d-md-block font-xs">{{ product.unit }}</div>
+                                            {% endif %}
+                                            <div class="col-fix-30 d-md-none mobile-spacer"></div>
+                                        </div>
+                                    </div>
+                                    <div class="break-row d-xs-none"></div> <!-- break -->
+                                    <div class="col-12 col-md-2 cart-item__prices-col order-4 order-md-3 text-sm-right text-md-center pr-md-3 my-2 my-md-0">
+                                        <div class="row gutters-5 align-items-center">
+                                            <div class="col-auto font-s d-md-none">{{ text.price }}</div>
+                                            <div class="col cart-item__unit-prices text-right ml-auto">
+                                                {% if price_net_disp %}
+                                                    <div class="cart-item__net-price text-cn">
+                                                        <span class="cart-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                        <div class="gross-price--current d-inline-block pl-1 font-md-l">{{ product.price_net }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="cart-item__gross-price text-cn font-weight-bold">
+                                                    <span class="cart-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                    <div class="gross-price--current d-inline-block pl-1 font-md-l">{{ product.price_gross }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-fix-30 d-md-none mobile-spacer"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-2 cart-item__sum-prices-col order-6 order-md-5 my-2 my-md-0">
+                                        <div class="cart-item__sum-prices row no-gutters align-items-center justify-content-end w-100">
+                                            <div class="col-auto font-s d-md-none">{{ text.total_amount }}</div>
+                                            <div class="col cart-item__sum-prices-inner row no-gutters w-100">
+                                                {% if price_net_disp %}
+                                                    <div class="col-12 cart-item__sum-price-net text-right text-cn">
+                                                        <span class="cart-price-label text-lowercase font-s font-md-m">{{ text.net }}</span>
+                                                        <span class="d-inline-block pl-1 font-md-l">{{ product.total_price_net }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="col-12 cart-item__sum-price-gross text-right text-cn font-weight-bold"><!--current sum gross price -->
+                                                    <span class="cart-price-label text-lowercase font-s font-md-m">{{ text.gross }}</span>
+                                                    <span class="d-inline-block pl-1 font-md-l">{{ product.total_price_gross }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-fix-30 d-md-none mobile-spacer"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {{ form_end }}
+
+                    {% if weight_disp %}
+                        <div class='cart__weight font-xs my-3 font-weight-normal' id="page_cart_weight">
+                            {{ weight_text }}
+                        </div>
+                    {% endif %}
+
+                    <div class="cart__buttons border-top py-3 py-md-5 row gutters-1 px-5 px-md-0">
+                        <div class="col-auto mb-2">
+                            <button class="cart__btn-back btn btn-outline-primary" type="button" onclick="back();">{{ text.button_back }}</button>
+                        </div>
+                        {% if offer_disp %}
+                            <div class="col-auto mb-2">
+                                <button class="cart__btn-offer btn btn-outline-primary" type="button" onclick="location.href='{{ offer_url }}'">{{ text.print_bid }}</button>
+                            </div>
+                        {% endif %}
+                        <div class="col-auto mb-2">
+                            <button class="cart__btn-modify btn btn-outline-primary" type="button" onclick="modify();">{{ text.button_modify }}</button>
+                        </div>
+                        {% if store_all_disp %}
+                            {% if store_disp %}
+                                <div class="col-auto cart__btn-save-cart-wrap mb-2 has-tooltip">
+                                    <button class="cart__btn-save-cart btn btn-outline-primary" type="button" onclick="location.href='{{ store_url }}'">{{ text.button_cart_store }}</button>
+                                    <div class="tooltip-text cart-tooltip">
+                                        <div class="cart-tooltip__inner">
+                                            {{ text.cart_store_text }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if restore_disp %}
+                                <div class="col-auto cart__btn-restore-wrap mb-2 has-tooltip">
+                                    <button class="cart__btn-restore btn btn-outline-primary" type="button" onclick="location.href='{{ restore_url }}'">{{ text.button_cart_restore }}</button>
+                                    <div class="tooltip-text cart-tooltip">
+                                        <div class="cart-tooltip__inner">
+                                            {{ text.cart_restore_text }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        <div class="col-auto mb-2">
+                            <button class="cart__btn-delete-all btn btn-outline-primary" type="button" onclick="empty();">{{ text.button_cart_empty }}</button>
+                        </div>
+                    </div>
+
+                    {% if marketing_gift_disp %}
+                        <div id="page_cart_marketing_gift">{{ marketing_gift_script }}</div>
+                    {% endif %}
+
+                    {% if marketing_up_disp %}
+                        <div id="page_cart_marketing_up">{{ marketing_up_script }}</div>
+                    {% endif %}
+
+                    {% if marketing_cross_disp %}
+                        <div id="page_cart_marketing_cross">{{ marketing_cross_script }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-xl-3 cart-right-content">
+                    <div class="cart-summary-wrapper sum-box-wrap js-sum-box-wrap">
+                        <div class="cart-summary sum-box js-sum-box">
+                            <h3 class="cart-summary__title text-center font-weight-bold text-uppercase text-cn mb-4 font-l">{{ text.order_summary }}</h3>
+                            {% if price_net_disp %}
+                                <div class="cart-summary-row cart-summary-netto mb-2">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="cart-summary-title font-s">{{ text.total_net }}:</div>
+                                        <div class="cart-summary-value ml-auto font-weight-bold text-cn">{{ total_price_net }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="cart-summary-row cart-summary-brutto mb-2">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="cart-summary-title font-s">{{ text.total_gross }}:</div>
+                                    <div class="cart-summary-value ml-auto font-weight-bold text-cn">{{ total_price_gross }}</div>
+                                </div>
+                            </div>
+
+                            {% if total_save_disp %}
+                                <div class="cart-summary-row cart-savings mb-2">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="cart-summary-title cart-savings__title font-s">{{ text.saving }}:</div>
+                                        <div class="cart-savings__full ml-auto">
+                                            <div class="cart-summary-value cart-savings__gross font-weight-bold text-cn">{{ total_save_gross }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if total_discount_percent_disp %}
+                                <div class="cart-summary-row cart-summary-discount--percent mb-2">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="cart-summary-title font-s">
+                                            <span class="cart-summary-discount__text">{{ text.discount }}</span>
+                                            <span class="cart-summary-discount__percent">({{ total_discount_percent_value }}%):</span>
+                                        </div>
+                                        <div class="cart-summary-value ml-auto font-weight-bold text-cn">{{ total_discount_percent_price }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if shipping_cost_disp %}
+                                <div class="cart-summary-row cart-summary-post mb-2">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="cart-summary-title font-s">
+                                            {{ text.shipping_cost }}
+                                            {% if shipping_methods_disp %}
+                                                <div class="d-inline icon--a-info has-tooltip">
+                                                    <div class="cart__all-shipping-mode-infos tooltip-text">
+                                                        <div class="cart__shipping-modes">
+                                                            {% for method in shipping_methods %}
+                                                                <div class="cart__shipping-mode row no-gutters font-s mb-4 px-2 flex-nowrap">
+                                                                    <div class="cart__shipping-mode-name col text-left text-wrap">{{ method.name }}</div>
+                                                                    <div class="cart__shipping-mode-value col-auto pl-3 ml-auto text-nowrap text-cn font-weight-bold">{{ method.price }}</div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}:
+                                        </div>
+                                        <div class="cart-summary-value ml-auto font-weight-bold text-cn">{{ shipping_cost }}</div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                {% if shipping_methods_disp %}
+                                    <div class="cart__only-shipping-modes mb-2">
+                                        {% for method in shipping_methods %}
+                                            <div class="cart__shipping-mode-name text-wrap font-s pb-2">{{ method.name }} - <span class="font-weight-bold font-xs">{{ method.price }}</span></div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if total_discount_amount_disp %}
+                                <div class="cart-summary-row cart-summary-discount--amount mb-2">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="cart-summary-title font-s">
+                                            <span class="cart-summary-discount__text">{{ text.discount_amount }}:</span>
+                                        </div>
+                                        <div class="cart-summary-value ml-auto font-weight-bold text-cn">{{ total_discount_amount }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="line-separator my-4"></div>
+
+                            <div class="cart-summary__default-sum mb-5">
+                                <div class="cart-summary-row total-box cart-summary-total row no-gutters align-items-center font-weight-bold mb-3">
+                                    <div class="cart-total-label font-s cart-summary-discount__text">{{ text.total_price }}:</div>
+                                    <div class="cart-total-amount font-l text-right ml-auto text-cn">{{ total_price }}</div>
+                                </div>
+                            </div>
+                            <div class="total-box-sticky-wrapper js-total-box-sticky-wrapper">
+                                <div class="row gutters-5 py-2 px-5 align-items-center justify-content-center total-box-sticky bg-white total-box js-total-box-sticky">
+                                    <div class="col-auto total-box__text font-weight-bold d-flex align-items-baseline justify-content-between">
+                                        <div class="total-box__label mr-3 font-s font-md-m">{{ text.total_price }}:</div>
+                                        <div class="total-box__amount text-cn font-l font-md-xl">{{ total_price }}</div>
+                                    </div>
+                                    <div class="col-auto d-flex justify-content-center">
+                                        <button type="button" class="total-box__btn-next btn btn-primary orderflow-next-btn" onclick="document.getElementsByClassName('js-btn-next')[0].click();">{{ text.button_order }}</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if coupon_disp %}
+                                <div class="cart-summary-row cart-summary-coupon icon-on-top px-5 pt-5 pb-4 border position-relative mb-5 mx-auto">
+                                    <form name="cart__coupon-form" class="cart__coupon-form text-center d-flex flex-wrap flex-column" onsubmit="cart_coupon_check('#coupon_id'); return false;">
+                                        <div class="form-label-group{% if coupon_id != '' %} coupon-ok{% endif %}">
+                                            <input class="cart__coupon-input coupon-input order-5 form-control" placeholder="{{ text.coupon_code }}" type="text" name="coupon_id" id="coupon_id" value="{{ coupon_id }}" maxlength="20" />
+                                            <label for="coupon_id">{{ text.coupon_code }}</label>
+                                        </div>
+                                        {% if coupon_id != "" %}
+                                            <button class="cart__coupon-del-btn btn btn-link p-0 order-8" onclick="delCoupon();">{{ text.button_coupon_delete }}</button>
+                                        {% else %}
+                                            <button class="cart__coupon-check-btn btn btn-link p-0 order-7">{{ text.button_check }}</button>
+                                        {% endif %}
+                                        <script>
+                                            function delCoupon() {
+                                                $('#coupon_id').removeAttr('value required');
+                                            }
+                                        </script>
+                                    </form>
+                                </div>
+                            {% endif %}
+
+                            <button class="cart__btn-order btn btn-primary orderflow-next-btn mx-auto btn-block js-sum-box-visibility-check js-btn-next" onclick="{{ button_order_onclick }}">{{ text.button_order }}</button>
+
+                            [[ element|name:cart_summary;layout:html;class:cart_summary_element pt-3 ]]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if cetelem_disp %}
+            <div class="cart-credit cart-credit-cetelem">
+                <div class="cart-credit__title" id="page_artdet_credit_head">{{ text.credit_calculator }}</div>
+                <div class="cart-credit__content p-3" id="page_cart_credit">
+                    {{ cetelem_content }}<br />
+                    {{ text.scetelem_custom_text_2 }}
+                </div>
+            </div>
+            <script type="text/javascript">
+                $('#page_artdet_credit_head').click( function() {
+                    $('#page_cart_credit').stop().slideToggle(400);
+                });
+            </script>
+        {% endif %}
+
+        {% if cofidis_disp %}
+            <div class="cart-credit cart-credit-cofidis">
+                <div class="cart-credit__title" id="page_artdet_cofidis_credit_head">{{ text.credit_calculator }}</div>
+                <div class="cart-credit__content p-3" id="page_cart_cofidis_credit">
+                    {{ cofidis_content }}
+                </div>
+            </div>
+            <script type="text/javascript">
+                $('#page_artdet_cofidis_credit_head').click( function() {
+                    $('#page_cart_cofidis_credit').stop().slideToggle(400);
+                });
+            </script>
+        {% endif %}
+    {% else %}
+        <div class="page_cart_empty">
+            <div class="page_cart_empty-text">{{ text.no_product_in_cart }}
+                <a class="page_cart_to_products_link text-primary" href="{{ main_cat_url }}">{{ text.click_here_to_purchase }}</a>
+            </div>
+            {% if store_all_disp %}
+                {% if restore_disp %}
+                    <div class="cart__restore-text mt-5 icon--b-info">
+                        {{ text.cart_restore_text }}
+                    </div>
+                    <div class="cart__btn-restore-wrap d-inline-block mt-2">
+                        <button class="cart__btn-restore btn btn-primary" onclick="location.href='{{ restore_url }}'">{{ text.button_cart_restore }}</button>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if custom_content_bottom_disp %}
+        <div class="line-separator"></div>
+        <div class='page_txt'><div class='page_shop_txt'>{{ custom_content_bottom }}</div></div>
+    {% endif %}
+
+    {% if cart_disp %}
+        <script>
+            var $stickySumBox =
+                {
+                    top : 115,
+                    bottom: 115,
+                    stickyBox : $('.js-sum-box'),
+                    stickyBoxWrap : $('.js-sum-box-wrap'),
+                    stickTo : "is-sticky-top",
+                    heightsDiff : 0,
+                    offsetDist : 115,
+                    offsetDistBottom : 115,
+                    get getstickyBoxWrapHeight() {
+                        return this.stickyBoxWrap.height();
+                    },
+                    get getstickyBoxWrapOffset() {
+                        return this.stickyBoxWrap.offset().top;
+                    },
+                    get getstickyBoxHeight() {
+                        return this.stickyBox.outerHeight();
+                    },
+                    get getstickyBoxInnerHeight() {
+                        return this.stickyBox.innerHeight();
+                    },
+                    get getstickyBoxWrapWidth() {
+                        return this.stickyBoxWrap.width();
+                    },
+                    get setstickyBoxWidth() {
+                        this.stickyBox.css('width', this.getstickyBoxWrapWidth);
+                    },
+                    get getwindowHeight() {
+                        return $(window).height();
+                    },
+                    checkStickyPos : function() {
+
+                        if (this.getstickyBoxWrapOffset + this.heightsDiff - this.offsetDist - $(window).scrollTop() <= 0 ) {
+                            if (!$(this.stickyBox).hasClass(this.stickTo)) {
+                                $(this.stickyBox).addClass(this.stickTo).css('width', this.setstickyBoxWidth);
+                            }
+                        } else { /* offsetDistBottom */
+                            if ($(this.stickyBox).hasClass(this.stickTo)) {
+                                $(this.stickyBox).removeClass(this.stickTo);
+                            }
+                        }
+                    },
+                    checkReachBottom : function() {
+                        if (this.getstickyBoxWrapHeight - this.getstickyBoxInnerHeight - $(window).scrollTop() + this.getstickyBoxWrapOffset + this.heightsDiff - this.offsetDistBottom < 0)  {
+                            if (!this.stickyBox.hasClass('reached-bottom')) {
+                                this.stickyBox.addClass('reached-bottom');
+                            }
+                        } else {
+                            if (this.stickyBox.hasClass('reached-bottom')) {
+                                this.stickyBox.removeClass('reached-bottom');
+                            }
+                        }
+                    },
+                    checkHeightsDiff : function() {
+                        if ( this.getstickyBoxHeight >= this.getwindowHeight ) {
+                            this.stickTo = "is-sticky-bottom";
+                            this.heightsDiff = this.getstickyBoxHeight - this.getwindowHeight;
+                            this.offsetDist = this.offsetDistBottom;
+                        }
+                        this.checkStickyPos();
+                    }
+                };
+
+            /*** STICKY SUM BOX SIMPLIFIED ***/
+            var $itemVisibilityCheck = $('.js-sum-box-visibility-check');
+            var $sticky = $('.js-total-box-sticky');
+            var $stickyParent = $('.js-total-box-sticky-wrapper');
+
+            $(document).ready(function() {
+                setStickyPosition($stickyParent);
+                $(window).on('load', function(){
+                    if (($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight){
+                        $stickySumBox.checkHeightsDiff();
+                        $stickySumBox.checkReachBottom();
+                    }
+                    setStickyPosition($stickyParent);
+                });
+                $(window).on('load scroll', function(){
+                    if (($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight){
+                        $stickySumBox.checkStickyPos();
+                    }
+                });
+                $(window).on('resize', function(){
+                    if (($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight){
+                        $stickySumBox.setstickyBoxWidth;
+                    }
+                });
+                $(window).on('scroll', function(){
+                    if (($stickySumBox.getstickyBoxWrapHeight) > $stickySumBox.getstickyBoxHeight){
+                        $stickySumBox.checkReachBottom();
+                    }
+                    setStickyPosition($stickyParent);
+                });
+            });
+        </script>
+    {% endif %}
+</div>

@@ -1,0 +1,36 @@
+{% if paging_disp %}
+    <ul class="pagination mb-0">
+        <li class='page-item page-first{% if page_first %} is-disabled{% endif %} page-arrow'>
+            <a class="page-link icon--arrow-first" {% if not page_first %}{% if not ajax_first_page_forced %} href="{{ page_first_url }}" {%endif %} {% if ajax_first_page_forced %} onclick="{{ ajax_first_onclick }}" {%endif %}{% endif %}>
+                {% if not page_first %}<span class="sr-only">First</span>{% endif %}
+            </a>
+        </li>
+        <li class='page-item{% if page_first %} is-disabled{% endif %} page-prev page-arrow'>
+            <a class="page-link icon--arrow-left" {% if not page_first %}{% if not ajax_page_prev_disp %} href="{{ page_prev_url }}" {% endif %}{% if ajax_page_prev_disp %} onclick="{{ ajax_page_prev_onclick }}" {% endif %}{% endif %}>
+                {% if not page_first %}<span class="sr-only">Previous</span>{% endif %}
+            </a>
+        </li>
+        {% for page in pages %}
+            <li class="page-item{% if page.actual %} is-active{% endif %} page_select_num_{{ page.num }} d-none d-sm-flex">
+                <a class="page-link" {% if not page.actual %}{% if not page.ajax_pagination %} href="{{ page.url }}" {% endif %} {% if page.ajax_pagination %} onclick="{{ page.ajax_onclick }}" {% endif %}{% endif %}>{{ page.num }}</a>
+                {% if not page.actual %}<span class="sr-only">{{ page.num }}</span>{% endif %}
+            </li>
+        {% endfor %}
+        {% for mobile_page in mobile_pages %}
+            <li class="page-item{% if mobile_page.actual %} is-active{% endif %} page_select_num_{{ mobile_page.num }} d-sm-none">
+                <a class="page-link" {% if not mobile_page.actual %}{% if not mobile_page.ajax_pagination %} href="{{ mobile_page.url }}" {% endif %} {% if mobile_page.ajax_pagination %} onclick="{{ mobil_page.ajax_onclick }}" {% endif %}{% endif %}>{{ mobile_page.num }}</a>
+                {% if not mobile_page.actual %}<span class="sr-only">{{ mobile_page.num }}</span>{% endif %}
+            </li>
+        {% endfor %}
+        <li class='page-item{% if page_last %} is-disabled{% endif %} page-next page-arrow'>
+            <a class="page-link icon--arrow-right" {% if not page_last %}{% if not ajax_page_next_disp %} href="{{ page_next_url }}" {% endif %}{% if ajax_page_next_disp %} onclick="{{ ajax_page_next_onclick }}" {% endif %}{% endif %}>
+                {% if not page_last %}<span class="sr-only">Next</span>{% endif %}
+            </a>
+        </li>
+        <li class='page-item page-last{% if page_last %} is-disabled{% endif %} page-arrow'>
+            <a class="page-link icon--arrow-last" {% if not page_last %}{% if not ajax_last_page_forced %} href="{{ page_last_url }}" {%endif %} {% if ajax_last_page_forced %} onclick="{{ ajax_last_onclick }}" {%endif %}{% endif %}>
+                {% if not page_last %}<span class="sr-only">Last</span>{% endif %}
+            </a>
+        </li>
+    </ul>
+{% endif %}

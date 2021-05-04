@@ -1,0 +1,156 @@
+{{ backvar(slide_direction,left) }}
+
+{% if popup_disp %}
+    <div class="popup-contents d-flex flex-column">
+        {% if up_disp %}
+            <section class='up-sale py-3' id="popup_up_content">
+                <header class='popuplist-title up-sale__title d-flex align-items-center justify-content-center mb-4 mb-md-5'>
+                    <h6 class="js-animate-title-dots fixed">{{ text.up_sale_text }}</h6>
+                </header>
+                <div class='cross-sale__items slick-list-outer slick-has-counter slick-arrow--small'>
+                    {{ up_product_list }}
+                    <div class="slick-counter"></div>
+                </div>
+            </section>
+        {% endif %}
+        {% if cross_disp %}
+            <section class='cross-sale py-3' id="popup_cross_content">
+                <header class='popuplist-title cross-sale__title d-flex align-items-center justify-content-center mb-4 mb-md-5'>
+                    <h6 class="js-animate-title-dots fixed">{{ text.cross_sale_text }}</h6>
+                </header>
+                <div class='up-sale__items slick-list-outer slick-has-counter slick-arrow--small'>
+                    {{ cross_product_list }}
+                    <div class="slick-counter"></div>
+                </div>
+            </section>
+        {% endif %}
+        {% if postsale_disp %}
+            <div id="popup_postsale_content">
+                <div class="post-sale__title popup_title">
+                    <div class="js-animate-title-dots">{{ text.special_offer }}</div>
+                </div>
+                {{ postsale_art }}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+{% if page_disp %}
+    {% if gift_disp %}
+        {% for gift in gifts %}
+            <section class='gift mb-3 mb-md-5' id='page_gift_content_{{ gift.id }}'>
+                {% if gift.by_cart_total %}
+                    <div class='gift__title d-flex align-items-center justify-content-center'>
+                        <h6 class="js-animate-title-dots">{{ text.choose_gift }}</h6>
+                    </div>
+                {% endif %}
+                {% if gift.by_product %}
+                    <div class='gift__title d-flex align-items-center justify-content-center flex-wrap'>
+                        <h6 class="fs-inherit js-animate-title-dots">{{ text.choose_gift_for_product }}</h6>
+                        <div class="gift__base-product-name w-100 text-center">{{ gift.base_product_name }}</div>
+                    </div>
+                {% endif %}
+                {% if gift.on_product_details %}
+                    <div class='gift__title d-flex align-items-center justify-content-center'>
+                        <h6 class='js-animate-title-dots'>{{ text.gift_for_this_product }}</h6>
+                    </div>
+                {% endif %}
+                <div class='gift__item-container slick-list-until-md-outer slick-has-counter slick-arrow--middle slick-arrow--small slick-gap'>
+                    {{ gift.product_list }}
+                    <div class="slick-counter"></div>
+                </div>
+            </section>
+        {% endfor %}
+    {% endif %}
+    {% if up_disp %}
+        <section class='up-sale mb-5' id="page_up_content">
+            <div class='up-sale__title d-flex align-items-center justify-content-center'>
+                <h6 class="js-animate-title-dots">
+                    {{ text.up_sale_text }}
+                </h6>
+            </div>
+            <div class='up-sale__items slick-list-until-md-outer slick-arrow--middle slick-arrow--small slick-gap slick-has-counter'>
+                {{ up_product_list }}
+                <div class="slick-counter"></div>
+            </div>
+        </section>
+    {% endif %}
+    {% if cross_disp %}
+        <section class='cross-sale mb-5' id="page_cross_content">
+            <div class='cross-sale__title d-flex align-items-center justify-content-center'>
+                <h6 class="js-animate-title-dots">
+                    {{ text.cross_sale_text }}
+                </h6>
+            </div>
+            <div class='cross-sale__items slick-list-until-md-outer slick-arrow--middle slick-arrow--small slick-gap slick-has-counter'>
+                {{ cross_product_list }}
+                <div class="slick-counter"></div>
+            </div>
+        </section>
+    {% endif %}
+    {% if bundle_disp %}
+        <section class='bundle-products mb-5 bg-8 py-4' id="page_artpack_content">
+            <h6 class='bundle-products__title text-center font-weight-bold text-uppercase mb-4'>
+                {{ text.cheaper_in_bundle }}
+            </h6>
+            <div class='bundle-products__items'>
+                {{ bundle_product_list }}
+            </div>
+        </section>
+    {% endif %}
+{% endif %}
+
+<script>
+    $(document).ready(function(){
+        {% if gift_disp %} marketingSlick('gift','removeGiftItem'); {% endif %}
+        {% if up_disp %} marketingSlick('up','removeUpItem'); {% endif %}
+        {% if cross_disp %} marketingSlick('cross','removeCrossItem'); {% endif %}
+    });
+    function marketingSlick($elem,$event){
+        var $slickElement = '.'+$elem+'__items';
+        $(window).on('orientationchange', function() {
+            $($slickElement).slick('resize');
+        });
+        $($slickElement).on('init reInit afterChange', function(event, slick){
+            $($slickElement+' ~ .slick-counter').html((Math.ceil(slick.currentSlide/slick.slickGetOption('slidesToShow'))+1)+' / '+ Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow')));
+            if(Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow'))===1){
+                $($slickElement+' ~ .slick-counter').html('');
+            }
+        });
+        $($slickElement).not('.slick-initialized').slick({
+            waitForAnimate: true,
+            autoplay: false,
+            dots: false,
+            arrows: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            useTransform: true,
+            adaptiveHeight: false,
+            touchThreshold: 10,
+            mobileFirst: true,
+            lazyLoad: 'ondemand',
+            responsive: [
+                {
+                    breakpoint: 575,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3
+                    }
+                },
+                {
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 4,
+                        draggable: false
+                    }
+                }
+
+            ]
+        });
+        $(document).on($event, function(){
+            $($slickElement).slick('slickSetOption', {}, true);
+        });
+    }
+</script>

@@ -1,0 +1,218 @@
+<div id='page_order_send_content' class='page_content shipping_method_{{ shipping_method_id }} payment_method_{{ payment_method_id }}'>
+
+    {{ start_script }}
+
+    {% if custom_content_top_disp %}
+    	<div class='page_txt'>{{ custom_content_top }}</div>
+        <div class="line-separator"></div>
+    {% endif %}
+
+    {{ orderflow }}
+
+    <div class='text-center py-2 font-weight-bold text-uppercase text-cn font-xxl'>{{ text.thanks_for_order }}</div>
+
+    {% if need_customer_confirm_disp %}
+        <div class='page_text_common'>{{ need_customer_confirm_text }}</div>
+    {% endif %}
+
+    <div class='page_order_send_key_outer mb-5 pb-4'>
+        <div class='page_order_send_key text-center'>
+            {{ text.your_order_key }}
+        	<span class="order_send_key_code text-primary">{{ order_key }}</span>
+        </div>
+    </div>
+
+    {% if postreg_disp %}
+        {% if form_disp %}
+            <div class="order-send__postreg container-max-sm mx-auto">
+                <div class='order-send__postreg-title py-2 text-center font-weight-bold text-uppercase text-cn font-xxl mb-3'>{{ text.register_to_webshop }}</div>
+                {{ postreg_form_start }}
+                <div id="div_out_passwd">
+                    <div class="new-customer__password customer-block mb-3 page_design_fault_out {% if password_error_disp %}has-fault{% endif %}">
+                        <div class="form-label-group">
+                            <input name="passwd1" id="passwd1" type="password" placeholder="{{ text.password }}" class="text_normal check_passwd form-control" value="{{ password }}" maxlength="100" />
+                            <label for="passwd1">{{ text.password }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="div_out_passwd_again" class="mb-5">
+                    <div class="new-customer__password customer-block page_design_fault_out {% if password_error_disp %}has-fault{% endif %}">
+                        <div class="form-label-group mb-0">
+                            <input name="passwd2" id="passwd2" placeholder="{{ text.password_again }}" type="password" class="text_normal check_passwd form-control" value="{{ password_again }}" maxlength="100" />
+                            <label for="passwd2">{{ text.password_again }}</label>
+                        </div>
+                    </div>
+                    <div class="page_design_fault_text position-absolute font-xs text-danger">
+                        <strong class="font-weight-normal">{% if password_error_disp %}{{ password_error_text }}{% endif %}</strong>
+                    </div>
+                </div>
+                <div class="new-cust__buttons text-center">
+                    <div class="new-cust__form-btn-wrap" id="div_out_post_registration_send">
+                        <button class="btn btn-primary" id="button_mod">{{ text.registration }}</button>
+                    </div>
+                </div>
+                {{ postreg_form_end }}
+            </div>
+        {% else %}
+            <div id='page_reg_ok_content' class='page_content text-center'>
+                <div class='py-4 text-uppercase font-l'>{{ text.thanks_for_registration }}</div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="order-send__wrap{% if payment_spec_disp %} my-5 px-3 pt-5 pb-3 border icon-on-top position-relative{% endif %}">
+        {% if order_send_text_disp %}
+            <div class='order-send__title text-uppercase font-weight-bold text-cn text-center font-l pb-4'>{{ order_send_text }}</div>
+        {% endif %}
+
+        {% if payment_spec_disp %}
+            <div class="order-send__payment-spec row gutters-10 align-items-center" id="payment_{{ payment_method_id }}">
+                <div class='payment_logos col-md-auto text-center'>
+                    {% if payment_spec_img_disp %}
+                        {% if payment_spec_img_link_disp %}<a href="{{ payment_spec_img_link_url }}" title="{{ payment_spec_img_link_title }}" target="{{ payment_spec_img_link_target }}">{% endif %}
+                        <img src="{{ payment_spec_img_url }}" alt="{{ payment_spec_img_alt }}" title="{{ payment_spec_img_title }}" />
+                        {% if payment_spec_img_link_disp %}</a>{% endif %}
+                    {% endif %}
+                </div>
+                <div class='payment_method col row gutters-10 align-items-center justify-content-center justify-content-md-end'>
+                    {% if payment_spec_type == "cib" %}
+                        <div class='page_order_send_data_text'>
+                            {{ payment_spec_cib_text }}
+                        </div>
+                    {% endif %}
+
+                    {% if payment_spec_type == "simplepay_hu" or payment_spec_type == "simplepay_hu_v2" %}
+                        <div class='page_order_send_data_text col-auto my-3 px-0 font-s form-check'>
+                            <input class="form-check-input" type="checkbox" name="data_checkbox" id="data_checkbox" onclick="payu_data_checkbox();" />
+                            <label class="form-check-label" for="data_checkbox">{{ payment_spec_simplepay_text_1 }}</label>
+                        </div>
+
+                        <script type="text/javascript">
+                            function payu_data_checkbox() {
+                                if ($("#data_checkbox").prop("checked")==true) {
+                                    $("#button_pay").prop("disabled",false);
+                                } else {
+                                    $("#button_pay").prop("disabled",true);
+                                }
+                            }
+                            $(document).ready(function(){
+                                $("#data_link").click(function(){
+                                    overlay_load("warning","{{ text.privacy_policy }}","{{ payment_spec_simplepay_text_2 }}");
+                                });
+                            });
+                        </script>
+                    {% endif %}
+
+                    {% if payment_spec_type == "sponsorem_hu" %}
+                        <div class="col-12 col-sm-5 col-md-4 my-2">
+                            <div class="form-label-group">
+                                <input class="form-control" name="sponsorem_hu_cardid" id="sponsorem_hu_cardid" placeholder="{{ text.sponsorem_card_number }}" type="text" value="{{ payment_spec_sponsorem_input_value }}" />
+                                <label for="sponsorem_hu_cardid">{{ text.sponsorem_card_number }}</label>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class='col-auto my-2 text-center'>
+                        <button class="order-send__pay-btn btn btn-primary" type="button" id="button_pay" {% if button_pay_disabled %}disabled="disabled"{% endif %} onclick="{{ button_pay_onclick }}">{{ button_pay_text }}</button>
+                        {% if checkout_change %}
+                            <button class="order-send__change-payment-method-btn btn btn-outline-primary" id="button_prev" type="button" onclick="{{ button_change_onclick }}">{{ text.other_payment_method }}</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if payment_spec_redir %}
+                <script type="text/javascript">
+                    var payment_spec_redir_allow=1;
+                    var payment_spec_redir_sec={{ payment_spec_redir_sec }};
+                    function payment_spec_redir_text() {
+                        payment_spec_redir_sec=payment_spec_redir_sec-1;
+                        if (payment_spec_redir_sec<=2) {
+                            $("#button_pay").css("display","none");
+                            $("#button_prev").css("display","none");
+                        }
+                        if (payment_spec_redir_sec<=0) {
+                            $("#button_pay").trigger("click");
+                        } else if (payment_spec_redir_allow==1) {
+                            setTimeout("payment_spec_redir_text()",1000);
+                        }
+                    }
+                    {% if postsale_script_disp %}
+                        $(document).on("popupClosed",function (event,trigger_data) {
+                            setTimeout("payment_spec_redir_text()",1000);
+                        });
+                    {% else %}
+                        setTimeout("payment_spec_redir_text()",1000);
+                    {% endif %}
+                </script>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% if loveallhelpall_disp %}
+        <div id='page_order_send_loveallhelpall' class='my-4 text-center'>
+            {{ loveallhelpall_content }}
+        </div>
+    {% endif %}
+
+    {% if money_hu_disp %}
+        <div id="bankracio_hu_payment_banner">
+            <div data-br-service="banner/br_hitel_responsive_14" data-place="{{ shop_id }}"></div>
+            <script type="text/javascript">
+                (function() {
+                    var script = document.createElement("script"); script.type = "text/javascript"; script.async = true;
+                    script.src = "https://static.bankracio.hu/assets/js/brhu_insert.js";
+                    document.getElementsByTagName("head")[0].appendChild(script);
+                })();
+            </script>
+        </div>
+    {% endif %}
+
+    {% for plus_content in plus_contents %}
+        {{ plus_content.content }}
+    {% endfor %}
+
+    {% if trustedshops_disp %}
+    	<div id='page_order_send_trustedshops' class='my-4 text-center'>
+            {% if trustedshops_rate_section_disp %}
+                <div class="text-justify mb-3">
+                    {{ text.rate_order }}
+                </div>
+                <div class="row gutters-10 align-items-center justify-content-center">
+                    <div class="col-auto">
+                        <button class="col-auto btn btn-primary mt-2" name='button_rate_later' type='button' onclick='location.href="{{ trustedshops_rate_later_url }}"'>{{ text.button_rate_later }}</button>
+                    </div>
+                    <div class="col-auto">
+                        <button class="col-auto btn btn-primary mt-2" name='button_rate_now' type='button' onclick='location.href="{{ trustedshops_rate_now_url }}"'>{{ text.button_rate_now }}</button>
+                    </div>
+                </div>
+            {% endif %}
+            {{ trustedshops_content }}
+	    </div>
+    {% endif %}
+
+    {% if custom_content_bottom_disp %}
+        <div class="line-separator"></div>
+        <div class='page_txt'>{{ custom_content_bottom }}</div>
+    {% endif %}
+
+    {% if retargeting_div_order_send_disp %}
+        {{ retargeting_div_order_send }}
+    {% endif %}
+
+    {% if ref_disp %}
+        <div class='page_product_list_ref pt-5 mt-5 border-top'>{{ ref_product_list }}</div>
+    {% endif %}
+
+    {% if postsale_script_disp %}
+        <script>
+            $(function() {
+                var postsale_delay = {{ postsale_delay }}*1000;
+
+                setTimeout(function () {
+                    postsale_marketing_popup('{{ order_key_without_shop_id }}')
+                },postsale_delay);
+            });
+        </script>
+    {% endif %}
+</div>

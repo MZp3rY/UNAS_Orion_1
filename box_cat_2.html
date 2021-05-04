@@ -1,0 +1,13 @@
+{{ backvar(cat_limit,5) }}
+{{ backvar(disable_cat_sub,1) }}
+
+{% if cats_disp %}
+    <div class="cat-menu mt-3 font-s">
+        {% for cat in cat_list %}
+            <a class="cat-menu__name js-cat-menu-{{ cat.id }}" href="{{ cat.url }}" data-level="{{ level }}" data-id="{{ cat.id }}" {% if cat.target_blank %} target="_blank"{% endif %}>{{ cat.name }}</a>
+        {% endfor %}
+        {% if cat_limit_exceeded %}
+            <a class="cat-menu__more-btn btn-link d-block py-1 icon--a-arrow-right" href="{{ parent_url }}">{{ text.show_more }}</a>
+        {% endif %}
+    </div>
+{% endif %}

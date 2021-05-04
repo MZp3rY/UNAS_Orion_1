@@ -1,0 +1,37 @@
+<div id='page_art_content' class='page_content'>
+    {% if custom_content_top_disp %}
+        <div class='read-more-container overflow-hidden my-0 my-md-3'>
+            <div class='page_txt read-more-content overflow-hidden text-justify font-s font-md-m'>{{ custom_content_top }}</div>
+        </div>
+        <div class='read-more-btn font-weight-bold pt-2 pb-4 font-s font-md-m'>{{ text.button_next }}</div>
+    {% endif %}
+
+    {% if no_product %}
+        <div class="viewing-sorting-filter-top border my-3 mx-2 position-relative">
+            [[ box|name:shop_filter ]]
+        </div>
+        <div class="product-list-wrapper row gutters-10">
+            <div id='page_art_head_box' class='col-12 no_art py-4 text-uppercase font-l'>{{ text.no_product }}</div>
+        </div>
+    {% endif %}
+
+    {{ product_list }}
+
+    {% if search_complex_disp %}
+        <div class="container-max-md mx-auto">
+            {{ search_complex }}
+        </div>
+    {% endif %}
+
+    {% if custom_content_bottom_disp %}
+        <div class='read-more-container overflow-hidden my-0 my-md-3'>
+            <div class='page_txt read-more-content overflow-hidden text-justify font-s font-md-m'>{{ custom_content_bottom }}</div>
+        </div>
+        <div class='read-more-btn font-weight-bold pt-2 pb-4 font-s font-md-m'>{{ text.button_next }}</div>
+    {% endif %}
+</div>
+<script>
+    $(document).ready(function(){
+        $('.read-more-container:not(.is-processed)').each(readMoreOpener);
+    });
+</script>

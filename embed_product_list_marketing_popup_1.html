@@ -1,0 +1,213 @@
+{{ backvar(main_img_maxwidth,265) }}
+{{ backvar(main_img_maxheight,265) }}
+
+{% if products_disp %}
+    <div class='page_popuplist_items w-100 flex-wrap slick-list-inner d-flex{% if product_list_type == "cross_popup" %} cross-popup-items{% endif %}{% if product_list_type == "up_popup" %} up-popup-items{% endif %}{% if product_list_type == "recommend" %} recommend-items{% endif %}' {% if login_needed %}id="list_no_price"{% endif %}> <!-- .page_popuplist_item and #page_popuplist_cikkszam FOR JS -->
+        {% for product in products %}
+            <article class='page_popuplist_item p-3 position-relative flex-shrink-0 js-product {{ product.class }}{% if product.variants_disp %} js-has-variant has-unselected-variant{% endif %}' id='page_popuplist_{{ product.id }}'>
+                <div class='page_popuplist_item__inner h-100 flex-column'>
+                    <div class='popuplist__statuses position-absolute badges'>
+                        {% if product.sale_disp %}
+                            <div class='popuplist__sale badge badge--sale'>-{{ product.sale_percent }}%</div>
+                        {% endif %}
+
+                        {% if product.new_disp %}
+                            <div class='popuplist__new badge badge--new'>{{ text.status_new }}</div>
+                        {% endif %}
+
+                        {% if product_list_type != 'bundle_products' %}
+                            {% if product.stock_disp %}
+                                <div class="popuplist__stock badge badge--stock has-tooltip{% if not product.sale_disp and not product.new_disp %} only_stock_status{% endif %}{% if product.stock_available %} stock-available{% else %}{% if product.no_stock_but_buyable_disp %} stock-can-order{% else %} no-stock{% endif %}{% endif %}">
+                                    <div class="popuplist__stock-text product-stock-text">
+                                        {% if product.stock_available %}
+                                            <div class="popuplist__stock-title icon--check"></div>
+                                            <div class="popuplist__stock-content tooltip-text tooltip-down">{% if not product.stock_interval_text_exists %}{{ text.status_on_stock }}{% endif %}{% if not stock_text_only %}{% if not product.stock_interval_text_exists %}:{% endif %} {{ product.stock_qty }}&nbsp;{% if not product.stock_interval_text_exists %}{{ product.unit }}{% endif %}{% endif %}</div>
+                                        {% else %}
+                                            {% if product.cart_disp %}
+                                                <div class="popuplist__stock-title icon--exclamation-2"></div>
+                                                <div class="popuplist__stock-content tooltip-text tooltip-down">{{ text.status_orderable }}</div>
+                                            {% else %}
+                                                <div class="popuplist__stock-title icon--close"></div>
+                                                <div class="popuplist__stock-content tooltip-text tooltip-down">{{ text.status_no_stock }}</div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+						{% if product.status_1_disp %}
+                            {% if status_1_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=3" aria-label="{{ product.status_1 }}">{% endif %}
+                                <div class="popuplist__custom-status badge bg-white px-3 badge--custom-1 d-none">{{ product.status_1 }}</div>
+                            {% if status_1_link_disp %}</a>{% endif %}
+						{% endif %}
+
+						{% if product.status_2_disp %}
+                            {% if status_2_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=4" aria-label="{{ product.status_2 }}">{% endif %}
+                                <div class="popuplist__custom-status badge bg-white px-3 badge--custom-2 d-none">{{ product.status_2 }}</div>
+                            {% if status_2_link_disp %}</a>{% endif %}
+						{% endif %}
+
+						{% if product.status_3_disp %}
+                            {% if status_3_link_disp %}<a href="[unas_shop_url]/shop_artspec.php?artspec=5" aria-label="{{ product.status_3 }}">{% endif %}
+                                <div class="popuplist__custom-status badge bg-white px-3 badge--custom-3 d-none">{{ product.status_3 }}</div>
+                            {% if status_3_link_disp %}</a>{% endif %}
+						{% endif %}
+                    </div>
+                    <div class='popuplist__img-wrapper product-img-wrapper position-relative text-center overflow-hidden fs-0'>
+                        <a class="popuplist__img-link product-img-link" href="{{ product.url }}">
+                            <img class='popuplist__img product-img lazyload' src="[unas_shop_url]/main_pic/space.gif" data-src='{{ product.img_url }}'{% if product.img_retina_exists %} data-srcset='{{ product.img_retina_url }} {{ product.img_retina_size }}'{% endif %} id='main_image_{{ product.id }}' alt='{{ product.img_alt }}' title='{{ product.img_alt }}'/>
+                            <div class="loading-spinner"></div>
+                        </a>
+                    </div>
+                    <div class='popuplist__name-wrap mb-1 mt-2'>
+                        <a class="popuplist__name text-uppercase" href="{{ product.url }}"><h2 class="font-s font-sm-m line-clamp--2-14 font-weight-bold">{{ product.name }}</h2></a>
+                    </div>
+                    <div class='popuplist__prices row no-gutters align-items-baseline{% if product.price_sale_disp %} has-sale-price{% endif %}'>
+                        {% if product.price_sale_disp %}
+                            <div class='popuplist__price-discount product-price--sale mr-2 text-cn font-weight-bold'>
+                                {{ product.price_sale }}
+                            </div>
+                        {% endif %}
+
+                        {% if product.price_disp %}
+                            <div class='popuplist__price-base product-price--base text-cn{% if not product.price_sale_disp %} font-weight-bold{% endif %}{% if product.price_line_through %} text-line-through{% endif %}'>
+                                {{ product.price }}
+                            </div>
+                        {% endif %}
+                        {% if price_unit_enabled and price_unit_exists %}
+                            <div class="popuplist__price-unit col-12 product-price--unit order-3 font-xs font-md-s">{% if product.price_unit_disp %}{{ text.unit_price }}: {{ product.price_unit }}{% endif %}</div>
+                        {% endif %}
+                        {% if product.qty_discount_disp %}
+                            <div class='popuplist__price-quantitative-sale product-price--quantitative-sale d-none'>
+                                <a href="{{ product.url }}" class="product_link_normal" data-sku="{{ product.sku }}">
+                                    {{ product.qty_discount_title }}
+                                    <strong>{{ product.qty_discount_amount }}{% if product.qty_discount_type == "percent" %}%{% endif %}</strong>
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        {% if product.login_needed %}
+                            <button class='popuplist__price-login-btn btn btn-link w-100 font-xs' type='button' onclick='overlay_login()'>
+                                {{ text.need_login_to_prices }}
+                            </button>
+                        {% endif %}
+                    </div>
+                    {{ product.variants_hidden }}
+
+                    <div class="popuplist__functions row no-gutters position-relative pt-2">
+                        {% if product.cart_disp %}
+                            {% if product_list_type == "recommend" %}
+                                <div class='popuplist__recommend-del-btn-wrap col'>
+                                    <button class='popuplist__recommend-del-btn js-recommend-del-btn btn btn-outline-primary btn-block py-2' type='button' onclick="recommend_del('{{ product.sku }}','artlist_');">
+                                        {{ text.delete }}
+                                    </button>
+                                </div>
+                            {% else %}
+                                {% if product.popup_redirect_to_details %}
+                                <!-- HAS REDIRECT -->
+                                    <div class='popuplist__details-btn-wrap col cart-wrapper'>
+                                        <button class='popuplist__details-btn btn btn-primary btn-block py-2' type='button' onclick="{{ product.popup_cart_onclick }}">{{ text.button_details }}</button>
+                                    </div>
+                                {% else %}
+                                    {% if product.variants_disp %}
+                                        <div class='popuplist__cart-btn-wrap col'>
+                                            <button class='popuplist__variants-open-btn product-variants-open-btn js-variants-open-btn btn btn-primary btn-block py-2' type='button' data-cartadd="{{ product.popup_cart_onclick }}" onclick="openVariantsOverlay(this)">
+                                                {{ product.popup_button_text }}
+                                            </button>
+                                        </div>
+                                    {% else %}
+                                        <div class='popuplist__cart-btn-wrap col'>
+                                            <button class='popuplist__cart-btn js-cart-btn btn btn-primary btn-block py-2' type='button' onclick="{{ product.popup_cart_onclick }}">
+                                                {{ product.popup_button_text }}
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% if not product.popup_redirect_to_details and product.cart_disp and product.variants_disp %}
+                        <div class='popuplist__variants js-variants'>
+                            <div class='popuplist__variants-wrap border-top position-relative mx-3 mt-5'>
+                                <button class="popuplist__variants-close-btn js-variants-close-btn btn btn-link py-2 px-3 icon--close font-l" type="button" title="{{ text.button_close }}" onclick="closeVariantsOverlay(this);"></button>
+                                <div class='popuplist__variants-inner pt-5'>
+                                    {% if product.variant_1_disp %}
+                                        <div class='popuplist__variant js-variant-wrap form-label-group form-select-group'>
+                                            {{ product.variant_1_hidden }}
+                                            <select name="egyeb_list1_{{ product.id }}" id="egyeb_list1_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                {% for option in product.variant_1_options %}
+                                                    <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled"{% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="egyeb_list1_{{ product.id }}" class="font-weight-bold">{{ product.variant_1_title }}</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if product.variant_2_disp %}
+                                        <div class='popuplist__variant js-variant-wrap form-label-group form-select-group'>
+                                            {{ product.variant_2_hidden }}
+                                            <select name="egyeb_list2_{{ product.id }}" id="egyeb_list2_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                {% for option in product.variant_2_options %}
+                                                    <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled"{% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="egyeb_list2_{{ product.id }}" class="font-weight-bold">{{ product.variant_2_title }}</label>
+                                        </div>
+                                    {% endif %}
+                                    {% if product.variant_3_disp %}
+                                        <div class='popuplist__variant js-variant-wrap form-label-group form-select-group'>
+                                            {{ product.variant_3_hidden }}
+                                            <select name="egyeb_list3_{{ product.id }}" id="egyeb_list3_{{ product.id }}" class='page_artlist_other_select variant-select form-control' onchange="changeVariant(this)">
+                                                {% for option in product.variant_3_options %}
+                                                    <option value="{{ option.value }}" {% if option.disabled %} style='display:none' disabled="disabled"{% endif %} {% if option.selected %} selected="selected"{% endif %}>{{ option.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="egyeb_list3_{{ product.id }}" class="font-weight-bold">{{ product.variant_3_title }}</label>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% endif %}
+<script type="text/javascript">
+    function popuplistSlick($elem,$event){
+        $(window).on('orientationchange', function() {
+            $($elem).slick('resize');
+        });
+        $($elem).on('init reInit afterChange', function(event, slick){
+            $($elem+' ~ .slick-counter').html((Math.ceil(slick.currentSlide/slick.slickGetOption('slidesToShow'))+1)+' / '+ Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow')));
+            if(Math.ceil(slick.slideCount/slick.slickGetOption('slidesToShow'))===1){
+                $($elem+' ~ .slick-counter').html('');
+            }
+        });
+        $($elem).not('.slick-initialized').slick({
+            waitForAnimate: true,
+            autoplay: false,
+            dots: false,
+            arrows: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 2,
+            slidesToScroll: 2,
+            useTransform: true,
+            adaptiveHeight: false,
+            touchThreshold: 10,
+            mobileFirst: true,
+            lazyLoad: 'ondemand'
+        });
+        $(document).on($event, function(){
+            $($elem).slick('slickSetOption', {}, true);
+        });
+    }
+    $(document).ready(function() {
+        {% if product_list_type == "cross_popup" %} popuplistSlick('.cross-popup-items','removeCrossItem'); {% endif %}
+        {% if product_list_type == "up_popup" %} popuplistSlick('.up-popup-items','removeUpItem'); {% endif %}
+        {% if product_list_type == "recommend" %} popuplistSlick('.recommend-items','removeRecommendItem'); {% endif %}
+    });
+</script>
+{{ start_script }}

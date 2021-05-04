@@ -548,7 +548,7 @@ $(document).ready(function(){
 $(document).ready(function(){
     checkSelectedFilters();
 });
-$(document).on('filterProductlistRefreshing', function(){
+$(document).on('filterProductlistRefreshing filterBoxLoaded', function(){
     checkSelectedFilters();
 });
 function checkSelectedFilters(){
@@ -588,9 +588,6 @@ function resetSliderFilter(obj){
     obj.parent().find('.product_filter_num_text').html(text);
     obj.parents(".product_filter_content").removeClass("product_filter_content_checked");
     obj.parents(".product_filter_group").removeClass("product_filter_group_checked");
-
-    var prefix = $('.js-filter-box').data('prefix');
-    filter_activate_delay(prefix);
 }
 
 /*** PRODUCT VARIANT CHANGE AND ERROR HANDLING ***/

@@ -1,0 +1,17 @@
+{% if news_disp %}
+    <div id='page_calendar_content' class='page_content'>
+        {% for news_item in news %}
+            <div class="page_calendar_item">
+                <div class='page_calendar_title'>
+                    <div class='page_calendar_date'>
+                        {{ news_item.date }}
+                        {% if news_item.time_disp %}{{ news_item.time }}{% endif %}
+                    </div>
+                    <div class='page_calendar_name'>{{ news_item.title }}</div>
+                    <div class='clear_fix'></div>
+                </div>
+                <div class="page_calendar_message">{{ news_item.content }}</div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
